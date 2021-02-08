@@ -1,0 +1,26 @@
+{
+  "name": "projetwebcir2",
+  "version": "1.0.0",
+  "description": "Projet web CIR2",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Projet-CIR2/projetWebCIR2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Projet-CIR2/projetWebCIR2/issues"
+  },
+  "homepage": "https://github.com/Projet-CIR2/projetWebCIR2#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "express-socket.io-session": "^1.3.5",
+    "socket.io": "^3.1.1"
+  }
+}

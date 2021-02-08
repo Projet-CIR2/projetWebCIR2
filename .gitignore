@@ -1,3 +1,8 @@
+### Personal gitignore
+.idea/
+
+
+### Template gitignore for node
 # Logs
 logs
 *.log
