@@ -10,7 +10,7 @@ class Stratego {
         this.deja_dans_affiche = false;
         this.mat = undefined;
         this.fini = undefined;
-        if (joueur1.couleur == 0) {
+        if (joueur1.couleur === 0) {
             this.joueur_blanc = joueur1;
             this.joueur_noir = joueur2;
         } else {
