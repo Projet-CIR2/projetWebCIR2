@@ -8,14 +8,14 @@ const mysql = require('mysql');
 app.use(express.static(__dirname + '/front/'));
 
 app.get('/', (req,res) => {
-    res.sendFile(__dirname + "/front/html/index.html");
+    res.sendFile(__dirname + "/front/html/pagelogin.html");
 });
 
 io.on('connection', (socket) =>{
     console.log("New connection");
 
     socket.on('disconnect', () => {
-        
+        console.log("Deconnection");
     });
 });
 
