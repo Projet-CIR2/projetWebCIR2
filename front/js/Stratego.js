@@ -8,7 +8,7 @@ class Stratego {
         this.pions_manges = []; // stocke les pions qui ont été mangé
         this.deja_dans_affiche = false;
         this.fini = undefined;
-        if (joueur1.couleur == 0) {
+        if (joueur1.couleur === 0) {
             this.joueur_blanc = joueur1;
             this.joueur_noir = joueur2;
         } else {
