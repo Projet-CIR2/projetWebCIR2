@@ -4,7 +4,7 @@ const express = require('express');
 const app = express()
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
-
+const mysql = require('mysql');
 app.use(express.static(__dirname + '/front/'));
 
 app.get('/', (req,res) => {
@@ -22,9 +22,9 @@ io.on('connection', (socket) =>{
 
 http.listen(4200, () => {
     console.log("Bijour vous m'entendii ?")
+});
 
 
-// Initialisation de la connexion à la bdd
 
 const con = mysql.createConnection({
     host: "localhost",
