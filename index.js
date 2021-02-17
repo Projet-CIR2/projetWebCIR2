@@ -25,6 +25,7 @@ http.listen(4200, () => {
 });
 
 
+// Initialisation de la connexion à la bdd
 
 const con = mysql.createConnection({
     host: "localhost",
@@ -33,3 +34,9 @@ const con = mysql.createConnection({
     database: "compte"
 });
 
+// Block d'accès à la BDD
+
+con.connect(err=>{
+    if (err) throw err;
+    else console.log('Connexion reussie !');
+})
