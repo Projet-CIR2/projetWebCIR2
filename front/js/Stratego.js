@@ -6,9 +6,7 @@ class Stratego {
         this.grid_default;
         this.tour = 0; // nombre pair : joueur 0, nombre impair : joueur 1
         this.pions_manges = []; // stocke les pions qui ont été mangé
-        this.echec = [false]; // stock si le roi est en echec ou non et quel pion le menace
         this.deja_dans_affiche = false;
-        this.mat = undefined;
         this.fini = undefined;
         if (joueur1.couleur == 0) {
             this.joueur_blanc = joueur1;
@@ -20,6 +18,8 @@ class Stratego {
         this.egalite = false;
         this.init_grid();
         this.reset();
+        this.peut_placer_ses_pions(joueur, x, y);
+
         this.joueur_blanc.ajout_points = function(type) {
             if (type == "Espion") {
                 this.points += 1.0;
@@ -96,53 +96,53 @@ class Stratego {
     init_grid() {
         this.grid_default = new Array(10);
 
-        for (let i = 0; i < 8; ++i) {
+        for (let i = 0; i < 10; ++i) {
             this.grid_default[i] = new Array(10);
         }
-        this.grid_default[0][0] = new Tour(1, 0, 0);
-        this.grid_default[0][1] = new Cavalier(1, 1, 0);
-        this.grid_default[0][2] = new Fou(1, 2, 0);
-        this.grid_default[0][3] = new Dame(1, 3, 0);
-        this.grid_default[0][4] = new Roi(1, 4, 0);
-        this.grid_default[0][5] = new Fou(1, 5, 0);
-        this.grid_default[0][6] = new Cavalier(1, 6, 0);
-        this.grid_default[0][7] = new Tour(1, 7, 0);
-        for (let i = 0; i <= 7; ++i) {
-            this.grid_default[1][i] = new Pion(1, i, 1);
-        }
-
-        this.grid_default[7][0] = new Tour(0, 0, 7);
-        this.grid_default[7][1] = new Cavalier(0, 1, 7);
-        this.grid_default[7][2] = new Fou(0, 2, 7);
-        this.grid_default[7][3] = new Dame(0, 3, 7);
-        this.grid_default[7][4] = new Roi(0, 4, 7);
-        this.grid_default[7][5] = new Fou(0, 5, 7);
-        this.grid_default[7][6] = new Cavalier(0, 6, 7);
-        this.grid_default[7][7] = new Tour(0, 7, 7);
-        for (let i = 0; i <= 7; ++i) {
-            this.grid_default[6][i] = new Pion(0, i, 6);
-        }
-
-        for (let i = 2; i <= 5; ++i) {
-            for (let j = 0; j <= 7; ++j) {
-                this.grid_default[i][j] = undefined;
+        for (let i = 0; i < 10; ++i) {
+            for (let j = 0; j < 10; ++j) {
+                this.grid_default[j][i] = undefined;
             }
         }
+
+        //premier lac
+        this.grid_default[2][4] = -1;
+        this.grid_default[3][4] = -1;
+        this.grid_default[3][5] = -1;
+        this.grid_default[2][5] = -1;
+
+        //deuxième lac
+        this.grid_default[6][4] = -1;
+        this.grid_default[7][4] = -1;
+        this.grid_default[6][5] = -1;
+        this.grid_default[7][5] = -1;
+
         return this.grid_default;
     }
 
     // remet à 0 le tableau grid et les variables utiles
     reset() {
-        // positions des pions sur un jeu d'echec classique
         this.grid = this.grid_default;
 
         // remet à 0 les différentes variables
         this.tour = 0;
         this.pions_manges = [];
-        this.mat = undefined;
         this.fini = undefined;
-        this.echec = [false];
         this.egalite = false;
+    }
+
+    peut_placer_ses_pions(joueur, x, y) {
+        if (joueur === joueur_noir) {
+            if (y < 6 || this.grid_default[x][y] !== undefined){
+            return false;
+            }
+        }
+
+        else {
+            if (y < 6 || this.grid_default[x][y] !== undefined){
+                return false;
+            }
+        }
     }
 
     // renvoi le joueur
@@ -153,7 +153,7 @@ class Stratego {
     // renvoi l'etat d'une case
     getCaseState(x, y) {
         // vérifie que les coordonnées sont dans la grille
-        if (x.between(0, 9) && y.between(0, 9)) {
+        if (0 <= x <= 9 && 0 <= y <= 9) {
             return this.grid[y][x];
         }
         // sinon la case n'existe pas
@@ -163,12 +163,14 @@ class Stratego {
     //permet de modifier la grille
     modif_grid(x, y, value) {
         // vérifie que les coordonnées sont dans la grille
-        if (x.between(0, 7) && y.between(0, 7)) {
+        if (0 <= x <= 9 && 0 <= y <= 9) {
             this.grid[y][x] = value;
             return true;
         }
         return false;
     }
+
+
 
     // affiche lors du clic sur une case les cases possibles et les pions qui peuvent être pris
     affiche(x_pos, y_pos) {
@@ -181,13 +183,6 @@ class Stratego {
         // vérifie que la case cliqué contient un pion
         if (pion != undefined && pion.color == this.getCurrentPlayer() && !this.isFinished()) {
             capa_copie = pion.capacite_de_deplacement;
-
-            // si le pion est un roi, il execute la fonction affiche_roi qui récupère les positions où il n'est pas echec
-            if (pion.type == "Roi" && !this.deja_dans_affiche) {
-                this.deja_dans_affiche = true;
-                capa_copie = this.affiche_roi(pion.x, pion.y);
-                this.deja_dans_affiche = false;
-            }
 
             // parcours la liste des possibilités de déplacements du pions
             for (let list_capa of capa_copie) {
