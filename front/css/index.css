@@ -1,0 +1,79 @@
+@import url(https://fonts.googleapis.com/css?family=Courgette&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap);
+
+p {
+    font-size: 7vw;
+    margin-bottom: 3vw !important;
+    margin-top: 2vw !important;
+}
+
+body {
+    height: 100vh;
+    font-family: 'Courgette' !important;
+    text-align: center !important;
+    color: white !important;
+    background-color: #3c5cbb !important;
+    background-image: url(../assets/marianne.jpg);
+    background-size: 100% auto;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-position-x: center;
+}
+
+#navigation {
+    list-style: none;
+    margin: auto;
+    font-size: 2vw;
+}
+
+#navigation li a {
+    display: inline;
+    line-height: 2em;
+    text-decoration: none;
+    padding: 0.75vw;
+    color: white;
+}
+
+#navigation li a:hover, #navigation li a:focus, #navigation li a:active {
+    text-decoration: none;
+    color: red;
+}
+
+.log {
+    position: fixed;
+    top: 1vw;
+    right: 1vw;
+    font-size: 2vw;
+
+}
+
+.log a {
+    color: white;
+
+}
+
+.log a:hover, #log a:focus, #log a:active {
+    text-decoration: none;
+    color: red;
+
+}
+
+html {
+    width: 100%;
+    min-height: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+#box{
+	filter: blur(30px);
+	position:absolute;
+	z-index:-1;
+	left:43vw;
+	top:12vw;
+	height:20vw;
+	width:18vw;
+	background-color:#777d88;
+	opacity:0.70;
+
+}
