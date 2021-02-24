@@ -2,13 +2,10 @@
 <html lang="fr" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <meta property="og:title" content="Stratego">
-    <meta property="og:site_name" content="Stratego">
-    <meta property="og:description" content="Que la loi du plus fort règne">
-    <meta name="theme-color" content="#aaaaaa">
-<!--<meta property="og:url" content="http://projet.sverd.ovh">
-    <meta property="og:image" content="http://dualy.sverd.ovh/images/texture/perso1.png">-->
-    <link rel="stylesheet" href="../css/jeu.css" >
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="../css/jeu.css">
+    <script type="text/javascript" src="../js/strategoView.js"></script>
+    <script type="text/javascript" src="../js/main.js"></script>
     <title>Stratego</title>
   </head>
   <body>
@@ -135,5 +132,9 @@
       </tr>
 
     </table>
+  <script>main()</script>
   </body>
+  <script>
+    let socket = io();
+  </script>
   </html>

@@ -8,7 +8,7 @@ class Pions {
     this.puissance = puissance; //puissance de la piece
     this.nombre_en_vie = vie; //nombres en vie
     this.nombre_mort = 0; //nombres morts
-    this.visible = visible; //la piece est-elle visible pour le joueur adverse
+    this.visible = 0; //la piece est-elle visible pour le joueur adverse
     this.capacite_de_deplacement = []; // liste des positions où peut se déplacer le pion autour de lui même
   }
 
