@@ -5,6 +5,7 @@ const app = express()
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const mysql = require("mysql");
+
 const Stratego = require('./back/models/stratego');
 const init = require('./back/modules/initSocket');
 
@@ -18,10 +19,6 @@ app.get('/', (req,res) => {
 io.on('connection', (socket) =>{
     console.log("New connection");
     const game = new Stratego();
-
-    // socket.on('play', (x, y) => {
-    //    game.play(x, y);
-    // });
 
     init.initSocket(socket, game);
 
