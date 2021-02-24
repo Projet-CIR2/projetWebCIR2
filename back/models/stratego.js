@@ -1,6 +1,6 @@
 class Stratego {
     constructor() {
-        // this.play(0, 0);
+
     }
 
     play(x, y) {
