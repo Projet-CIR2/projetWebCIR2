@@ -1,17 +1,24 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Projet Test</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <link rel="stylesheet" href="../css/index.css">
-    </head>
-    <body>
-        <h2>COUCOU</h2>
-    </body>
+<html lang="fr" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../css/index.css" >
+    <title>Stratego</title>
+  </head>
+  <body>
+    <div id="box"></div>
+    <p>Stratego</p>
+    <ul id="navigation"> <!--Menu to navigate on the website -->
+      <li><a href="attente.html" title="Start the game">Play</a></li>
+      <li><a href="tuto.html" title="Learn game mechanics">Tutorial</a></li>
+      <li><a href="leaderboard.html" title="Look at everyone's core">Leaderboard</a></li>
+      <li><a href="credit.html" title="Go watch credits">Credits</a></li>
+    </ul>
 
-    <script>
-        let socket = io();
-    </script>
-
+      <div class="log">
+        <a href="users/login.php" title="">Login</a>
+         |
+        <a href="users/signup.php" title="">Sign up</a>
+      </div>
+</body>
 </html>
