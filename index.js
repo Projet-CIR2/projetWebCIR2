@@ -65,4 +65,15 @@ http.listen(4200, () => {
 con.connect(err=>{
     if (err) throw err;
     else console.log('Connexion reussie !');
+<<<<<<< Updated upstream
 })*/
+=======
+})
+
+let sql = "INSERT INTO session (Pseudo, MotDePasse, Victoire, Defaite) VALUES('Admin', 'Admin', 3, 1)";
+con.query(sql, (err, result) => {
+    if (err) throw err;
+    console.log("One Session inserted");
+    console.log(result);
+});
+>>>>>>> Stashed changes
