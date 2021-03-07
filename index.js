@@ -31,19 +31,10 @@ io.on('connection', (socket) =>{
         console.log(socket.handshake.session.username);
     })
 
-
-
-
     socket.on('disconnect', () => {
         console.log("Deconnection");
     });
 });
-
-
-
-
-
-
 
 
 http.listen(4200, () => {
@@ -53,7 +44,7 @@ http.listen(4200, () => {
 
 // Initialisation de la connexion à la bdd
 
-/*const con = mysql.createConnection({
+const con = mysql.createConnection({
     host: "localhost",
     user: "root",
     password: "",
@@ -65,15 +56,11 @@ http.listen(4200, () => {
 con.connect(err=>{
     if (err) throw err;
     else console.log('Connexion reussie !');
-<<<<<<< Updated upstream
-})*/
-=======
 })
 
-let sql = "INSERT INTO session (Pseudo, MotDePasse, Victoire, Defaite) VALUES('Admin', 'Admin', 3, 1)";
+let sql = "INSERT INTO session (Pseudo, Mdp, Victoire, Defaite) VALUES('Admin', 'Admin', 3, 1)";
 con.query(sql, (err, result) => {
     if (err) throw err;
     console.log("One Session inserted");
     console.log(result);
 });
->>>>>>> Stashed changes
