@@ -9,10 +9,11 @@ class StrategoView {
         for (let i = 0; i < 10; ++i) {
             for (let j = 0; j < 10; ++j) {
                 currentDiv.rows[i].cells[j].addEventListener('click', () => {
-                    this.clickEvent(i, j);
+                    socket.emit('play', i, j);
                 });
             }
         }
+        socket.emit('move');
     }
 
     clickEvent(x, y) {
