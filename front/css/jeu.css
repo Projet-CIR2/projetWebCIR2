@@ -1,5 +1,5 @@
 body{
-  
+
 }
 
 #plateau{
@@ -11,4 +11,11 @@ td {
     border: 1px solid #333;
     width: 8vmin;
     height: 8vmin;
+}
+
+.piece{
+  width: 6.5vmin;
+  height: 8vmin;
+  margin-left: 0.8vmin;
+  margin-top: 0.8vmin;
 }
