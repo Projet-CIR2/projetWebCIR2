@@ -5,31 +5,32 @@
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="../css/jeu.css">
     <script type="text/javascript" src="../js/strategoView.js"></script>
+    <script type="text/javascript" src="../js/modules/initSocket.js"></script>
     <script type="text/javascript" src="../js/main.js"></script>
     <title>Stratego</title>
   </head>
   <body>
     <table id="plateau">
       <tr>
-        <td><img class="piece" src="../assets/rouge/bombe.png"></td>
-        <td><img class="piece" src="../assets/rouge/capitaine.png"></td>
-        <td><img class="piece" src="../assets/rouge/colonel.png"></td>
-        <td><img class="piece" src="../assets/rouge/commandant.png"></td>
-        <td><img class="piece" src="../assets/rouge/demineur.png"></td>
-        <td><img class="piece" src="../assets/rouge/dos.png"></td>
-        <td><img class="piece" src="../assets/rouge/drapeau.png"></td>
-        <td><img class="piece" src="../assets/rouge/eclaireur.png"></td>
-        <td><img class="piece" src="../assets/rouge/espion.png"></td>
-        <td><img class="piece" src="../assets/rouge/general.png"></td>
+        <td><img class="piece" src="../assets/rouge/bombe.png" alt="bombe rouge"></td>
+        <td><img class="piece" src="../assets/rouge/capitaine.png" alt="capitaine rouge"></td>
+        <td><img class="piece" src="../assets/rouge/colonel.png" alt="colonel rouge"></td>
+        <td><img class="piece" src="../assets/rouge/commandant.png" alt="commandant rouge"></td>
+        <td><img class="piece" src="../assets/rouge/demineur.png" alt="démineur rouge"></td>
+        <td><img class="piece" src="../assets/rouge/dos.png" alt="dos rouge"></td>
+        <td><img class="piece" src="../assets/rouge/drapeau.png" alt="drapeau rouge"></td>
+        <td><img class="piece" src="../assets/rouge/eclaireur.png" alt="éclaireur rouge"></td>
+        <td><img class="piece" src="../assets/rouge/espion.png" alt="espion rouge"></td>
+        <td><img class="piece" src="../assets/rouge/general.png" alt="général rouge"></td>
       </tr>
       <tr>
         <td></td>
         <td></td>
         <td></td>
         <td></td>
-        <td><img class="piece" src="../assets/rouge/lieutenant.png"></td>
-        <td><img class="piece" src="../assets/rouge/marechal.png"></td>
-        <td><img class="piece" src="../assets/rouge/sergent.png"></td>
+        <td><img class="piece" src="../assets/rouge/lieutenant.png" alt="lieutenant rouge"></td>
+        <td><img class="piece" src="../assets/rouge/marechal.png" alt="maréchal rouge"></td>
+        <td><img class="piece" src="../assets/rouge/sergent.png" alt="sergent rouge"></td>
         <td></td>
         <td></td>
         <td></td>
@@ -110,31 +111,33 @@
         <td></td>
         <td></td>
         <td></td>
-        <td><img class="piece" src="../assets/bleu/lieutenant.png"></td>
-        <td><img class="piece" src="../assets/bleu/marechal.png"></td>
-        <td><img class="piece" src="../assets/bleu/sergent.png"></td>
+        <td><img class="piece" src="../assets/bleu/lieutenant.png" alt="lieutenant bleu"></td>
+        <td><img class="piece" src="../assets/bleu/marechal.png" alt="maréchal bleu"></td>
+        <td><img class="piece" src="../assets/bleu/sergent.png" alt="sergent bleu"></td>
         <td></td>
         <td></td>
         <td></td>
         <td></td>
       </tr>
       <tr>
-        <td><img class="piece" src="../assets/bleu/bombe.png"></td>
-        <td><img class="piece" src="../assets/bleu/capitaine.png"></td>
-        <td><img class="piece" src="../assets/bleu/colonel.png"></td>
-        <td><img class="piece" src="../assets/bleu/commandant.png"></td>
-        <td><img class="piece" src="../assets/bleu/demineur.png"></td>
-        <td><img class="piece" src="../assets/bleu/dos.png"></td>
-        <td><img class="piece" src="../assets/bleu/drapeau.png"></td>
-        <td><img class="piece" src="../assets/bleu/eclaireur.png"></td>
-        <td><img class="piece" src="../assets/bleu/espion.png"></td>
-        <td><img class="piece" src="../assets/bleu/general.png"></td>
+        <td><img class="piece" src="../assets/bleu/bombe.png" alt="bombe bleu"></td>
+        <td><img class="piece" src="../assets/bleu/capitaine.png" alt="capitaine bleu"></td>
+        <td><img class="piece" src="../assets/bleu/colonel.png" alt="colonel bleu"></td>
+        <td><img class="piece" src="../assets/bleu/commandant.png" alt="commandant bleu"></td>
+        <td><img class="piece" src="../assets/bleu/demineur.png" alt="démineur bleu"></td>
+        <td><img class="piece" src="../assets/bleu/dos.png" alt="dos bleu"></td>
+        <td><img class="piece" src="../assets/bleu/drapeau.png" alt="drapeau bleu"></td>
+        <td><img class="piece" src="../assets/bleu/eclaireur.png" alt="éclaireur bleu"></td>
+        <td><img class="piece" src="../assets/bleu/espion.png" alt="espion bleu"></td>
+        <td><img class="piece" src="../assets/bleu/general.png" alt="général bleu"></td>
       </tr>
 
 </table>
 </body>
+
 <script>
     let socket = io();
+    main();
 </script>
-<script>main()</script>
+
 </html>

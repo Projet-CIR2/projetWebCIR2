@@ -13,11 +13,14 @@ class StrategoView {
                 });
             }
         }
-        socket.emit('move');
     }
 
     clickEvent(x, y) {
         console.log('click en :', x, y);
         socket.emit('play', x, y);
+    }
+
+    affichePion() {
+        console.log("J'affiche les pions");
     }
 }

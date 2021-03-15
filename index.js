@@ -18,7 +18,7 @@ app.get('/', (req,res) => {
 
 io.on('connection', (socket) =>{
     console.log("New connection");
-    const game = new Stratego();
+    const game = new Stratego(socket);
 
     init.initSocket(socket, game);
 
