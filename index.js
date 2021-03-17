@@ -22,7 +22,7 @@ const session = require('express-session')({
 
 
 /* Import libs */
-const checkConnection = require('./back/checkConnection');
+const moduleConnection = require('./back/checkConnection');
 
 /* config */
 const jsonParser = bodyParser.json();
@@ -66,16 +66,15 @@ app.post('/login',  (req,res) =>{
             Mdp : logPassword
         }; 
 
-        let sql = "INSERT INTO session SET ?";
+        let sql = "INSERT INTO session SET ?";  
         con.query(sql, values, (err, result) => {
             if (err) throw err;
             console.log("One Session inserted");
-            console.log(result);
         });
         
         res.redirect('/');
 
-        checkConnection.checkConnection.register
+        moduleConnection.register();
     }
     
 });
