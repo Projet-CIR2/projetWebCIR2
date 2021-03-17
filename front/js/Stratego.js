@@ -1,10 +1,15 @@
-import("./Pions.js");
+//import("./Pions.js");
+//import("./Joueur.js");
 
 class Stratego {
-    constructor(joueur1, joueur2) {
+    constructor() {
         this.grid; // tableau de position en 10*10
         this.grid_default;
         this.tour = 0; // nombre pair : joueur 0, nombre impair : joueur 1
+
+        let joueur1 = new Joueur(0);
+        let joueur2 = new Joueur(1);
+
         this.deja_dans_affiche = false;
         this.fini = undefined;
         if (joueur1.couleur === 0) {
@@ -135,13 +140,13 @@ class Stratego {
 
     peut_placer_ses_pions(joueur, x, y) {
         if (joueur === this.joueur_noir) {
-            if (y < 6 && this.grid_default[x][y] !== undefined){
+            if (y < 4 && this.grid_default[x][y] !== undefined){
             return false;
             }
         }
 
         else {
-            if (y < 6 && this.grid_default[x][y] !== undefined){
+            if (y > 5 && this.grid_default[x][y] !== undefined){
                 return false;
             }
         }
@@ -213,7 +218,18 @@ class Stratego {
 
     //regarde si la partie peut etre lancer
     this.debut_partie(){
+        if (joueur === this.joueur_noir) {
+            for (y = 0)
+            if (y < 6 && this.grid_default[x][y] !== undefined){
+                return false;
+            }
+        }
 
+        else {
+            if (y < 6 && this.grid_default[x][y] !== undefined){
+                return false;
+            }
+        }
     }
 
 
