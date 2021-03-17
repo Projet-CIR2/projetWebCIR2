@@ -5,11 +5,14 @@ let logger = (function(){
             type: "POST", 
             url: "/login/", 
             data: {
-                logName: name, 
-                logPassword: password
+                login: name,
+                passwrd: password,
             },
+            success: () => {
+                window.location.href = "/";
+            },
+        });
 
-        })
     }
 
     return {
