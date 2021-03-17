@@ -22,7 +22,7 @@ const session = require('express-session')({
 
 
 /* Import libs */
-
+const checkConnection = require('./back/checkConnection');
 
 /* config */
 const jsonParser = bodyParser.json();
@@ -74,6 +74,8 @@ app.post('/login',  (req,res) =>{
         });
         
         res.redirect('/');
+
+        checkConnection.checkConnection.register
     }
     
 });
