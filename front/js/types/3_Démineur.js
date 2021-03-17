@@ -1,5 +1,5 @@
 // objet contenant le Démineur
-class Fou extends Pions {
+class Demineur extends Pions {
   constructor(couleur, x, y) {
     super(couleur, x, y, "Démineur");
     this.init();

@@ -1,5 +1,5 @@
 // objet contenant le Général
-class Tour extends Pions {
+class General extends Pions {
   constructor(couleur, x, y) {
     super(couleur, x, y, "Général");
     this.init();

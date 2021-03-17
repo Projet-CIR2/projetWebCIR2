@@ -5,7 +5,7 @@ class Pions {
     this.x = x; // position x du pion
     this.y = y; // position y du pion
     this.type = type; // type du pion
-    this.puissance = puissance; //puissance de la piece
+    this.puissance = 0; //puissance de la piece
     this.nombre_en_vie = vie; //nombres en vie
     this.nombre_mort = 0; //nombres morts
     this.visible = 0; //la piece est-elle visible pour le joueur adverse

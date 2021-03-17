@@ -1,5 +1,5 @@
 // objet contenant le Drapeau
-class Tour extends Pions {
+class Drapeau extends Pions {
   constructor(couleur, x, y) {
     super(couleur, x, y, "Drapeau");
     this.init();

@@ -1,5 +1,5 @@
 // objet contenant le Maréchal
-class Tour extends Pions {
+class Marechal extends Pions {
   constructor(couleur, x, y) {
     super(couleur, x, y, "Maréchal");
     this.init();

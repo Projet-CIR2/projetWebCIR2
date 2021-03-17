@@ -290,30 +290,77 @@ class Stratego {
                     // si la case sur laquelle on veut aller est un pion
                     if (case_mange !== undefined) {
                         // alors on l'ajoute à la liste des pions mangés
-                        this.pions_manges.push([case_mange]);//faire une fonction pour mettre un mort au type de pion manger
 
-                        // si le pion mangé est noir, alors je rajoute des points au joueur blanc
-                        if (case_mange.color) this.joueur_blanc.ajout_points(case_mange.type);
-                        else this.joueur_noir.ajout_points(case_mange.type);
+                        let pion1 = pion.get_pion_type();
+                        let pion2 = case_mange.get_pion_type();
+
+                        //d'abord on vérifie que la partie n'est pas gagné
+                        if (pion2.puissance === 11){
+                            win; //faire la win
+                        }
+
+                        //puis si le général est mangé par l'espion
+                        else if (pion1.puissance === 1 && pion2.puissance === 10){
+                            pion2.un_mort();
+
+                            pion1.x = x_clic;
+                            pion1.y = y_clic;
+                            this.modif_grid(x_clic, y_clic, pion);
+                            this.modif_grid(x_pos, y_pos, undefined);
+                        }
+
+                        //puis si la bombe a été detruite
+                        else if (pion1.puissance === 3 && pion2.puissance === 12){
+                            pion2.un_mort();
+
+                            pion1.x = x_clic;
+                            pion1.y = y_clic;
+                            this.modif_grid(x_clic, y_clic, pion);
+                            this.modif_grid(x_pos, y_pos, undefined);
+                        }
+
+                        //si les puissances sont les même
+                        else if (pion1.puissance === pion2.puissance ){
+                            pion1.un_mort();
+                            pion2.un_mort();
+
+                            this.modif_grid(x_clic, y_clic, undefined);
+                            this.modif_grid(x_pos, y_pos, undefined);
+                        }
+
+                        //si pion est plus puisant que l'adversaire
+                        else if (pion1.puissance >= pion2.puissance){
+                            pion2.un_mort();
+
+                            pion1.x = x_clic;
+                            pion1.y = y_clic;
+                            this.modif_grid(x_clic, y_clic, pion);
+                            this.modif_grid(x_pos, y_pos, undefined);
+                        }
+
+                        //si pion est moins puisant que l'adversaire
+                        else if (pion1.puissance <= pion2.puissance){
+                            pion1.un_mort();
+
+                            this.modif_grid(x_clic, y_clic, undefined);
+                        }
                     }
-
-                    // modification des positions du pion et modification sur la grille
-                    pion.x = x_clic;
-                    pion.y = y_clic;
-                    this.modif_grid(x_clic, y_clic, pion);
-                    this.modif_grid(x_pos, y_pos, undefined);
-                    this.tour++;
-
-                    // test si le roi est en echec
-                    this.isEchec(x_clic, y_clic);
-                    this.mat = undefined;
-                    this.fini = undefined;
                     return true;
                 }
             }
         }
         return false;
     }
+
+
+
+
+
+
+
+
+
+
 
     // permet de calculer les possibilités de déplacement du roi au position x, y
     affiche_roi(x, y) {

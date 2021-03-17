@@ -1,5 +1,5 @@
 // objet contenant le Lieutenant
-class Roi extends Pions {
+class Lieutenant extends Pions {
   constructor(couleur, x, y) {
     super(couleur, x, y, "Lieutenant");
     this.init();
