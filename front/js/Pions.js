@@ -1,6 +1,6 @@
 // parent de tous les pions
 class Pions {
-  constructor(couleur, x, y, v, m, type) {
+  constructor(couleur, x, y, type) {
     this.color = couleur;  // 0 blanc, 1 noir
     this.x = x; // position x du pion
     this.y = y; // position y du pion

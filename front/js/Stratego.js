@@ -7,18 +7,11 @@ class Stratego {
         this.grid_default;
         this.tour = 0; // nombre pair : joueur 0, nombre impair : joueur 1
 
-        let joueur1 = new Joueur(0);
-        let joueur2 = new Joueur(1);
+        this.joueur_bleu = new Joueur(0);
+        this.joueur_rouge = new Joueur(1);
 
         this.deja_dans_affiche = false;
-        this.fini = undefined;
-        if (joueur1.couleur === 0) {
-            this.joueur_blanc = joueur1;
-            this.joueur_noir = joueur2;
-        } else {
-            this.joueur_blanc = joueur2;
-            this.joueur_noir = joueur1;
-        }
+
         this.egalite = false;
         this.deplacement(x_clic, y_clic, x_pos, y_pos);
         this.init_grid();
@@ -28,7 +21,7 @@ class Stratego {
 
 
         this.ajout_points(joueur);
-        this.joueur_blanc.ajout_points = function(type) {
+        this.joueur_bleu.ajout_points = function(type) {
             if (type === "Espion") {
                 this.points += 1.0;
             }
@@ -63,7 +56,7 @@ class Stratego {
                 this.points += 1.0;
             }
         };
-        this.joueur_noir.ajout_points = function(type) {
+        this.joueur_rouge.ajout_points = function(type) {
             if (type === "Espion") {
                 this.points += 1.0;
             }
@@ -139,7 +132,7 @@ class Stratego {
     }
 
     peut_placer_ses_pions(joueur, x, y) {
-        if (joueur === this.joueur_noir) {
+        if (joueur === this.joueur_rouge) {
             if (y < 4 && this.grid_default[x][y] !== undefined){
             return false;
             }
@@ -154,7 +147,7 @@ class Stratego {
 
     // renvoi le joueur
     getCurrentPlayer() {
-        return (this.tour % 2); // 0 blanc, 1 noir
+        return (this.tour % 2); // 0 bleu, 1 rouge
     }
 
     // renvoi l'etat d'une case
@@ -179,7 +172,7 @@ class Stratego {
 
     //pas finit a revoir plus serieusement
     ajout_points(joueur){
-        if (joueur === this.joueur_noir){
+        if (joueur === this.joueur_rouge){
             if (type === "Espion") {
                 this.points += 1.0;
             }
@@ -217,17 +210,27 @@ class Stratego {
     }
 
     //regarde si la partie peut etre lancer
-    this.debut_partie(){
-        if (joueur === this.joueur_noir) {
-            for (y = 0)
-            if (y < 6 && this.grid_default[x][y] !== undefined){
-                return false;
+    debut_partie(joueur){
+        if (joueur === this.joueur_rouge) {
+            for (let y = 0; y < 4; y++) {
+                for (let x = 0; x < 10; x++) {
+                    if (this.grid_default[x][y] !== undefined) {
+                        this.joueur_rouge.pret = 1;
+                        return true;
+                    }
+                }
             }
         }
 
         else {
-            if (y < 6 && this.grid_default[x][y] !== undefined){
-                return false;
+            for (let y = 9; y > 5; y--) {
+                for (let x = 0; x < 10; x++) {
+                    if (this.grid_default[x][y] !== undefined) {
+                        joueur.pret = 1;
+                        this.joueur_bleu.pret = 1;
+                        return true;
+                    }
+                }
             }
         }
     }
