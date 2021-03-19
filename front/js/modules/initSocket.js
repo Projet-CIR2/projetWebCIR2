@@ -1,20 +1,37 @@
 let socketModule = (function () {
-    function initJoueur(socket, view) {
+    let socket, view;
+    function initJoueur() {
         socket.on('initJoueur', (joueur) => {
             view.affichePion(joueur);
         });
     }
 
-    function affiche(socket, view) {
-        socket.on('affiche', (type, x, y) => {
+    function affichePion() {
+        socket.on('affichePion', (type, x, y) => {
             view.affichePion(type, x, y);
         });
     }
 
+    function removePion() {
+        socket.on('removePion', (x, y) => {
+            view.removePion(x, y);
+        });
+    }
+
+    function removePions() {
+        socket.on('removePions', () => {
+            view.removePions();
+        });
+    }
+
     return {
-        initSocket(socket, view) {
-            affiche(socket, view);
-            initJoueur(socket, view);
+        initSocket(socket_, view_) {
+            socket = socket_;
+            view = view_;
+            initJoueur();
+            affichePion();
+            removePion();
+            removePions();
         }
     }
 }) ();
