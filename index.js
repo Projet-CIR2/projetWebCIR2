@@ -8,6 +8,7 @@ const fs = require('fs');
 const sharedsession = require("express-socket.io-session");
 const bodyParser = require('body-parser');
 const { body, validationResult } = require('express-validator');
+const { verifyConnection } = require('./back/connection/checkConnection');
 const session = require('express-session')({
     secret: "30cm",
     resave: true,
@@ -22,7 +23,8 @@ const session = require('express-session')({
 
 
 /* Import libs */
-const moduleConnection = require('./back/checkConnection');
+const checkConnection = require("./back/connection/checkConnection");
+
 
 /* config */
 const jsonParser = bodyParser.json();
@@ -41,9 +43,22 @@ io.use(sharedsession(session, {
 app.get('/', (req,res) => {
     let sessionData = req.session;
 
-  
+    if(sessionData.createAccount){
+       
+        res.sendFile(__dirname + "/front/html/register.html");
+
+    }
+    else if(sessionData.connect){
+        res.sendFile(__dirname + "/front/html/index.html");
+    }
+    else if(sessionData.createAccount == false){
+        res.sendFile(__dirname + "/front/html/pagelogin.html");
+    }
+
+   
+
     
-    res.sendFile(__dirname + "/front/html/pagelogin.html");
+    
 });
 
 
@@ -57,24 +72,9 @@ app.post('/login',  (req,res) =>{
         console.log("Big oof", errors);
     }
     else{
-        req.session.logName = logName;
-        req.session.logPassword = logPassword;
-        req.session.save();
-
-        const values = {
-            Pseudo : logName,
-            Mdp : logPassword
-        }; 
-
-        let sql = "INSERT INTO session SET ?";  
-        con.query(sql, values, (err, result) => {
-            if (err) throw err;
-            console.log("One Session inserted");
-        });
-        
+    
+        checkConnection.verifyConnection(req, con, logName, logPassword);
         res.redirect('/');
-
-        moduleConnection.register();
     }
     
 });
