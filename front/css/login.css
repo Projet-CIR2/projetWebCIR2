@@ -1,13 +1,29 @@
-.login{
-    display: none;
-}
-
 #form{
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    width: 100vmin;
+    height: 50vmin;
+    background-image: url("../assets/background_login.png");
+    background-size: cover;
+    padding-left: 3vmin;
+}
+
+a{
+  font-style: italic;
+  font-size: 14px;
+  text-decoration: none;
+  color: black;
+}
+
+a:hover{
+  color: red;
+}
+
+#titre{
+  margin-left: 10vmin;
 }
 
 input[type=text], input[type=password] {
-    width: 50%;
+    width: 40%;
     padding: 15px;
     margin: 10px;
     display: block;
