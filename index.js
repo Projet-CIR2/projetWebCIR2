@@ -43,18 +43,9 @@ io.use(sharedsession(session, {
 app.get('/', (req,res) => {
     let sessionData = req.session;
 
-    if(sessionData.createAccount){
-       
-        res.sendFile(__dirname + "/front/html/register.html");
-
-    }
-    else if(sessionData.connect){
-        res.sendFile(__dirname + "/front/html/index.html");
-    }
-    else if(sessionData.createAccount == false){
-        res.sendFile(__dirname + "/front/html/pagelogin.html");
-    }
-
+   // res.sendFile(__dirname + "/front/html/index.html");
+   // res.sendFile(__dirname + "/front/html/signup.html");
+    res.sendFile(__dirname + "/front/html/login.html");
    
 
     
