@@ -1,17 +1,23 @@
 #form{
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    width: 100vmin;
+    width: 110vmin;
     height: 55vmin;
-    background-image: url("../assets/background_login.png");
+    background-image: url("../assets/background_signup.png");
     background-size: cover;
     padding-left: 3vmin;
 }
 
+label{
+  color: #B69B4C;
+}
+
 a{
+  position: absolute;
   font-style: italic;
   font-size: 14px;
   text-decoration: none;
-  color: black;
+  color: #B69B4C;
+  margin-top: 40vmin;
 }
 
 a:hover{
@@ -19,13 +25,25 @@ a:hover{
 }
 
 #titre{
-  margin-left: 10vmin;
+  margin-left: 30vmin;
+  color: #B69B4C;
+}
+
+#un{
+  position: absolute;
+
+}
+
+#deux{
+  position: absolute;
+  margin-left: 60vmin;
 }
 
 input[type=text], input[type=password] {
-    width: 40%;
-    padding: 15px;
-    margin: 10px;
+    width: 35vmin;
+    height: 5vmin;
+    margin-top:3vmin;
+    margin-bottom:2vmin;
     display: block;
     float: inline-start;
   }
