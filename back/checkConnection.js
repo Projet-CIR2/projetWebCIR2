@@ -1,4 +1,4 @@
-let checkConnection = (function(sql, username, psswrd){
+let checkConnection = (function(con, username, psswrd){
 
     let sql = "SELECT *FROM session WHERE Pseudo = ? AND Mdp = ?"
 
