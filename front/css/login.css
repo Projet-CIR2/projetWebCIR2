@@ -1,15 +1,14 @@
-.login{
-    display: none;
+h1{
+    text-align: center;
 }
 
-#divform{
-    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+#form{
+    margin: 0 auto;
+    width: 100px;
+    font-size: 20px;
 }
 
-input[type=text], input[type=password] {
-    width: 50%;
-    padding: 15px;
-    margin: 10px;
-    display: block;
-    float: inline-start;
-  }
+.pute{
+    display: inline;
+    text-align: center;
+}
