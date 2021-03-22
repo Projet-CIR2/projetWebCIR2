@@ -6,7 +6,6 @@ class Bombe extends Pions {
   }
 
   init() {
-    this.nombre_en_vie = 6;
     this.puissance = 12;
   }
 }

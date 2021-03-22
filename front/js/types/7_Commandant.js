@@ -7,7 +7,6 @@ class Commandant extends Pions {
 
   init() {
     this.capacite_de_deplacement.push([[+1, 0]], [[-1, 0]], [[0, -1]], [[0, +1]]);
-    this.nombre_en_vie = 3;
     this.puissance = 7;
   }
 }

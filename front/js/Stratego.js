@@ -17,80 +17,11 @@ class Stratego {
         this.init_grid();
         this.reset();
         this.peut_placer_ses_pions(joueur, x, y);
-        this.debut_partie();
+        this.win();
 
-
-        this.ajout_points(joueur);
-        this.joueur_bleu.ajout_points = function(type) {
-            if (type === "Espion") {
-                this.points += 1.0;
-            }
-            else if (type === "Eclaireur") {
-                this.points += 2.0;
-            }
-            else if (type === "Démineur") {
-                this.points += 3.0;
-            }
-            else if (type === "Sergent") {
-                this.points += 4.0;
-            }
-            else if (type === "Lieutenant") {
-                this.points += 5.0;
-            }
-            else if (type === "Capitaine") {
-                this.points += 6.0;
-            }
-            else if (type === "Commandant") {
-                this.points += 7.0;
-            }
-            else if (type === "Colonel") {
-                this.points += 8.0;
-            }
-            else if (type === "Général") {
-                this.points += 9.0;
-            }
-            else if (type === "Maréchal") {
-                this.points += 10.0;
-            }
-            else if (type === "Bombes") {
-                this.points += 1.0;
-            }
-        };
-        this.joueur_rouge.ajout_points = function(type) {
-            if (type === "Espion") {
-                this.points += 1.0;
-            }
-            else if (type === "Eclaireur") {
-                this.points += 2.0;
-            }
-            else if (type === "Démineur") {
-                this.points += 3.0;
-            }
-            else if (type === "Sergent") {
-                this.points += 4.0;
-            }
-            else if (type === "Lieutenant") {
-                this.points += 5.0;
-            }
-            else if (type === "Capitaine") {
-                this.points += 6.0;
-            }
-            else if (type === "Commandant") {
-                this.points += 7.0;
-            }
-            else if (type === "Colonel") {
-                this.points += 8.0;
-            }
-            else if (type === "Général") {
-                this.points += 9.0;
-            }
-            else if (type === "Maréchal") {
-                this.points += 10.0;
-            }
-            else if (type === "Bombes") {
-                this.points += 1.0;
-            }
-        };
+        //fonction pour verifier si l'on peut lancer la partie
+        this.pret(joueur);
+        this.lancer_partie();
     }
 
     // initialise la taille de la liste grid
@@ -174,65 +105,54 @@ class Stratego {
     ajout_points(joueur){
         if (joueur === this.joueur_rouge){
             if (type === "Espion") {
-                this.points += 1.0;
+                joueur.points += 1.0;
             }
             else if (type === "Eclaireur") {
-                this.points += 2.0;
+                joueur.points += 2.0;
             }
             else if (type === "Démineur") {
-                this.points += 3.0;
+                joueur.points += 3.0;
             }
             else if (type === "Sergent") {
-                this.points += 4.0;
+                joueur.points += 4.0;
             }
             else if (type === "Lieutenant") {
-                this.points += 5.0;
+                joueur.points += 5.0;
             }
             else if (type === "Capitaine") {
-                this.points += 6.0;
+                joueur.points += 6.0;
             }
             else if (type === "Commandant") {
-                this.points += 7.0;
+                joueur.points += 7.0;
             }
             else if (type === "Colonel") {
-                this.points += 8.0;
+                joueur.points += 8.0;
             }
             else if (type === "Général") {
-                this.points += 9.0;
+                joueur.points += 9.0;
             }
             else if (type === "Maréchal") {
-                this.points += 10.0;
+                joueur.points += 10.0;
             }
             else if (type === "Bombes") {
-                this.points += 1.0;
+                joueur.points += 1.0;
             }
         }
     }
 
     //regarde si la partie peut etre lancer
-    debut_partie(joueur){
-        if (joueur === this.joueur_rouge) {
-            for (let y = 0; y < 4; y++) {
-                for (let x = 0; x < 10; x++) {
-                    if (this.grid_default[x][y] !== undefined) {
-                        this.joueur_rouge.pret = 1;
-                        return true;
-                    }
-                }
-            }
+    pret(joueur){
+        if (joueur.pions_vivant === joueur.pions_en_jeu) {
+            joueur.pret = 1;
         }
+    }
 
-        else {
-            for (let y = 9; y > 5; y--) {
-                for (let x = 0; x < 10; x++) {
-                    if (this.grid_default[x][y] !== undefined) {
-                        joueur.pret = 1;
-                        this.joueur_bleu.pret = 1;
-                        return true;
-                    }
-                }
-            }
-        }
+    lancer_partie(){
+        this.pret(this.joueur_bleu);
+        this.pret(this.joueur_rouge);
+
+        return this.joueur_bleu.pret === 1 && this.joueur_rouge.pret === 1;
+
     }
 
 
@@ -308,14 +228,13 @@ class Stratego {
                     let case_mange = this.getCaseState(x_clic, y_clic);
                     // si la case sur laquelle on veut aller est un pion
                     if (case_mange !== undefined) {
-                        // alors on l'ajoute à la liste des pions mangés
 
                         let pion1 = pion.get_pion_type();
                         let pion2 = case_mange.get_pion_type();
 
                         //d'abord on vérifie que la partie n'est pas gagné
                         if (pion2.puissance === 11){
-                            win; //faire la win
+                            win(joueur); //faire la win
                         }
 
                         //puis si le général est mangé par l'espion
@@ -379,125 +298,6 @@ class Stratego {
 
 
 
-
-
-    // permet de calculer les possibilités de déplacement du roi au position x, y
-    affiche_roi(x, y) {
-        let pion = this.getCaseState(x, y);
-        if (pion != undefined) {
-            // copie la capacité de déplacement du pion
-            let list_deplacement = this.getCaseState(x, y).capacite_de_deplacement.slice();
-            let echec_tmp = this.echec;
-            let list_echec = [];
-            let x_tmp;
-            let y_tmp;
-            let pion_tmp;
-            this.echec = [false];
-
-            // passe la case de départ sur undefined
-            this.modif_grid(x, y, undefined);
-            // parcours les listes de déplacement du roi pour savoir s'il peut se déplacer dessus ou non
-            for (let position_roi = 0; position_roi < list_deplacement.length; ++position_roi) {
-                x_tmp = list_deplacement[position_roi][0][0] + x;
-                y_tmp = list_deplacement[position_roi][0][1] + y;
-                // vérifie que la case temporaire du roi est une case vide et ne contient pas de pion allié
-                if (this.getCaseState(x_tmp, y_tmp) == undefined || this.getCaseState(x_tmp, y_tmp).color != pion.color) {
-                    pion_tmp = this.getCaseState(x_tmp, y_tmp);
-                    // on déplace le roi sur la case temporaire
-                    if (this.modif_grid(x_tmp, y_tmp, pion)) {
-
-                        // on vérifie qu'aucun pion ne met en danger le roi
-                        for (let j = 0; j < 8; ++j) {
-                            for (let i = 0; i < 8; ++i) {
-                                if (i != x || j != y) {
-                                    // si la case met en echec le roi, alors il ne peut pas se déplacer dessus
-                                    if (this.isEchec(i, j)) {
-                                        list_echec.push([x_tmp, y_tmp]);
-                                    }
-                                }
-                            }
-                        }
-
-                        // on replace la case de départ et on supprime le roi de cette case
-                        this.modif_grid(x_tmp, y_tmp, pion_tmp);
-                    }
-                }
-            }
-            // on replace le roi à sa position initiale
-            this.modif_grid(x, y, pion);
-
-            // case à suppr contient les indices des cases de la liste de déplacement du roi à supprimer
-            let case_a_suppr = [];
-            for (let case_echec of list_echec) {
-                for (let compteur = 0; compteur < list_deplacement.length; ++compteur) {
-                    if (case_echec[0] == (list_deplacement[compteur][0][0] + x) && case_echec[1] == (list_deplacement[compteur][0][1] + y)) {
-                        if (case_a_suppr.indexOf(compteur) == -1) case_a_suppr.push(compteur);
-                    }
-                }
-            }
-
-            // on trie la liste de manière décroissante
-            case_a_suppr.sort();
-            case_a_suppr.reverse();
-
-            // on supprime les éléments correspondant aux indices à supprimer
-            for (let ind of case_a_suppr) {
-                list_deplacement.splice(ind, 1);
-            }
-
-            this.echec = echec_tmp;
-            return list_deplacement;
-        }
-        return [];
-    }
-
-    // cherche si le pion demandé met en echec le roi ou non
-    isEchec(x, y) {
-        this.tour--;
-        let list_pions = this.affiche(x, y);
-        this.tour++;
-
-        let pion;
-        // parcours les positions où le pion peut se déplacer
-        for (let case_tmp of list_pions) {
-            pion = this.getCaseState(case_tmp[0], case_tmp[1]);
-            if (pion != undefined) {
-                // si un roi est dessus, alors le roi est echec
-                if (pion.type == "Roi" && pion.color != this.getCaseState(x, y).color) {
-                    this.echec[0] = true;
-                    this.echec.push([x, y]);
-                    return true;
-                }
-            }
-        }
-        this.echec = [false];
-        return false;
-    }
-
-    // peremt de savoir si le roi de la couleur color est mat ou non
-    isMat(color) {
-        // this.mat permet de vérifier que la fonction n'a pas déjà été effectué dans le tour
-        if (this.mat == undefined) {
-            let pion;
-            // parcours toutes les cases du plateau
-            for (let j = 0; j < 8; ++j) {
-                for (let i = 0; i < 8; ++i) {
-                    pion = this.getCaseState(i, j);
-                    if (pion != undefined) {
-                        // si le pion est un roi et de la même couleur que color
-                        if (pion.type == "Roi" && pion.color == color) {
-                            if (this.affiche(i, j).length == 0 && this.echec[0]) {
-                                this.mat = true;
-                                return [true, pion.color, i, j];
-                            }
-                        }
-                    }
-                }
-            }
-            this.mat = false;
-        }
-        return [this.mat];
-    }
 
     // détermine s'il y a un gagnant ou non
     isFinished() {

@@ -6,7 +6,6 @@ class Drapeau extends Pions {
   }
 
   init() {
-    this.nombre_en_vie = 1;
     this.puissance = 11;
   }
 }
