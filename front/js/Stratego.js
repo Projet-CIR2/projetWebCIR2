@@ -19,6 +19,7 @@ class Stratego {
         this.peut_placer_ses_pions(joueur, x, y);
         this.win();
 
+
         //fonction pour verifier si l'on peut lancer la partie
         this.pret(joueur);
         this.lancer_partie();
@@ -136,6 +137,20 @@ class Stratego {
             }
             else if (type === "Bombes") {
                 joueur.points += 1.0;
+            }
+        }
+    }
+
+
+    //placer les pions en debut de partie
+    placer(joueur, x, y, value) {
+        if (this.peut_placer_ses_pions(joueur, x, y) === true) {
+            modif_grid(x, y, value);
+            if (joueur === this.joueur_rouge) {
+                this.joueur_rouge.pions_en_jeu[values - 1] += 1;
+            }
+            else {
+                this.joueur_bleu.pions_en_jeu[values - 1] += 1;
             }
         }
     }
