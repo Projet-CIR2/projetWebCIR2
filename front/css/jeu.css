@@ -2,15 +2,85 @@ body{
 
 }
 
-#plateau{
-  margin: auto;
+p{
+  color: #D3D3D3;
+  text-align: center;
+}
+
+.nom_piece{
+  font-size: 1.5vmin;
+  margin-top: -1.5vmin;
+}
+
+#corps{
+  width: 140vmin;
+  height: 100vh;
+  background-image: url("../assets/fond_beta.png");
+  background-size: 140vmin 100vh;
+  margin: -2vmin 2vmin 2vmin -2vmin;
+  position: absolute;
 
 }
 
+#chat{
+  width: 60vmin;
+  height: 100vh;
+  margin: -2vmin 4vmin -1vmin 138vmin;
+  background-image: url("../assets/marianne.jpg");
+  position: absolute;
+
+}
+
+#placement_piece{
+  z-index: 1;
+  width: 60vmin;
+  height: 100vh;
+  margin: -2vmin 4vmin -1vmin 138vmin;
+  background-color: #333;
+  position: absolute;
+}
+
+#cadre{
+  z-index: 1;
+  padding: 2vmin;
+  margin-left: 3vmin;
+  margin-top: 4vmin;
+  width: 50vmin;
+  height: 43vmin;
+  border: 3px solid #D3D3D3;
+
+}
+
+#sous_cadre{
+  background-color: #333;
+  z-index: 2;
+  margin-left: 30vmin;
+  margin-top: 1.7vmin;
+  width: 130px;
+  height: 40px;
+  border: 3px solid #D3D3D3;
+}
+
+#bouton_placement{
+    border: 0;
+    text-align: center;
+    color: #D3D3D3;
+    text-shadow: 1px 1px 1px #000;
+    border-radius: 10px;
+    margin-left: 8vmin;
+    height: 5vmin;
+    width: 12vmin;
+}
+
+#plateau{
+  margin-left: 10vmin;
+  padding-top: 2.5vh;
+}
+
 td {
-    border: 1px solid #333;
-    width: 8vmin;
-    height: 8vmin;
+    border: 1px solid #D3D3D3;
+    width: 8.5vmin;
+    height: 8.5vmin;
 }
 
 .piece{
@@ -18,4 +88,35 @@ td {
   height: 8vmin;
   margin-left: 0.8vmin;
   margin-top: 0.8vmin;
+}
+
+.languette{
+  background-color: black;
+  width: 4vmin;
+  height: 7vmin;
+  position: fixed;
+
+}
+
+.languette:hover {
+    transform: scale(2);
+    transition: all 1s;
+  }
+
+#option{
+  margin-left: 110vmin;
+
+}
+
+#dc{
+  margin-left: 120vmin;
+
+}
+
+.img_languette{
+  width: 3vmin;
+  height: 3vmin;
+  margin-left: 0.5vmin;
+  margin-top: 3vmin;
+
 }
