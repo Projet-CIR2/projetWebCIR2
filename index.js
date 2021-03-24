@@ -4,7 +4,6 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const mysql = require('mysql');
 const fs = require('fs');
-const connection = require('./back/connection');
 
 const sharedsession = require("express-socket.io-session");
 const bodyParser = require('body-parser');
@@ -97,7 +96,7 @@ app.post('/login',  (req,res) =>{
                 req.session.logPassword = logPassword;
                 req.session.connect = true;
                 req.session.save();
-                connection(logName);
+                socket.emit('Pseudo', logName);
                 res.redirect('/');
             }
         });    
