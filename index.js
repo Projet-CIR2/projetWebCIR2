@@ -4,7 +4,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const mysql = require('mysql');
 const fs = require('fs');
-const connection = require('./back/modules');
+const connection = require('./back/connection');
 
 const sharedsession = require("express-socket.io-session");
 const bodyParser = require('body-parser');
@@ -61,7 +61,7 @@ app.get('/signup.html', (req,res) =>{
     let sessionData = req.session;
     res.sendFile(__dirname + "/front/html/signup.html");
 
-
+    const logPseudo = req.body.
 });
 
 
