@@ -354,42 +354,4 @@ class Stratego {
         // le gagnant est le dernier joueur à avoir joué
         return this.getCurrentPlayer();
     }
-
-
-
-
-
-
-
-
-
-
-    // détermine s'il y a un gagnant ou non
-    isFinished() {
-        // this.fini permet de savoir si l'on a déjà effectué la boucle ou non
-        if (this.fini == undefined) {
-            this.fini = false;
-            // cas où l'un des rois est mat
-            if (this.isMat(0)[0] || this.isMat(1)[0]) {
-                this.fini = true;
-                return true;
-            }
-            // cas où il ne reste que les deux rois sur le terrain, il y a égalité
-            if (this.pions_manges.length == 30) {
-                this.fini = true;
-                this.egalite = true;
-                return true;
-            }
-            // si un des rois a été mangé, alors le jeu est fini
-            for (let pion of this.pions_manges) {
-                if (pion[0].type == "Roi") {
-                    this.fini = true;
-                    return true;
-                }
-            }
-        }
-        return this.fini;
-    }
-
-
 }
