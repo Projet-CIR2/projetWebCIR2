@@ -22,6 +22,9 @@ class StrategoView {
                     else {
                         if (this.debut.click) {
                             if (this.debut.value !== -1) {
+                                currentTab = currentDiv.rows[j].cells[i];
+                                if (currentTab.firstChild !== null) currentTab.removeChild(currentTab.firstChild);
+
                                 socket.emit('placePion', this.joueur_courant, i, j, this.debut.value);
                                 document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
                                 this.debut.click = false;
@@ -29,14 +32,24 @@ class StrategoView {
                             }
                             else {
                                 currentTab = currentDiv.rows[j].cells[i];
-                                currentTab.removeAttribute('style');
-                                this.debut.click = false;
-                                this.debut.case = [-1, -1];
+                                if (!currentTab.hasAttribute('style')) {
+                                    console.log('coucou');
+                                    document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]].removeAttribute('style');
+                                    currentTab.setAttribute('style', 'background:green');
+                                    this.debut.case = [i, j];
+                                }
+                                else {
+                                    currentTab.removeAttribute('style');
+                                    this.debut.click = false;
+                                    this.debut.case = [-1, -1];
+
+                                    if (currentTab.firstChild !== null) currentTab.removeChild(currentTab.firstChild);
+                                }
                             }
                         }
                         else {
-                            console.log("je suis la");
-                            currentDiv.rows[j].cells[i].setAttribute('style', 'background:green');
+                            currentTab = currentDiv.rows[j].cells[i];
+                            currentTab.setAttribute('style', 'background:green');
                             this.debut.click = true;
                             this.debut.case = [i, j];
                         }
@@ -53,23 +66,27 @@ class StrategoView {
         for (let i = 0; i < 12; ++i) {
             currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('click', () => {
                 if (this.debut.click) {
-                    if (this.debut.case !== [-1, -1]) {
+                    if (this.debut.case.every(element => element !== -1)) {
+                        currentTab = document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]];
+                        if (currentTab.firstChild !== null) currentTab.removeChild(currentTab.firstChild);
+
                         socket.emit('placePion', this.joueur_courant, this.debut.case[0], this.debut.case[1], i);
-                        document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]].removeAttribute('style');
+                        currentTab.removeAttribute('style');
                         this.debut.click = false;
                         this.debut.case = [-1, -1];
                     }
                     else {
-                        console.log("alerte !");
                         currentTab = currentDiv.rows[Math.trunc(i / 5)].cells[i % 5];
-                        currentTab.removeAttribute('style');
-                        this.debut.click = false;
-                        this.debut.case = [-1, -1];
 
-                        console.log(currentTab);
-
-                        if (currentTab.firstChild !== null) {
-                            currentTab.removeChild(currentTab.firstChild);
+                        if (!currentTab.hasAttribute('style')) {
+                            document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
+                            currentTab.setAttribute('style', 'background:green');
+                            this.debut.value = i;
+                        }
+                        else {
+                            currentTab.removeAttribute('style');
+                            this.debut.click = false;
+                            this.debut.value = -1;
                         }
                     }
                 }
@@ -77,8 +94,6 @@ class StrategoView {
                     currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].setAttribute('style', 'background:green');
                     this.debut.click = true;
                     this.debut.value = i;
-                    this.debut.case = [-1, -1];
-
                 }
 
             });
