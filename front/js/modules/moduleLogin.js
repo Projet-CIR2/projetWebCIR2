@@ -1,15 +1,15 @@
 let log = (function () {
-    let socket, view;
+    let socket;
+
     function logjoueur() {
-      socket.on('connection')
-      document.getElementById('connect').textContent=logName;
-}
+        socket.on('Pseudo', pseudo => {
+            document.getElementById('connect').textContent=pseudo;
+        });
     }
 
     return {
       initSocket(socket_, view_) {
         socket = socket_;
-        view = view_;
         logjoueur();
         }
     }
