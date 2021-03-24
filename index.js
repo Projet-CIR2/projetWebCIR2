@@ -5,6 +5,9 @@ const io = require('socket.io')(http);
 const mysql = require('mysql');
 const fs = require('fs');
 
+const Stratego = require('./back/models/stratego');
+const init = require('./back/modules/initSocket');
+
 const sharedsession = require("express-socket.io-session");
 const bodyParser = require('body-parser');
 const { body, validationResult } = require('express-validator');
@@ -129,10 +132,13 @@ app.post('/signup', (req,res) =>{
 
 io.on('connection', (socket) =>{
     console.log("New connection");
+    const game = new Stratego(socket);
 
     socket.on('login', () =>{
         console.log(socket.handshake.session.username);
     })
+
+    init.initSocket(socket, game);
 
     socket.on('disconnect', () => {
         console.log("Deconnection");
@@ -144,9 +150,7 @@ http.listen(4200, () => {
     console.log("Bijour vous m'entendii ?")
 });
 
-
 // Initialisation de la connexion à la bdd
-
 const con = mysql.createConnection({
     host: "localhost",
     user: "root",
