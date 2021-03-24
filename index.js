@@ -11,7 +11,6 @@ const init = require('./back/modules/initSocket');
 const sharedsession = require("express-socket.io-session");
 const bodyParser = require('body-parser');
 const { body, validationResult } = require('express-validator');
-const { verifyConnection } = require('./back/connection/checkConnection');
 const session = require('express-session')({
     secret: "30cm",
     resave: true,
@@ -22,12 +21,6 @@ const session = require('express-session')({
     }
 
 });
-
-
-
-/* Import libs */
-const checkConnection = require("./back/connection/checkConnection");
-
 
 /* config */
 const jsonParser = bodyParser.json();
@@ -62,8 +55,6 @@ app.get('/login.html', (req,res) =>{
 app.get('/signup.html', (req,res) =>{
     let sessionData = req.session;
     res.sendFile(__dirname + "/front/html/signup.html");
-
-    const logPseudo = req.body.
 });
 
 
@@ -133,9 +124,9 @@ http.listen(4200, () => {
 
 // Initialisation de la connexion à la bdd
 const con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
+    host: "nicob.space",
+    user: "projetCIR2",
+    password: "Web2021",
     database: "compte"
 });
 
