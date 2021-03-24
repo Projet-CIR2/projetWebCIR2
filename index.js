@@ -4,6 +4,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const mysql = require('mysql');
 const fs = require('fs');
+const connection = require('./back/modules');
 
 const sharedsession = require("express-socket.io-session");
 const bodyParser = require('body-parser');
@@ -67,8 +68,6 @@ app.get('/signup.html', (req,res) =>{
 
 app.post('/login',  (req,res) =>{
 
-    
-
     const logName = req.body.login;
     const logPassword = req.body.passwrd;
 
@@ -82,6 +81,7 @@ app.post('/login',  (req,res) =>{
         con.query(sql, (err, result) => {
 
             console.log(result);
+            //pas connecté
             if (result[0] == undefined) {
 
                 console.log(result[0], "azerty");
@@ -90,14 +90,15 @@ app.post('/login',  (req,res) =>{
                 req.session.save();
 
             }
+            //connecté
             else{
                 console.log(result[0]);
                 req.session.logName = logName;
                 req.session.logPassword = logPassword;
                 req.session.connect = true;
                 req.session.save();
+                connection(logName);
                 res.redirect('/');
-
             }
         });    
     
