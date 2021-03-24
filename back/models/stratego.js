@@ -10,6 +10,11 @@ class Stratego {
     play(x, y) {
         console.log('play', x, y);
     }
+
+    placer(joueur, x, y, value) {
+        console.log('place');
+        this.socket.emit('affichePion', 'espion', x, y);
+    }
 }
 
 module.exports = Stratego;

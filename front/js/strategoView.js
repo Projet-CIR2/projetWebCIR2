@@ -1,18 +1,65 @@
 class StrategoView {
     constructor() {
-        this.createListeners();
+        this.createListenersTab();
+        this.createListenersAjouts();
         this.joueur_courant = 0;
+        this.debut = {
+            "enJeu": false,
+            "click": false,
+            "value": -1,
+            "case": [-1, -1]
+        };
     }
 
-    createListeners() {
+    createListenersTab() {
         let currentDiv = document.getElementById('plateau');
 
         for (let j = 0; j < 10; ++j) {
             for (let i = 0; i < 10; ++i) {
                 currentDiv.rows[j].cells[i].addEventListener('click', () => {
-                    socket.emit('play', i, j);
+                    if (this.debut.enJeu) socket.emit('play', i, j);
+                    else {
+                        if (this.debut.click && this.debut.value !== -1) {
+                            socket.emit('placePion', this.joueur_courant, i, j, this.debut.value);
+                            document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
+                            this.debut.click = false;
+                            this.debut.value = -1;
+                        }
+                        else {
+                            currentDiv.rows[j].cells[i].setAttribute('style', 'background:green');
+                            this.debut.click = true;
+                            this.debut.case = [i, j];
+                        }
+                    }
                 });
             }
+        }
+    }
+
+    createListenersAjouts() {
+        let currentDiv = document.getElementById('tabAjout');
+        // const that = this;
+        // let tabPiece
+
+        console.log("Ajout", currentDiv);
+        for (let i = 0; i < 12; ++i) {
+            console.log("ajout", Math.trunc(i / 5), i % 5);
+            currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('click', () => {
+                console.log("Click ajout", Math.trunc(i / 5), i % 5);
+                if (this.debut.click && this.debut.case !== [-1, -1]) {
+                    socket.emit('placePion', this.joueur_courant, this.debut.case[0], this.debut.case[1], i);
+                    console.log(currentDiv);
+                    document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]].removeAttribute('style');
+                    this.debut.click = false;
+                    this.debut.case = [-1, -1];
+                }
+                else {
+                    currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].setAttribute('style', 'background:green');
+                    this.debut.click = true;
+                    this.debut.value = i;
+                }
+
+            });
         }
     }
 
@@ -55,4 +102,6 @@ class StrategoView {
             }
         }
     }
+
+
 }
