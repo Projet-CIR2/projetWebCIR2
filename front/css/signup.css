@@ -1,32 +1,35 @@
-#forms{
+body{
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-    width: 110vmin;
-    height: 55vmin;
-    background-image: url("../assets/background_signup.png");
+    background-image: url("../assets/background_signup2.png");
     background-size: cover;
     padding-left: 3vmin;
 }
 
 label{
-  color: #B69B4C;
+  background-color: #333;
+  color: #D3D3D3;
 }
 
-a{
+#trois{
+  background-color: #333;
   position: absolute;
   font-style: italic;
   font-size: 14px;
   text-decoration: none;
-  color: #B69B4C;
+  color: #D3D3D3;
   margin-top: 40vmin;
 }
 
-a:hover{
+#trois:hover{
   color: red;
 }
 
 #titre{
+  background-color: #333;
   margin-left: 30vmin;
-  color: #B69B4C;
+  width: 45vmin;
+  color: #D3D3D3;
+  margin-bottom: 10vmin;
 }
 
 #un{
@@ -36,7 +39,7 @@ a:hover{
 
 #deux{
   position: absolute;
-  margin-left: 60vmin;
+  margin-left: 70vmin;
 }
 
 input[type=text], input[type=password] {
@@ -47,3 +50,12 @@ input[type=text], input[type=password] {
     display: block;
     float: inline-start;
   }
+
+   input[type=email]{
+     width: 50vmin;
+     height: 5vmin;
+     margin-top:3vmin;
+     margin-bottom:2vmin;
+     display: block;
+     float: inline-start;
+   }
