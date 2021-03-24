@@ -8,7 +8,7 @@ let log = (function () {
     }
 
     return {
-      initSocket(socket_, view_) {
+      initSocket(socket_) {
         socket = socket_;
         logjoueur();
         }
