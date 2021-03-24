@@ -11,10 +11,17 @@ let socketModule = (function () {
         });
     }
 
+    function placePion(socket, game) {
+        socket.on('placePion', (joueur, x, y, value) => {
+            game.placer(joueur, x, y, value);
+        });
+    }
+
     return {
         initSocket(socket, game) {
             play(socket, game);
             move(socket, game);
+            placePion(socket, game);
         }
     }
 }) ();

@@ -2,198 +2,219 @@
 <html lang="fr" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="../css/jeu.css" >
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="../css/jeu.css">
+    <script type="text/javascript" src="../js/strategoView.js"></script>
+    <script type="text/javascript" src="../js/modules/initSocket.js"></script>
+
+    <script type="text/javascript" src="../js/Pions.js"></script>
+    <script type="text/javascript" src="../js/types/1_Espion.js"></script>
+    <script type="text/javascript" src="../js/types/2_Eclaireur.js"></script>
+    <script type="text/javascript" src="../js/types/3_Démineur.js"></script>
+    <script type="text/javascript" src="../js/types/4_Sergent.js"></script>
+    <script type="text/javascript" src="../js/types/5_Lieutenant.js"></script>
+    <script type="text/javascript" src="../js/types/6_Capitaine.js"></script>
+    <script type="text/javascript" src="../js/types/7_Commandant.js"></script>
+    <script type="text/javascript" src="../js/types/8_Colonel.js"></script>
+    <script type="text/javascript" src="../js/types/9_Général.js"></script>
+    <script type="text/javascript" src="../js/types/10_Maréchal.js"></script>
+    <script type="text/javascript" src="../js/types/11_Drapeau.js"></script>
+    <script type="text/javascript" src="../js/types/12_Bombes.js"></script>
+    <script type="text/javascript" src="../js/Joueur.js"></script>
+    <script type="text/javascript" src="../js/Stratego.js"></script>
+
+    <script type="text/javascript" src="../js/main.js"></script>
     <title>Stratego</title>
-  </head>
-  <body>
-    <div id="corps">
-      <div class="languette" id="option">
+</head>
+<body>
+<div id="corps">
+    <div class="languette" id="option">
         <img class="img_languette" id="img_option" src="../assets/option.png">
-      </div>
-      <div class="languette" id="dc">
+    </div>
+    <div class="languette" id="dc">
         <img class="img_languette" id="img_dc" src="../assets/dc.png">
-      </div>
-      <table id="plateau">
+    </div>
+    <table id="plateau">
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+            <td><img class="piece" src="../assets/rouge/bombe.png" alt="bombe rouge"></td>
+            <td><img class="piece" src="../assets/rouge/capitaine.png" alt="capitaine rouge"></td>
+            <td><img class="piece" src="../assets/rouge/colonel.png" alt="colonel rouge"></td>
+            <td><img class="piece" src="../assets/rouge/commandant.png" alt="commandant rouge"></td>
+            <td><img class="piece" src="../assets/rouge/demineur.png" alt="démineur rouge"></td>
+            <td><img class="piece" src="../assets/rouge/dos.png" alt="dos rouge"></td>
+            <td><img class="piece" src="../assets/rouge/drapeau.png" alt="drapeau rouge"></td>
+            <td><img class="piece" src="../assets/rouge/eclaireur.png" alt="éclaireur rouge"></td>
+            <td><img class="piece" src="../assets/rouge/espion.png" alt="espion rouge"></td>
+            <td><img class="piece" src="../assets/rouge/general.png" alt="général rouge"></td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><img class="piece" src="../assets/rouge/lieutenant.png" alt="lieutenant rouge"></td>
+            <td><img class="piece" src="../assets/rouge/marechal.png" alt="maréchal rouge"></td>
+            <td><img class="piece" src="../assets/rouge/sergent.png" alt="sergent rouge"></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td><img class="piece" src="../assets/volcan.png"></td>
-          <td><img class="piece" src="../assets/volcan.png"></td>
-          <td></td>
-          <td></td>
-          <td><img class="piece" src="../assets/volcan.png"></td>
-          <td><img class="piece" src="../assets/volcan.png"></td>
-          <td></td>
-          <td></td>
+            <td></td>
+            <td></td>
+            <td><img class="piece" src="../assets/volcan.png"></td>
+            <td><img class="piece" src="../assets/volcan.png"></td>
+            <td></td>
+            <td></td>
+            <td><img class="piece" src="../assets/volcan.png"></td>
+            <td><img class="piece" src="../assets/volcan.png"></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td><img class="piece" src="../assets/volcan.png"></td>
-          <td><img class="piece" src="../assets/volcan.png"></td>
-          <td></td>
-          <td></td>
-          <td><img class="piece" src="../assets/volcan.png"></td>
-          <td><img class="piece" src="../assets/volcan.png"></td>
-          <td></td>
-          <td></td>
+            <td></td>
+            <td></td>
+            <td><img class="piece" src="../assets/volcan.png"></td>
+            <td><img class="piece" src="../assets/volcan.png"></td>
+            <td></td>
+            <td></td>
+            <td><img class="piece" src="../assets/volcan.png"></td>
+            <td><img class="piece" src="../assets/volcan.png"></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><img class="piece" src="../assets/bleu/lieutenant.png" alt="lieutenant bleu"></td>
+            <td><img class="piece" src="../assets/bleu/marechal.png" alt="maréchal bleu"></td>
+            <td><img class="piece" src="../assets/bleu/sergent.png" alt="sergent bleu"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr>
-          <td></td>
-          <td></td>
-          <td>></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+            <td><img class="piece" src="../assets/bleu/bombe.png" alt="bombe bleu"></td>
+            <td><img class="piece" src="../assets/bleu/capitaine.png" alt="capitaine bleu"></td>
+            <td><img class="piece" src="../assets/bleu/colonel.png" alt="colonel bleu"></td>
+            <td><img class="piece" src="../assets/bleu/commandant.png" alt="commandant bleu"></td>
+            <td><img class="piece" src="../assets/bleu/demineur.png" alt="démineur bleu"></td>
+            <td><img class="piece" src="../assets/bleu/dos.png" alt="dos bleu"></td>
+            <td><img class="piece" src="../assets/bleu/drapeau.png" alt="drapeau bleu"></td>
+            <td><img class="piece" src="../assets/bleu/eclaireur.png" alt="éclaireur bleu"></td>
+            <td><img class="piece" src="../assets/bleu/espion.png" alt="espion bleu"></td>
+            <td><img class="piece" src="../assets/bleu/general.png" alt="général bleu"></td>
         </tr>
 
-      </table>
-    </div>
-    <div id="placement_piece">
-      <div id="cadre">
-        <table>
-          <tr>
-            <td><img class="piece" src="../assets/bleu/marechal.png">
-              <p class="nom_piece">x1</br> Maréchal</p>
-            </td>
-            <td><img class="piece" src="../assets/bleu/general.png">
-              <p class="nom_piece">x1</br>Général</p>
-            </td>
-            <td><img class="piece" src="../assets/bleu/colonel.png">
-              <p class="nom_piece">x2</br>Colonel</p>
-            </td>
-            <td><img class="piece" src="../assets/bleu/commandant.png">
-              <p class="nom_piece">x3</br>Commandant</p>
-            </td>
-            <td><img class="piece" src="../assets/bleu/capitaine.png">
-              <p class="nom_piece">x4</br>Capitaine</p>
-            </td>
-          </tr>
-          <tr>
-            <td><img class="piece" src="../assets/bleu/lieutenant.png">
-              <p class="nom_piece">x4</br>Lieutenant</p>
-            </td>
-            <td><img class="piece" src="../assets/bleu/sergent.png">
-              <p class="nom_piece">x4</br>Sergent</p>
-            </td>
-            <td><img class="piece" src="../assets/bleu/demineur.png">
-              <p class="nom_piece">x5</br>Démineur</p>
-            </td>
-            <td><img class="piece" src="../assets/bleu/eclaireur.png">
-              <p class="nom_piece">x8</br>Eclaireur</p>
-            </td>
-            <td><img class="piece" src="../assets/bleu/espion.png">
-              <p class="nom_piece">x1</br>Espion</p>
-            </td>
-          </tr>
-          <tr>
-            <td><img class="piece" src="../assets/bleu/bombe.png">
-              <p class="nom_piece">x6</br>Bombe</p>
-            </td>
-            <td><img class="piece" src="../assets/bleu/drapeau.png">
-              <p class="nom_piece">x1</br>Drapeau</p>
-            </td>
-            <td colspan="3">
-              <button id="bouton_placement" type="button" disabled> prêt </button>
-            </td>
-          </tr>
+    </table>
+</div>
+<div id="placement_piece">
+    <div id="cadre">
+        <table id="tabAjout">
+            <tr>
+                <td><img class="piece" src="../assets/bleu/espion.png">
+                    <p class="nom_piece">x1<br>Espion</p>
+                </td>
+                <td><img class="piece" src="../assets/bleu/eclaireur.png">
+                    <p class="nom_piece">x8<br>Eclaireur</p>
+                </td>
+                <td><img class="piece" src="../assets/bleu/demineur.png">
+                    <p class="nom_piece">x5<br>Démineur</p>
+                </td>
+                <td><img class="piece" src="../assets/bleu/sergent.png">
+                    <p class="nom_piece">x4<br>Sergent</p>
+                </td>
+                <td><img class="piece" src="../assets/bleu/lieutenant.png">
+                    <p class="nom_piece">x4<br>Lieutenant</p>
+                </td>
+            </tr>
+            <tr>
+                <td><img class="piece" src="../assets/bleu/capitaine.png">
+                    <p class="nom_piece">x4<br>Capitaine</p>
+                </td>
+                <td><img class="piece" src="../assets/bleu/commandant.png">
+                    <p class="nom_piece">x3<br>Commandant</p>
+                </td>
+                <td><img class="piece" src="../assets/bleu/colonel.png">
+                    <p class="nom_piece">x2<br>Colonel</p>
+                </td>
+                <td><img class="piece" src="../assets/bleu/general.png">
+                    <p class="nom_piece">x1<br>Général</p>
+                </td>
+                <td><img class="piece" src="../assets/bleu/marechal.png">
+                    <p class="nom_piece">x1<br>Maréchal</p>
+                </td>
+            </tr>
+            <tr>
+                <td><img class="piece" src="../assets/bleu/bombe.png">
+                    <p class="nom_piece">x6</br>Bombe</p>
+                </td>
+                <td><img class="piece" src="../assets/bleu/drapeau.png">
+                    <p class="nom_piece">x1</br>Drapeau</p>
+                </td>
+                <td colspan="3">
+                    <button id="bouton_placement" type="button" disabled> prêt</button>
+                </td>
+            </tr>
         </table>
         <div id="sous_cadre">
-          <p id="compteur"> pions posés : 0/30 </p>
+            <p id="compteur"> pions posés : 0/30 </p>
         </div>
-      </div>
     </div>
   </body>
 <script>
     let socket = io();
+    main();
 </script>
-<script>main()</script>
-  </html>
+
+</html>
