@@ -3,16 +3,16 @@
 
 p {
     font-size: 7vw;
-    margin-bottom: 3vw !important;
-    margin-top: 2vw !important;
+    margin-bottom: 3vw ;
+    margin-top: 2vw ;
 }
 
 body {
     height: 100vh;
-    font-family: 'Courgette' !important;
-    text-align: center !important;
-    color: white !important;
-    background-color: #3c5cbb !important;
+    font-family: 'Courgette' ;
+    text-align: center ;
+    color: white ;
+    background-color: #3c5cbb;
     background-image: url(../assets/marianne.jpg);
     background-size: 100% auto;
     overflow: hidden;
@@ -37,6 +37,10 @@ body {
 #navigation li a:hover, #navigation li a:focus, #navigation li a:active {
     text-decoration: none;
     color: red;
+}
+
+#connect{
+  font-size: 2vw;
 }
 
 .log {

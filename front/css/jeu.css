@@ -1,5 +1,6 @@
 body{
-
+  background-size: cover;
+  background-color: #333;
 }
 
 p{
@@ -8,86 +9,72 @@ p{
 }
 
 .nom_piece{
-  font-size: 1.5vmin;
-  margin-top: -1.5vmin;
+  font-size: 1vw;
 }
 
 #corps{
-  width: 140vmin;
+  width: 70vw;
   height: 100vh;
   background-image: url("../assets/fond_beta.png");
-  background-size: 140vmin 100vh;
-  margin: -2vmin 2vmin 2vmin -2vmin;
-  position: absolute;
-
-}
-
-#chat{
-  width: 60vmin;
-  height: 100vh;
-  margin: -2vmin 4vmin -1vmin 138vmin;
-  background-image: url("../assets/marianne.jpg");
-  position: absolute;
-
+  background-size:100vw 100vh;
 }
 
 #placement_piece{
   z-index: 1;
-  width: 60vmin;
+  width: 30vw;
   height: 100vh;
-  margin: -2vmin 4vmin -1vmin 138vmin;
-  background-color: #333;
-  position: absolute;
+  margin-top: -100vh;
+  margin-left: 70vw;
 }
 
 #cadre{
   z-index: 1;
-  padding: 2vmin;
-  margin-left: 3vmin;
-  margin-top: 4vmin;
-  width: 50vmin;
-  height: 43vmin;
-  border: 3px solid #D3D3D3;
+  margin-left: 1vw;
+  margin-top: 5vh;
+  width: 25vw;
+  height: 51vh;
+  border: 1vmin solid #D3D3D3;
 
 }
 
 #sous_cadre{
   background-color: #333;
   z-index: 2;
-  margin-left: 30vmin;
-  margin-top: 1.7vmin;
-  width: 130px;
-  height: 40px;
-  border: 3px solid #D3D3D3;
+  margin-left: 11.5vw;
+  margin-top: -3vh;
+  width: 12vw;
+  height: 6vh;
+  border: 1vmin solid #D3D3D3;
+  font-size: 2vmin;
 }
 
 #bouton_placement{
     border: 0;
     text-align: center;
     color: #D3D3D3;
-    text-shadow: 1px 1px 1px #000;
-    border-radius: 10px;
-    margin-left: 8vmin;
-    height: 5vmin;
-    width: 12vmin;
+    text-shadow: 1vmin 1vmin 1vmin #000;
+    border-radius: 10vmin;
+    margin-left: 1vw;
+    height: 5vh;
+    width: 12vw;
 }
 
 #plateau{
-  margin-left: 10vmin;
-  padding-top: 2.5vh;
+  margin-left: 1vw;
+  padding-top: 2vh;
 }
 
 td {
-    border: 1px solid #D3D3D3;
-    width: 8.5vmin;
-    height: 8.5vmin;
+    border: 0.4vmin solid #D3D3D3;
+    width: 4vw;
+    height: 8vh;
 }
 
 .piece{
-  width: 6.5vmin;
-  height: 8vmin;
-  margin-left: 0.8vmin;
-  margin-top: 0.8vmin;
+  width: 3vw;
+  height: 6vh;
+  margin-left: 0.5vmin;
+  margin-top: 0.5vmin;
 }
 
 .languette{
@@ -104,12 +91,12 @@ td {
   }
 
 #option{
-  margin-left: 110vmin;
+  margin-left: 55vw;
 
 }
 
 #dc{
-  margin-left: 120vmin;
+  margin-left: 65vw;
 
 }
 
