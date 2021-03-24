@@ -79,7 +79,13 @@ class Stratego {
 
     // renvoi le joueur
     getCurrentPlayer() {
-        return (this.tour % 2); // 0 bleu, 1 rouge
+        if (this.tour % 2 === 0){
+            return this.joueur_bleu;
+        }
+        else {
+            return this.joueur_rouge;
+        }
+        //return (this.tour % 2); // 0 bleu, 1 rouge
     }
 
     // renvoi l'etat d'une case
@@ -102,42 +108,60 @@ class Stratego {
         return false;
     }
 
-    //pas finit a revoir plus serieusement
-    ajout_points(joueur){
-        if (joueur === this.joueur_rouge){
-            if (type === "Espion") {
-                joueur.points += 1.0;
+
+    //permet de modifier la grille et initialise le pion
+    modif_grid_placer(joueur, x, y, value) {
+        if (0 <= x <= 9 && 0 <= y <= 9) {
+            switch (value) {
+                case '1':
+                    this.grid[y][x] = new Espion(this.joueur.color, x, y);
+                    break;
+                case '2':
+                    this.grid[y][x] = new Eclaireur(this.joueur.color, x, y);
+                    break;
+                case '3':
+                    this.grid[y][x] = new Demineur(this.joueur.color, x, y);
+                    break;
+                case '4':
+                    this.grid[y][x] = new Sergent(this.joueur.color, x, y);
+                    break;
+                case '5':
+                    this.grid[y][x] = new Lieutenant(this.joueur.color, x, y);
+                    break;
+                case '6':
+                    this.grid[y][x] = new Capitaine(this.joueur.color, x, y);
+                    break;
+                case '7':
+                    this.grid[y][x] = new Commandant(this.joueur.color, x, y);
+                    break;
+                case '8':
+                    this.grid[y][x] = new Colonel(this.joueur.color, x, y);
+                    break;
+                case '9':
+                    this.grid[y][x] = new General(this.joueur.color, x, y);
+                    break;
+                case '10':
+                    this.grid[y][x] = new Marechal(this.joueur.color, x, y);
+                    break;
+                case '11':
+                    this.grid[y][x] = new Drapeau(this.joueur.color, x, y);
+                    break;
+                case '12':
+                    this.grid[y][x] = new Bombe(this.joueur.color, x, y);
+                    break;
+                default:
+                    break;
             }
-            else if (type === "Eclaireur") {
-                joueur.points += 2.0;
-            }
-            else if (type === "Démineur") {
-                joueur.points += 3.0;
-            }
-            else if (type === "Sergent") {
-                joueur.points += 4.0;
-            }
-            else if (type === "Lieutenant") {
-                joueur.points += 5.0;
-            }
-            else if (type === "Capitaine") {
-                joueur.points += 6.0;
-            }
-            else if (type === "Commandant") {
-                joueur.points += 7.0;
-            }
-            else if (type === "Colonel") {
-                joueur.points += 8.0;
-            }
-            else if (type === "Général") {
-                joueur.points += 9.0;
-            }
-            else if (type === "Maréchal") {
-                joueur.points += 10.0;
-            }
-            else if (type === "Bombes") {
-                joueur.points += 1.0;
-            }
+            return true;
+        }
+        return false;
+    }
+
+    //calcule les points des joueur a la fin de partie
+    points_joueur() {
+        for (let i = 0; i < 12; i++) {
+            this.joueur_bleu.points += this.joueur_rouge.pions_mort[i] * (i + 1);
+            this.joueur_rouge.points += this.joueur_bleu.pions_mort[i] * (i + 1);
         }
     }
 
@@ -145,12 +169,13 @@ class Stratego {
     //placer les pions en debut de partie
     placer(joueur, x, y, value) {
         if (this.peut_placer_ses_pions(joueur, x, y) === true) {
-            modif_grid(x, y, value);
+            this.modif_grid_placer(joueur, x, y, value);
+
             if (joueur === this.joueur_rouge) {
-                this.joueur_rouge.pions_en_jeu[values - 1] += 1;
+                this.joueur_rouge.pions_en_jeu[value - 1] += 1;
             }
             else {
-                this.joueur_bleu.pions_en_jeu[values - 1] += 1;
+                this.joueur_bleu.pions_en_jeu[value - 1] += 1;
             }
         }
     }
@@ -171,7 +196,17 @@ class Stratego {
     }
 
 
-
+    //va enlever la piece du tableau en vie et la rajouter dans le tableau mort
+    un_mort(joueur, value){
+        if (joueur === this.joueur_rouge) {
+            this.joueur_rouge.pions_vivant[value - 1] -= 1;
+            this.joueur_rouge.pions_mort[value - 1] += 1;
+        }
+        else {
+            this.joueur_bleu.pions_vivant[value - 1] -= 1;
+            this.joueur_rouge.pions_mort[value - 1] += 1;
+        }
+    }
 
 
 
@@ -229,6 +264,7 @@ class Stratego {
     deplacement(x_clic, y_clic, x_pos, y_pos) {
         // récupère la case
         let pion = this.getCaseState(x_pos, y_pos);
+        let joueur = this.getCurrentPlayer();
 
         // on vérifie que la case de départ n'est pas vide
         if (pion !== undefined) {
@@ -249,7 +285,7 @@ class Stratego {
 
                         //d'abord on vérifie que la partie n'est pas gagné
                         if (pion2.puissance === 11){
-                            win(joueur); //faire la win
+                            this.win(joueur); //faire la win
                         }
 
                         //puis si le général est mangé par l'espion
@@ -306,6 +342,20 @@ class Stratego {
     }
 
 
+    win(joueur){
+        this.points_joueur()
+        this.fini = true;
+        return this.getWinner();
+    }
+
+
+    // retourne le joueur gagnant
+    getWinner() {
+        // le gagnant est le dernier joueur à avoir joué
+        return this.getCurrentPlayer();
+    }
+
+
 
 
 
@@ -341,9 +391,5 @@ class Stratego {
         return this.fini;
     }
 
-    // retourne le joueur gagnant
-    getWinner() {
-        // le gagnant est le dernier joueur à avoir joué
-        return this.getCurrentPlayer();
-    }
+
 }
