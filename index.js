@@ -80,15 +80,14 @@ app.post('/login',  (req,res) =>{
         
         let sql = 'SELECT *FROM session WHERE Pseudo = \'' + logName + '\' AND Mdp = \'' + logPassword + '\'';
         con.query(sql, (err, result) => {
-            if (err) throw err;
 
-
+            console.log(result);
             if (result[0] == undefined) {
+
                 console.log(result[0], "azerty");
                 req.session.connect = false;
                 req.session.errIdentifiants = true;
                 req.session.save();
-                res.redirect('/login.html');
 
             }
             else{
@@ -97,7 +96,7 @@ app.post('/login',  (req,res) =>{
                 req.session.logPassword = logPassword;
                 req.session.connect = true;
                 req.session.save();
-                //res.redirect('/');
+                res.redirect('/');
 
             }
         });    
