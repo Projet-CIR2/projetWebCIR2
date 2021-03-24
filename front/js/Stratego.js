@@ -6,6 +6,7 @@ class Stratego {
         this.grid; // tableau de position en 10*10
         this.grid_default;
         this.tour = 0; // nombre pair : joueur 0, nombre impair : joueur 1
+        this.fini = false;
 
         this.joueur_bleu = new Joueur(0);
         this.joueur_rouge = new Joueur(1);
@@ -16,8 +17,6 @@ class Stratego {
         this.deplacement(x_clic, y_clic, x_pos, y_pos);
         this.init_grid();
         this.reset();
-        this.peut_placer_ses_pions(joueur, x, y);
-        this.win();
 
 
         //fonction pour verifier si l'on peut lancer la partie
@@ -159,6 +158,9 @@ class Stratego {
 
     //calcule les points des joueur a la fin de partie
     points_joueur() {
+        this.joueur_bleu.points = 0;
+        this.joueur_rouge.points = 0;
+
         for (let i = 0; i < 12; i++) {
             this.joueur_bleu.points += this.joueur_rouge.pions_mort[i] * (i + 1);
             this.joueur_rouge.points += this.joueur_bleu.pions_mort[i] * (i + 1);
@@ -343,7 +345,7 @@ class Stratego {
 
 
     win(joueur){
-        this.points_joueur()
+        this.points_joueur();
         this.fini = true;
         return this.getWinner();
     }
