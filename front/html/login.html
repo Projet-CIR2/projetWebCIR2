@@ -2,20 +2,20 @@
 <html>
 <head>
     <title>page de login Stratego</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script type="text/javascript" src="../js/loginscript.js"></script>
     <link rel="stylesheet" href="../css/login.css" >
 
 </head>
 
 <body>
-  <form>
-    <div id="form">
+  <form id="form">
+    <div id="div-form">
       <h2 id="titre">identifie toi soldat </h2>
       <label><b>Pseudo :</b></label>
-      <input type="text" placeholder="Entrez Pseudo" name="uname" required>
+      <input type="text" placeholder="Entrez Pseudo" name="uname" id="pseudo" required>
       <label><b>Mot de passe :</b></label>
-      <input type="password" placeholder="Entrez Mot de Passe" name="uname" required>
+      <input type="password" placeholder="Entrez Mot de Passe" name="p" id="password" required>
       <button type="submit">Login</button>
       <p id="redirection">
         <a href="signup.html">pas encore de compte ? </a>

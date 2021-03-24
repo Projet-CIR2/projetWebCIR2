@@ -42,18 +42,32 @@ io.use(sharedsession(session, {
 //*** CODE ***//
 app.get('/', (req,res) => {
     let sessionData = req.session;
-
-   // res.sendFile(__dirname + "/front/html/index.html");
-   // res.sendFile(__dirname + "/front/html/signup.html");
-    res.sendFile(__dirname + "/front/html/login.html");
+    res.sendFile(__dirname + "/front/html/index.html");
    
+});
 
-    
-    
+app.get('/login.html', (req,res) =>{
+    let sessionData = req.session;
+
+    res.sendFile(__dirname + "/front/html/login.html");
+    if (sessionData.errIdentifiants){
+        req.session.errIdentifiants = false;
+        //alert("Username ou Mot de passe incorrect");
+    }
+});
+
+app.get('/signup.html', (req,res) =>{
+    let sessionData = req.session;
+    res.sendFile(__dirname + "/front/html/signup.html");
+
+
 });
 
 
+
 app.post('/login',  (req,res) =>{
+
+    
 
     const logName = req.body.login;
     const logPassword = req.body.passwrd;
@@ -63,9 +77,31 @@ app.post('/login',  (req,res) =>{
         console.log("Big oof", errors);
     }
     else{
+        
+        let sql = 'SELECT *FROM session WHERE Pseudo = \'' + logName + '\' AND Mdp = \'' + logPassword + '\'';
+        con.query(sql, (err, result) => {
+            if (err) throw err;
+
+
+            if (result[0] == undefined) {
+                console.log(result[0], "azerty");
+                req.session.connect = false;
+                req.session.errIdentifiants = true;
+                req.session.save();
+                res.redirect('/login.html');
+
+            }
+            else{
+                console.log(result[0]);
+                req.session.logName = logName;
+                req.session.logPassword = logPassword;
+                req.session.connect = true;
+                req.session.save();
+                //res.redirect('/');
+
+            }
+        });    
     
-        checkConnection.verifyConnection(req, con, logName, logPassword);
-        res.redirect('/');
     }
     
 });
