@@ -1,11 +1,14 @@
 let signuper = (function(){
 
-    function post(name, password){
+    function post(firstName,lastName,mail,username, password){
         $.ajax({
             type: "POST", 
-            url: "/login/", 
+            url: "/signup/", 
             data: {
-                login: name,
+                fName: firstName,
+                lName: lastName,
+                adrmail: mail,
+                pseudo: username,
                 passwrd: password,
             },
             success: () => {
@@ -16,8 +19,8 @@ let signuper = (function(){
     }
 
     return {
-        sendLogin(name, password){
-            post(name, password);
+        sendLogin(firstName,lastName,mail,username, password){
+            post(firstName,lastName,mail,username, password);
         }
     }
 })();

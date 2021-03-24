@@ -60,7 +60,7 @@ app.get('/signup.html', (req,res) =>{
     let sessionData = req.session;
     res.sendFile(__dirname + "/front/html/signup.html");
 
-    const logPseudo = req.body.
+    
 });
 
 
@@ -103,6 +103,25 @@ app.post('/login',  (req,res) =>{
     
     }
     
+});
+
+app.post('/signup', (req,res) =>{
+
+    const values = {
+        logName = req.body.pseudo,
+        logPassword = req.body.passwrd,
+        Victory=0,
+        Defeat=0,
+        adressmail= req.body.adrmail,
+        firstName = req.body.fName,
+        lastName = req.body.lName,
+    }
+
+    let sql = "INSERT INTO session SET ?";  
+        con.query(sql, values, (err, result) => {
+            if (err) throw err;
+            console.log("One Session inserted");
+        });
 });
 
 
