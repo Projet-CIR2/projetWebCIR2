@@ -45,7 +45,7 @@ body {
 
 .log {
     position: fixed;
-    top: 1vw;
+    top: -2vh;
     right: 1vw;
     font-size: 2vw;
 

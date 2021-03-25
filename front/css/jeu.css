@@ -30,7 +30,6 @@ p{
 #cadre{
   z-index: 1;
   margin-left: 1vw;
-  margin-top: 5vh;
   width: 25vw;
   height: 51vh;
   border: 1vmin solid #D3D3D3;
@@ -46,6 +45,13 @@ p{
   height: 6vh;
   border: 1vmin solid #D3D3D3;
   font-size: 2vmin;
+}
+
+#cadre2{
+  margin-top: 10vh;
+  font-size: 3vmin;
+  padding-right: 3vw;
+  margin-left: 1vw;
 }
 
 #bouton_placement{

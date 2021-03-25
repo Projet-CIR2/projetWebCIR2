@@ -14,7 +14,7 @@ const { body, validationResult } = require('express-validator');
 const session = require('express-session')({
     secret: "30cm",
     resave: true,
-    saveUninitialized: true, 
+    saveUninitialized: true,
     cookie: {
         maxAge: 5*60*60*1000,
         secure: false,
@@ -38,8 +38,8 @@ io.use(sharedsession(session, {
 //*** CODE ***//
 app.get('/', (req,res) => {
     let sessionData = req.session;
-    res.sendFile(__dirname + "/front/html/index.html");
-   
+    res.sendFile(__dirname + "/front/html/jeu.html");
+
 });
 
 app.get('/login.html', (req,res) =>{
@@ -69,7 +69,7 @@ app.post('/login',  (req,res) =>{
         console.log("Big oof", errors);
     }
     else{
-        
+
         let sql = 'SELECT *FROM session WHERE Pseudo = \'' + logName + '\' AND Mdp = \'' + logPassword + '\'';
         con.query(sql, (err, result) => {
 
@@ -93,10 +93,10 @@ app.post('/login',  (req,res) =>{
                 socket.emit('Pseudo', logName);
                 res.redirect('/');
             }
-        });    
-    
+        });
+
     }
-    
+
 });
 
 
@@ -136,5 +136,3 @@ con.connect(err=>{
     if (err) throw err;
     else console.log('Connexion reussie !');
 })
-
-

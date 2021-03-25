@@ -3,7 +3,14 @@ let log = (function () {
 
     function logjoueur() {
         socket.on('Pseudo', pseudo => {
-            document.getElementById('connect').textContent=pseudo;
+          let currentDiv = document.getElementById("connect");
+          currentDiv.textContent=pseudo + " | ";
+          let deco = document.createElement('a');
+          deco.setAttribute('href',"deconnection.html");
+          deco.setAttribute('title',"Coucou c'est moi");
+
+          deco.textContent="se deconnecter";
+          currentDiv.appendChild(deco);
         });
     }
 

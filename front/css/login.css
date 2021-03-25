@@ -6,19 +6,21 @@ body{
 }
 
 label{
-  background-color: #333;
-  color: #D3D3D3;
+  background-color: #3333333d;
+  color: #ffffff;
+  border-radius: 20px;
 }
 
 #trois{
-  background-color: #333;
+  background-color: #3333333d;
   position: absolute;
   font-style: italic;
   font-size: 14px;
   text-decoration: none;
-  color: #D3D3D3;
+  color: #ffffff;
   margin-top: 1vmin;
   margin-left: -10vmin;
+  border-radius: 20px;
 }
 
 #trois:hover{
@@ -26,10 +28,11 @@ label{
 }
 
 #titre{
-  background-color: #333;
+  background-color: #3333333d;
   width: 45vmin;
-  color: #D3D3D3;
+  color: #ffffff;
   margin-bottom: 10vmin;
+  border-radius: 20px;
 }
 
 #button_log{

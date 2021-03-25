@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="../css/index.css" >
+    <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="../js/modules/moduleLogin.js"></script>
     <title>Stratego</title>
 </head>
@@ -26,5 +27,6 @@
 </body>
 <script>
     let socket = io();
+    log.initSocket(socket);
 </script>
 </html>

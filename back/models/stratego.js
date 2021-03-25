@@ -4,6 +4,7 @@ class Stratego {
         // this.socket.emit('removePions');
         // this.socket.emit('affichePion', 'espion', 2, 5);
         // this.socket.emit('removePion', 5, 5);
+        this.socket.emit('Pseudo', 'Michel');
 
     }
 
