@@ -1,7 +1,7 @@
 // objet contenant l'Espion
 class Espion extends Pions {
-  constructor(couleur, x, y) {
-    super(couleur, x, y, "Espion");
+  constructor(couleur) {
+    super(couleur, "Espion");
     this.init();
     this.un_mort();
   }
