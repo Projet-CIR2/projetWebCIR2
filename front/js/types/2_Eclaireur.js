@@ -1,7 +1,7 @@
 // objet contenant l'Eclaireur
 class Eclaireur extends Pions {
-  constructor(couleur, x, y) {
-    super(couleur, x, y, "Eclaireur");
+  constructor(couleur) {
+    super(couleur, "Eclaireur");
     this.init();
   }
 

@@ -15,6 +15,14 @@ class Stratego {
     placer(joueur, x, y, value) {
         console.log('place');
         this.socket.emit('affichePion', 'espion', x, y);
+        this.socket.emit('modifNombrePion', value, 9)
+    }
+
+    //regarde si la partie peut etre lancer
+    pret(joueur){
+        if (joueur.pions_vivant === joueur.pions_en_jeu) {
+            joueur.pret = 1;
+        }
     }
 }
 

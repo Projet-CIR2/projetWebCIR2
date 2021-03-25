@@ -1,7 +1,7 @@
 // objet contenant le Drapeau
 class Drapeau extends Pions {
-  constructor(couleur, x, y) {
-    super(couleur, x, y, "Drapeau");
+  constructor(couleur) {
+    super(couleur, "Drapeau");
     this.init();
   }
 

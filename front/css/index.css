@@ -9,9 +9,9 @@ p {
 
 body {
     height: 100vh;
-    font-family: 'Courgette' ;
-    text-align: center ;
-    color: white ;
+    font-family: 'Courgette', sans-serif;
+    text-align: center;
+    color: white;
     background-color: #3c5cbb;
     background-image: url(../assets/marianne.jpg);
     background-size: 100% auto;

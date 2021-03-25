@@ -17,11 +17,18 @@ let socketModule = (function () {
         });
     }
 
+    function pret(socket, game) {
+        socket.on('pret', (joueur) => {
+            game.pret(joueur);
+        })
+    }
+
     return {
         initSocket(socket, game) {
             play(socket, game);
             move(socket, game);
             placePion(socket, game);
+            pret(socket, game);
         }
     }
 }) ();

@@ -1,7 +1,7 @@
 // objet contenant la Bombe
 class Bombe extends Pions {
-  constructor(couleur, x, y) {
-    super(couleur, x, y, "Bombe");
+  constructor(couleur) {
+    super(couleur, "Bombe");
     this.init();
   }
 
