@@ -24,22 +24,27 @@ class StrategoView {
                         if (this.debut.click) {
                             // si le click précédent était sur la tab ajout
                             if (this.debut.value !== -1) {
-                                currentTab = currentDiv.rows[j].cells[i];
-                                if (currentTab.firstChild !== null) currentTab.removeChild(currentTab.firstChild);
+                                if ((this.joueur_courant && j < 4) || (j > 5 && !this.joueur_courant)) {
 
-                                socket.emit('placePion', this.joueur_courant, i, j, this.debut.value + 1);
-                                document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
-                                this.debut.click = false;
-                                this.debut.value = -1;
+                                    currentTab = currentDiv.rows[j].cells[i];
+                                    if (currentTab.firstChild !== null) currentTab.removeChild(currentTab.firstChild);
+
+                                    socket.emit('placePion', this.joueur_courant, i, j, this.debut.value + 1);
+                                    document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
+                                    this.debut.click = false;
+                                    this.debut.value = -1;
+                                }
                             }
                             // sinon c'est qu'on click deux fois de suite sur la grille de jeu
                             else {
                                 currentTab = currentDiv.rows[j].cells[i];
                                 // si on click deux fois sur 2 cases différentes
                                 if (!currentTab.hasAttribute('style')) {
-                                    document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]].removeAttribute('style');
-                                    currentTab.setAttribute('style', 'background:green');
-                                    this.debut.case = [i, j];
+                                    if ((this.joueur_courant && j < 4) || (j > 5 && !this.joueur_courant)) {
+                                        document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]].removeAttribute('style');
+                                        currentTab.setAttribute('style', 'background:green');
+                                        this.debut.case = [i, j];
+                                    }
                                 }
                                 // si on click deux fois sur la même case
                                 else {
@@ -55,9 +60,13 @@ class StrategoView {
                         // on affiche la case clické en vert
                         else {
                             currentTab = currentDiv.rows[j].cells[i];
-                            currentTab.setAttribute('style', 'background:green');
-                            this.debut.click = true;
-                            this.debut.case = [i, j];
+                            // if (!(currentTab.firstChild != null && currentTab.firstChild.getAttribute('src') === '../assets/volcan.png')) {
+                            if ((this.joueur_courant && j < 4) || (j > 5 && !this.joueur_courant)) {
+                                currentTab.setAttribute('style', 'background:green');
+                                this.debut.click = true;
+                                this.debut.case = [i, j];
+                            }
+
                         }
                     }
                 });
@@ -71,7 +80,7 @@ class StrategoView {
 
         for (let i = 0; i < 12; ++i) {
             currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('click', () => {
-                // si on a déjà clické sur une case (grille jeu ou tab ajout
+                // si on a déjà clické sur une case (grille jeu ou tab ajout)
                 if (this.debut.click) {
                     // si on a cliqué avant sur la grille du jeu
                     if (this.debut.case.every(element => element !== -1)) {
@@ -108,9 +117,13 @@ class StrategoView {
                     this.debut.click = true;
                     this.debut.value = i;
                 }
-
             });
         }
+
+        let currentButton = document.getElementById('bouton_placement');
+        currentButton.addEventListener('click', () => {
+            socket.emit('pret', this.joueur_courant);
+        });
     }
 
     modifNombrePion(numPion, value) {
@@ -153,5 +166,7 @@ class StrategoView {
         }
     }
 
-
+    removeTabAjout() {
+        document.getElementById('cadre').remove();
+    }
 }

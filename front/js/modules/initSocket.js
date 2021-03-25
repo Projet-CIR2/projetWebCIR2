@@ -30,6 +30,12 @@ let socketModule = (function () {
         });
     }
 
+    function removeTabAjout() {
+        socket.on('removeTabAjout', () => {
+            view.removeTabAjout();
+        });
+    }
+
     return {
         initSocket(socket_, view_) {
             socket = socket_;
@@ -39,6 +45,7 @@ let socketModule = (function () {
             affichePion();
             removePion();
             removePions();
+            removeTabAjout();
         }
     }
 }) ();
