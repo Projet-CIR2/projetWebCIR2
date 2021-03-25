@@ -1,7 +1,7 @@
 // objet contenant le Sergent
 class Sergent extends Pions {
-  constructor(couleur, x, y) {
-    super(couleur, x, y, "Sergent");
+  constructor(couleur) {
+    super(couleur, "Sergent");
     this.init();
   }
 

@@ -20,25 +20,53 @@ class StrategoView {
                 currentDiv.rows[j].cells[i].addEventListener('click', () => {
                     if (this.debut.enJeu) socket.emit('play', i, j);
                     else {
+                        // si un click a déjà été fais
                         if (this.debut.click) {
+                            // si le click précédent était sur la tab ajout
                             if (this.debut.value !== -1) {
-                                socket.emit('placePion', this.joueur_courant, i, j, this.debut.value);
-                                document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
-                                this.debut.click = false;
-                                this.debut.value = -1;
+                                if ((this.joueur_courant && j < 4) || (j > 5 && !this.joueur_courant)) {
+
+                                    currentTab = currentDiv.rows[j].cells[i];
+                                    if (currentTab.firstChild !== null) currentTab.removeChild(currentTab.firstChild);
+
+                                    socket.emit('placePion', this.joueur_courant, i, j, this.debut.value + 1);
+                                    document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
+                                    this.debut.click = false;
+                                    this.debut.value = -1;
+                                }
                             }
+                            // sinon c'est qu'on click deux fois de suite sur la grille de jeu
                             else {
                                 currentTab = currentDiv.rows[j].cells[i];
-                                currentTab.removeAttribute('style');
-                                this.debut.click = false;
-                                this.debut.case = [-1, -1];
+                                // si on click deux fois sur 2 cases différentes
+                                if (!currentTab.hasAttribute('style')) {
+                                    if ((this.joueur_courant && j < 4) || (j > 5 && !this.joueur_courant)) {
+                                        document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]].removeAttribute('style');
+                                        currentTab.setAttribute('style', 'background:green');
+                                        this.debut.case = [i, j];
+                                    }
+                                }
+                                // si on click deux fois sur la même case
+                                else {
+                                    currentTab.removeAttribute('style');
+                                    this.debut.click = false;
+                                    this.debut.case = [-1, -1];
+
+                                    // on supprime le pion sur cette case
+                                    if (currentTab.firstChild !== null) currentTab.removeChild(currentTab.firstChild);
+                                }
                             }
                         }
+                        // on affiche la case clické en vert
                         else {
-                            console.log("je suis la");
-                            currentDiv.rows[j].cells[i].setAttribute('style', 'background:green');
-                            this.debut.click = true;
-                            this.debut.case = [i, j];
+                            currentTab = currentDiv.rows[j].cells[i];
+                            // if (!(currentTab.firstChild != null && currentTab.firstChild.getAttribute('src') === '../assets/volcan.png')) {
+                            if ((this.joueur_courant && j < 4) || (j > 5 && !this.joueur_courant)) {
+                                currentTab.setAttribute('style', 'background:green');
+                                this.debut.click = true;
+                                this.debut.case = [i, j];
+                            }
+
                         }
                     }
                 });
@@ -52,42 +80,55 @@ class StrategoView {
 
         for (let i = 0; i < 12; ++i) {
             currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('click', () => {
+                // si on a déjà clické sur une case (grille jeu ou tab ajout)
                 if (this.debut.click) {
-                    if (this.debut.case !== [-1, -1]) {
-                        socket.emit('placePion', this.joueur_courant, this.debut.case[0], this.debut.case[1], i);
-                        document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]].removeAttribute('style');
+                    // si on a cliqué avant sur la grille du jeu
+                    if (this.debut.case.every(element => element !== -1)) {
+                        currentTab = document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]];
+
+                        // permet de remplacer le pion précédent
+                        if (currentTab.firstChild !== null) currentTab.removeChild(currentTab.firstChild);
+
+                        socket.emit('placePion', this.joueur_courant, this.debut.case[0], this.debut.case[1], i + 1);
+                        currentTab.removeAttribute('style');
                         this.debut.click = false;
                         this.debut.case = [-1, -1];
                     }
                     else {
-                        console.log("alerte !");
                         currentTab = currentDiv.rows[Math.trunc(i / 5)].cells[i % 5];
-                        currentTab.removeAttribute('style');
-                        this.debut.click = false;
-                        this.debut.case = [-1, -1];
 
-                        console.log(currentTab);
-
-                        if (currentTab.firstChild !== null) {
-                            currentTab.removeChild(currentTab.firstChild);
+                        // cas où on click deux fois de suite sur deux cases de tab ajout différentes
+                        if (!currentTab.hasAttribute('style')) {
+                            document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
+                            currentTab.setAttribute('style', 'background:green');
+                            this.debut.value = i;
+                        }
+                        // cas où on click deux fois de suite sur la même case
+                        else {
+                            currentTab.removeAttribute('style');
+                            this.debut.click = false;
+                            this.debut.value = -1;
                         }
                     }
                 }
+                // si aucun click n'a déjà été réalisé, on passe la couleur en vert
                 else {
                     currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].setAttribute('style', 'background:green');
                     this.debut.click = true;
                     this.debut.value = i;
-                    this.debut.case = [-1, -1];
-
                 }
-
             });
         }
+
+        let currentButton = document.getElementById('bouton_placement');
+        currentButton.addEventListener('click', () => {
+            socket.emit('pret', this.joueur_courant);
+        });
     }
 
-    clickEvent(x, y) {
-        console.log('click en :', x, y);
-        socket.emit('play', x, y);
+    modifNombrePion(numPion, value) {
+        let currentP = document.getElementsByClassName('nb_piece')[numPion - 1];
+        currentP.innerText = currentP.innerText.replace(currentP.innerText[1], value);
     }
 
     // initialise le joueur à qui appartient le visuel
@@ -125,5 +166,7 @@ class StrategoView {
         }
     }
 
-
+    removeTabAjout() {
+        document.getElementById('cadre').remove();
+    }
 }

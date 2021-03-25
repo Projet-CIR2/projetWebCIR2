@@ -12,16 +12,10 @@ class Stratego {
         this.joueur_rouge = new Joueur(1);
 
         this.deja_dans_affiche = false;
-
         this.egalite = false;
         this.deplacement(x_clic, y_clic, x_pos, y_pos);
         this.init_grid();
         this.reset();
-
-
-        //fonction pour verifier si l'on peut lancer la partie
-        this.pret(joueur);
-        this.lancer_partie();
     }
 
     // initialise la taille de la liste grid
@@ -113,40 +107,40 @@ class Stratego {
         if (0 <= x <= 9 && 0 <= y <= 9) {
             switch (value) {
                 case '1':
-                    this.grid[y][x] = new Espion(this.joueur.color, x, y);
+                    this.grid[y][x] = new Espion(this.joueur.color);
                     break;
                 case '2':
-                    this.grid[y][x] = new Eclaireur(this.joueur.color, x, y);
+                    this.grid[y][x] = new Eclaireur(this.joueur.color);
                     break;
                 case '3':
-                    this.grid[y][x] = new Demineur(this.joueur.color, x, y);
+                    this.grid[y][x] = new Demineur(this.joueur.color);
                     break;
                 case '4':
-                    this.grid[y][x] = new Sergent(this.joueur.color, x, y);
+                    this.grid[y][x] = new Sergent(this.joueur.color);
                     break;
                 case '5':
-                    this.grid[y][x] = new Lieutenant(this.joueur.color, x, y);
+                    this.grid[y][x] = new Lieutenant(this.joueur.color);
                     break;
                 case '6':
-                    this.grid[y][x] = new Capitaine(this.joueur.color, x, y);
+                    this.grid[y][x] = new Capitaine(this.joueur.color);
                     break;
                 case '7':
-                    this.grid[y][x] = new Commandant(this.joueur.color, x, y);
+                    this.grid[y][x] = new Commandant(this.joueur.color);
                     break;
                 case '8':
-                    this.grid[y][x] = new Colonel(this.joueur.color, x, y);
+                    this.grid[y][x] = new Colonel(this.joueur.color);
                     break;
                 case '9':
-                    this.grid[y][x] = new General(this.joueur.color, x, y);
+                    this.grid[y][x] = new General(this.joueur.color);
                     break;
                 case '10':
-                    this.grid[y][x] = new Marechal(this.joueur.color, x, y);
+                    this.grid[y][x] = new Marechal(this.joueur.color);
                     break;
                 case '11':
-                    this.grid[y][x] = new Drapeau(this.joueur.color, x, y);
+                    this.grid[y][x] = new Drapeau(this.joueur.color);
                     break;
                 case '12':
-                    this.grid[y][x] = new Bombe(this.joueur.color, x, y);
+                    this.grid[y][x] = new Bombe(this.joueur.color);
                     break;
                 default:
                     break;
@@ -181,6 +175,18 @@ class Stratego {
             }
         }
     }
+
+    //enleve un pion du plateau
+    enlever(joueur, x, y, value) {
+        this.modif_grid(x, y, undefined);
+        if (joueur === this.joueur_rouge) {
+            this.joueur_rouge.pions_en_jeu[value - 1] -= 1;
+        } else {
+            this.joueur_bleu.pions_en_jeu[value - 1] -= 1;
+        }
+    }
+
+
 
     //regarde si la partie peut etre lancer
     pret(joueur){
@@ -223,7 +229,7 @@ class Stratego {
         let capa_copie;
 
         // vérifie que la case cliqué contient un pion
-        if (pion !== undefined && pion.color === this.getCurrentPlayer() && !this.isFinished()) {
+        if (pion !== undefined && pion.color === this.getCurrentPlayer()) {
             capa_copie = pion.capacite_de_deplacement;
 
             // parcours la liste des possibilités de déplacements du pions
@@ -232,10 +238,9 @@ class Stratego {
 
                     // vérifie que les coordonnées sont dans le tableau
                     if (0 < (capa[0] + pion.x) < 9 && 0 < (capa[1] + pion.y) < 9) {
-                        // récupère la case de la position                      pk capa[1]???????
+                        // récupère la case de la position
                         case_tmp = this.getCaseState(capa[0] + pion.x, capa[1] + pion.y);
 
-                        //le 2 devrais poser probleme
                         if (case_tmp === undefined) { // si la case est vide, alors on peut se déplacer dessus
                             list_deplacement.push([capa[0] + pion.x, capa[1] + pion.y]);
                         } else if (case_tmp.color !== pion.color) { // sinon on vérifie que c'est un pion ennemi
@@ -265,13 +270,13 @@ class Stratego {
     // déplace le pion et vérifie si un pion est mangé
     deplacement(x_clic, y_clic, x_pos, y_pos) {
         // récupère la case
-        let pion = this.getCaseState(x_pos, y_pos);
+        let pion1 = this.getCaseState(x_pos, y_pos);
         let joueur = this.getCurrentPlayer();
 
         // on vérifie que la case de départ n'est pas vide
-        if (pion !== undefined) {
+        if (pion1 !== undefined) {
             // on récupère les endroits où le pion peut se déplacer
-            let list_capa = this.affiche(pion.x, pion.y);
+            let list_capa = this.affiche(pion1.x, pion1.y);
 
             // on parcours le tableau des positions possibles pour le pion de départ
             for (let pos_tmp of list_capa) {
@@ -282,56 +287,83 @@ class Stratego {
                     // si la case sur laquelle on veut aller est un pion
                     if (case_mange !== undefined) {
 
-                        let pion1 = pion.get_pion_type();
-                        let pion2 = case_mange.get_pion_type();
-
                         //d'abord on vérifie que la partie n'est pas gagné
-                        if (pion2.puissance === 11){
+                        if (case_mange.puissance === 11){
                             this.win(joueur); //faire la win
                         }
 
                         //puis si le général est mangé par l'espion
-                        else if (pion1.puissance === 1 && pion2.puissance === 10){
-                            pion2.un_mort();
+                        else if (pion1.puissance === 1 && case_mange.puissance === 10){
+                            if (joueur === this.joueur_bleu) {
+                                this.un_mort(this.joueur_rouge, case_mange.puissance);
+                            }
+                            else {
+                                this.un_mort(this.joueur_bleu, case_mange.puissance);
+                            }
 
-                            pion1.x = x_clic;
-                            pion1.y = y_clic;
-                            this.modif_grid(x_clic, y_clic, pion);
+
+                            this.modif_grid(x_clic, y_clic, pion1);
                             this.modif_grid(x_pos, y_pos, undefined);
                         }
 
-                        //puis si la bombe a été detruite
-                        else if (pion1.puissance === 3 && pion2.puissance === 12){
-                            pion2.un_mort();
+                        //puis si une bombe a été detruite
+                        else if (pion1.puissance === 3 && case_mange.puissance === 12){
+                            if (joueur === this.joueur_bleu) {
+                                this.un_mort(this.joueur_rouge, case_mange.puissance);
+                            }
+                            else {
+                                this.un_mort(this.joueur_bleu, case_mange.puissance);
+                            }
 
-                            pion1.x = x_clic;
-                            pion1.y = y_clic;
-                            this.modif_grid(x_clic, y_clic, pion);
+
+                            this.modif_grid(x_clic, y_clic, pion1);
                             this.modif_grid(x_pos, y_pos, undefined);
                         }
 
                         //si les puissances sont les même
-                        else if (pion1.puissance === pion2.puissance ){
-                            pion1.un_mort();
-                            pion2.un_mort();
+                        else if (pion1.puissance === case_mange.puissance ){
+                            if (joueur === this.joueur_bleu) {
+                                this.un_mort(this.joueur_bleu, pion1.puissance);
+                            }
+                            else {
+                                this.un_mort(this.joueur_rouge, pion1.puissance);
+                            }
+
+                            if (joueur === this.joueur_bleu) {
+                                this.un_mort(this.joueur_rouge, case_mange.puissance);
+                            }
+                            else {
+                                this.un_mort(this.joueur_bleu, case_mange.puissance);
+                            }
+
 
                             this.modif_grid(x_clic, y_clic, undefined);
                             this.modif_grid(x_pos, y_pos, undefined);
                         }
 
                         //si pion est plus puisant que l'adversaire
-                        else if (pion1.puissance >= pion2.puissance){
-                            pion2.un_mort();
+                        else if (pion1.puissance >= case_mange.puissance){
+                            if (joueur === this.joueur_bleu) {
+                                this.un_mort(this.joueur_rouge, case_mange.puissance);
+                            }
+                            else {
+                                this.un_mort(this.joueur_bleu, case_mange.puissance);
+                            }
 
-                            pion1.x = x_clic;
-                            pion1.y = y_clic;
-                            this.modif_grid(x_clic, y_clic, pion);
+
+                            this.modif_grid(x_clic, y_clic, pion1);
                             this.modif_grid(x_pos, y_pos, undefined);
                         }
 
                         //si pion est moins puisant que l'adversaire
-                        else if (pion1.puissance <= pion2.puissance){
-                            pion1.un_mort();
+                        else if (pion1.puissance <= case_mange.puissance){
+                            if (joueur === this.joueur_bleu) {
+                                this.un_mort(this.joueur_bleu, pion1.puissance);
+                            }
+                            else {
+                                this.un_mort(this.joueur_rouge, pion1.puissance);
+                            }
+                            
 
                             this.modif_grid(x_clic, y_clic, undefined);
                         }

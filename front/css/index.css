@@ -9,7 +9,7 @@ p {
 
 body {
     height: 100vh;
-    font-family: 'Courgette' !important;
+    font-family: 'Courgette', sans-serif !important;
     text-align: center !important;
     color: white !important;
     background-color: #3c5cbb !important;

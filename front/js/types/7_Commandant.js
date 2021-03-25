@@ -1,7 +1,7 @@
 // objet contenant le Commandant
 class Commandant extends Pions {
-  constructor(couleur, x, y) {
-    super(couleur, x, y, "Commandant");
+  constructor(couleur) {
+    super(couleur, "Commandant");
     this.init();
   }
 
