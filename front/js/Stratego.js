@@ -182,6 +182,18 @@ class Stratego {
         }
     }
 
+    //enleve un pion du plateau
+    enlever(joueur, x, y, value) {
+        this.modif_grid(x, y, undefined);
+        if (joueur === this.joueur_rouge) {
+            this.joueur_rouge.pions_en_jeu[value - 1] -= 1;
+        } else {
+            this.joueur_bleu.pions_en_jeu[value - 1] -= 1;
+        }
+    }
+
+
+
     //regarde si la partie peut etre lancer
     pret(joueur){
         if (joueur.pions_vivant === joueur.pions_en_jeu) {
