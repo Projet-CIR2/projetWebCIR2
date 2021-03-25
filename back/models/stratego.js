@@ -14,6 +14,7 @@ class Stratego {
     placer(joueur, x, y, value) {
         console.log('place');
         this.socket.emit('affichePion', 'espion', x, y);
+        this.socket.emit('modifNombrePion', value, 10)
     }
 }
 

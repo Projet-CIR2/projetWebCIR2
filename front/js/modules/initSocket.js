@@ -6,6 +6,12 @@ let socketModule = (function () {
         });
     }
 
+    function modifNombrePion() {
+        socket.on('modifNombrePion', (numPion, value) => {
+            view.modifNombrePion(numPion, value);
+        })
+    }
+
     function affichePion() {
         socket.on('affichePion', (type, x, y) => {
             view.affichePion(type, x, y);
@@ -29,6 +35,7 @@ let socketModule = (function () {
             socket = socket_;
             view = view_;
             initJoueur();
+            modifNombrePion();
             affichePion();
             removePion();
             removePions();
