@@ -2,6 +2,7 @@ class StrategoView {
     constructor() {
         this.createListenersTab();
         this.createListenersAjouts();
+        this.listenersDescription();
         this.joueur_courant = 0;
         this.debut = {
             "enJeu": false,
@@ -129,6 +130,55 @@ class StrategoView {
     modifNombrePion(numPion, value) {
         let currentP = document.getElementsByClassName('nb_piece')[numPion - 1];
         currentP.innerText = currentP.innerText.replace(currentP.innerText[1], value);
+    }
+
+    listenersDescription(){
+      let currentDiv = document.getElementById('tabAjout');
+      let currentDescription = document.getElementById('description');
+      for (let i = 0; i < 12; ++i) {
+        console.log("coucou");
+        currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('mouseover', () => {
+          console.log("focus");
+          switch (i) {
+            case 0:
+              currentDescription.textContent = "je suis le un" ;
+              break;
+            case 1:
+              currentDescription.textContent = "je suis le deux" ;
+              break;
+            case 2:
+              currentDescription.textContent =  "je suis le trois" ;
+              break;
+            case 3:
+              currentDescription.textContent =  "je suis le quatre" ;
+              break;
+            case 4:
+              currentDescription.textContent =  "je suis le cinq" ;
+              break;
+            case 5:
+              currentDescription.textContent =  "je suis le six" ;
+              break;
+            case 6:
+              currentDescription.textContent =  "je suis le sept" ;
+              break;
+            case 7:
+              currentDescription.textContent =  "je suis le huit" ;
+              break;
+            case 8:
+              currentDescription.textContent =  "je suis le neuf" ;
+              break;
+            case 9:
+              currentDescription.textContent =  "je suis le dix" ;
+              break;
+            case 10:
+              currentDescription.textContent =  "je suis le onze" ;
+              break;
+            case 11:
+              currentDescription.textContent =  "je suis le douze" ;
+              break;
+          }
+        });
+      }
     }
 
     // initialise le joueur à qui appartient le visuel

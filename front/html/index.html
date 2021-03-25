@@ -2,7 +2,9 @@
 <html lang="fr" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="../css/index.css">
+    <link rel="stylesheet" href="../css/index.css" >
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="../js/modules/moduleLogin.js"></script>
     <title>Stratego</title>
 </head>
 <body>
@@ -15,10 +17,16 @@
     <li><a href="credit.html" title="regarder les crédits">Crédits</a></li>
 </ul>
 
-<div class="log">
-    <a href="login.html" title="">se connecter</a>
-    |
-    <a href="signup.html" title="">s'inscrire</a>
-</div>
+      <div class="log" >
+        <p id="connect">
+          <a href="login.html" title="">se connecter</a>
+          |
+          <a href="signup.html" title="">s'inscrire</a>
+        </p>
+      </div>
 </body>
+<script>
+    let socket = io();
+    log.initSocket(socket);
+</script>
 </html>
