@@ -12,6 +12,12 @@ let socketModule = (function () {
         })
     }
 
+    function affichePlayer() {
+        socket.on('affichePlayer', (joueur) => {
+            view.affichePlayer(joueur);
+        });
+    }
+
     function affichePion() {
         socket.on('affichePion', (type, x, y) => {
             view.affichePion(type, x, y);
@@ -43,6 +49,7 @@ let socketModule = (function () {
             initJoueur();
             modifNombrePion();
             affichePion();
+            affichePlayer();
             removePion();
             removePions();
             removeTabAjout();

@@ -10,6 +10,7 @@ class StrategoView {
             "value": -1,
             "case": [-1, -1]
         };
+        this.affichePlayer(this.joueur_courant);
     }
 
     createListenersTab() {
@@ -26,9 +27,7 @@ class StrategoView {
                             // si le click précédent était sur la tab ajout
                             if (this.debut.value !== -1) {
                                 if ((this.joueur_courant && j < 4) || (j > 5 && !this.joueur_courant)) {
-
                                     currentTab = currentDiv.rows[j].cells[i];
-                                    if (currentTab.firstChild !== null) currentTab.removeChild(currentTab.firstChild);
 
                                     socket.emit('placePion', this.joueur_courant, i, j, this.debut.value + 1);
                                     document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
@@ -87,9 +86,6 @@ class StrategoView {
                     if (this.debut.case.every(element => element !== -1)) {
                         currentTab = document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]];
 
-                        // permet de remplacer le pion précédent
-                        if (currentTab.firstChild !== null) currentTab.removeChild(currentTab.firstChild);
-
                         socket.emit('placePion', this.joueur_courant, this.debut.case[0], this.debut.case[1], i + 1);
                         currentTab.removeAttribute('style');
                         this.debut.click = false;
@@ -136,9 +132,7 @@ class StrategoView {
       let currentDiv = document.getElementById('tabAjout');
       let currentDescription = document.getElementById('description');
       for (let i = 0; i < 12; ++i) {
-        console.log("coucou");
         currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('mouseover', () => {
-          console.log("focus");
           switch (i) {
             case 0:
               currentDescription.textContent = "je suis le un" ;
@@ -186,9 +180,18 @@ class StrategoView {
         this.joueur_courant = joueur;
     }
 
+
+    affichePlayer(joueur) {
+        let currentP = document.getElementById('joueurQuiJoue');
+        if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + (this.joueur_courant.color ? 'rouge' : 'bleu');
+        else currentP.textContent = "Vous pouvez placer vos pions";
+    }
+
     // affiche le pion de type type à la position x y
     affichePion(type, x, y) {
         let tab = document.getElementById('plateau');
+
+        if (tab.rows[y].cells[x].firstChild !== null) this.removePion(x, y);
 
         let img = document.createElement('img');
         tab.rows[y].cells[x].appendChild(img);
@@ -199,8 +202,8 @@ class StrategoView {
 
     removePion(x, y) {
         let tab = document.getElementById('plateau');
-
-        if (tab.rows[x].cells[y].firstChild !== null) tab.rows[x].cells[y].removeChild(tab.rows[x].cells[y].firstChild);
+        let cell = tab.rows[y].cells[x];
+        if (cell.firstChild !== null) cell.removeChild(cell.firstChild);
     }
 
     // enlève tous les pions
