@@ -363,7 +363,7 @@ class Stratego {
                             else {
                                 this.un_mort(this.joueur_rouge, pion1.puissance);
                             }
-                            
+
 
                             this.modif_grid(x_clic, y_clic, undefined);
                         }
@@ -376,8 +376,31 @@ class Stratego {
     }
 
 
+    //verifie si le joueur donner a encore des pions a deplacer
+    deplacement_possible(joueur){
+        for (let i = 0; i < 10; i++){
+            if (this.joueur.pions_vivant[i] !== 0){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    //verifie que les deux joueurs ne peuvent plus jouer
+    is_egalite(){
+        for (let i = 0; i < 10; i++){
+            if (this.joueur_bleu.pions_vivant[i] !== 0 && this.joueur_rouge.pions_vivant[i] !==0){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     win(joueur){
         this.points_joueur();
+        this.joueur.points += 40;
         this.fini = true;
         return this.getWinner();
     }
