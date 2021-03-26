@@ -376,7 +376,7 @@ class Stratego {
 
 
     //verifie si le joueur donner a encore des pions a deplacer
-    deplacement_possible(joueur){
+    deplacement_impossible(joueur){
         for (let i = 0; i < 10; i++){
             if (this.joueur.pions_vivant[i] !== 0){
                 return false;
