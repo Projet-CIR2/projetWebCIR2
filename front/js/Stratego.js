@@ -11,7 +11,6 @@ class Stratego {
         this.joueur_bleu = new Joueur(0);
         this.joueur_rouge = new Joueur(1);
 
-        this.deja_dans_affiche = false;
         this.egalite = false;
         this.deplacement(x_clic, y_clic, x_pos, y_pos);
         this.init_grid();
@@ -394,6 +393,7 @@ class Stratego {
                 return false;
             }
         }
+        this.egalite = true;
         return true;
     }
 
