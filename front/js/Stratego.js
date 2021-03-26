@@ -382,6 +382,7 @@ class Stratego {
                 return false;
             }
         }
+        this.tour += 1;
         return true;
     }
 
@@ -393,6 +394,7 @@ class Stratego {
                 return false;
             }
         }
+        this.points_joueur();
         this.egalite = true;
         return true;
     }
