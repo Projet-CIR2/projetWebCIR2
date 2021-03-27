@@ -268,110 +268,127 @@ class Stratego {
 
     // déplace le pion et vérifie si un pion est mangé
     deplacement(x_clic, y_clic, x_pos, y_pos) {
-        // récupère la case
-        let pion1 = this.getCaseState(x_pos, y_pos);
-        let joueur = this.getCurrentPlayer();
+        //verifi que la partie n'est pas fini
+        if (this.egalite === false || this.fini === false) {
 
-        // on vérifie que la case de départ n'est pas vide
-        if (pion1 !== undefined) {
-            // on récupère les endroits où le pion peut se déplacer
-            let list_capa = this.affiche(pion1.x, pion1.y);
+            // récupère la case
+            let pion1 = this.getCaseState(x_pos, y_pos);
+            let joueur = this.getCurrentPlayer();
 
-            // on parcours le tableau des positions possibles pour le pion de départ
-            for (let pos_tmp of list_capa) {
-                // on vérifie que la case cliqué appartient à la liste des positions de déplacement
-                if (pos_tmp.join() === [x_clic, y_clic].join()) {
+            // on vérifie que la case de départ n'est pas vide
+            if (pion1 !== undefined) {
+                // on récupère les endroits où le pion peut se déplacer
+                let list_capa = this.affiche(pion1.x, pion1.y);
 
-                    let case_mange = this.getCaseState(x_clic, y_clic);
-                    // si la case sur laquelle on veut aller est un pion
-                    if (case_mange !== undefined) {
+                // on parcours le tableau des positions possibles pour le pion de départ
+                for (let pos_tmp of list_capa) {
+                    // on vérifie que la case cliqué appartient à la liste des positions de déplacement
+                    if (pos_tmp.join() === [x_clic, y_clic].join()) {
 
-                        //d'abord on vérifie que la partie n'est pas gagné
-                        if (case_mange.puissance === 11){
-                            this.win(joueur); //faire la win
+                        let case_mange = this.getCaseState(x_clic, y_clic);
+                        // si la case sur laquelle on veut aller est un pion
+                        if (case_mange !== undefined) {
+
+                            //d'abord on vérifie que la partie n'est pas gagné
+                            if (case_mange.puissance === 11) {
+                                this.win(joueur); //faire la win
+                            }
+
+                            //puis si le général est mangé par l'espion
+                            else if (pion1.puissance === 1 && case_mange.puissance === 10) {
+                                if (joueur === this.joueur_bleu) {
+                                    this.un_mort(this.joueur_rouge, case_mange.puissance);
+                                } else {
+                                    this.un_mort(this.joueur_bleu, case_mange.puissance);
+                                }
+
+                                this.pion1.visible = 1;
+                                this.case_manger.visible = 1;
+
+
+                                this.modif_grid(x_clic, y_clic, pion1);
+                                this.modif_grid(x_pos, y_pos, undefined);
+                            }
+
+                            //puis si une bombe a été detruite
+                            else if (pion1.puissance === 3 && case_mange.puissance === 12) {
+                                if (joueur === this.joueur_bleu) {
+                                    this.un_mort(this.joueur_rouge, case_mange.puissance);
+                                } else {
+                                    this.un_mort(this.joueur_bleu, case_mange.puissance);
+                                }
+
+
+                                this.pion1.visible = 1;
+                                this.case_manger.visible = 1;
+
+
+                                this.modif_grid(x_clic, y_clic, pion1);
+                                this.modif_grid(x_pos, y_pos, undefined);
+                            }
+
+                            //si les puissances sont les même
+                            else if (pion1.puissance === case_mange.puissance) {
+                                if (joueur === this.joueur_bleu) {
+                                    this.un_mort(this.joueur_bleu, pion1.puissance);
+                                } else {
+                                    this.un_mort(this.joueur_rouge, pion1.puissance);
+                                }
+
+                                if (joueur === this.joueur_bleu) {
+                                    this.un_mort(this.joueur_rouge, case_mange.puissance);
+                                } else {
+                                    this.un_mort(this.joueur_bleu, case_mange.puissance);
+                                }
+
+
+                                this.pion1.visible = 1;
+                                this.case_manger.visible = 1;
+
+
+                                this.modif_grid(x_clic, y_clic, undefined);
+                                this.modif_grid(x_pos, y_pos, undefined);
+                            }
+
+                            //si pion est plus puisant que l'adversaire
+                            else if (pion1.puissance >= case_mange.puissance) {
+                                if (joueur === this.joueur_bleu) {
+                                    this.un_mort(this.joueur_rouge, case_mange.puissance);
+                                } else {
+                                    this.un_mort(this.joueur_bleu, case_mange.puissance);
+                                }
+
+
+                                this.pion1.visible = 1;
+                                this.case_manger.visible = 1;
+
+
+                                this.modif_grid(x_clic, y_clic, pion1);
+                                this.modif_grid(x_pos, y_pos, undefined);
+                            }
+
+                            //si pion est moins puisant que l'adversaire
+                            else if (pion1.puissance <= case_mange.puissance) {
+                                if (joueur === this.joueur_bleu) {
+                                    this.un_mort(this.joueur_bleu, pion1.puissance);
+                                } else {
+                                    this.un_mort(this.joueur_rouge, pion1.puissance);
+                                }
+
+
+                                this.pion1.visible = 1;
+                                this.case_manger.visible = 1;
+
+
+                                this.modif_grid(x_clic, y_clic, undefined);
+                            }
                         }
-
-                        //puis si le général est mangé par l'espion
-                        else if (pion1.puissance === 1 && case_mange.puissance === 10){
-                            if (joueur === this.joueur_bleu) {
-                                this.un_mort(this.joueur_rouge, case_mange.puissance);
-                            }
-                            else {
-                                this.un_mort(this.joueur_bleu, case_mange.puissance);
-                            }
-
-
-                            this.modif_grid(x_clic, y_clic, pion1);
-                            this.modif_grid(x_pos, y_pos, undefined);
-                        }
-
-                        //puis si une bombe a été detruite
-                        else if (pion1.puissance === 3 && case_mange.puissance === 12){
-                            if (joueur === this.joueur_bleu) {
-                                this.un_mort(this.joueur_rouge, case_mange.puissance);
-                            }
-                            else {
-                                this.un_mort(this.joueur_bleu, case_mange.puissance);
-                            }
-
-
-                            this.modif_grid(x_clic, y_clic, pion1);
-                            this.modif_grid(x_pos, y_pos, undefined);
-                        }
-
-                        //si les puissances sont les même
-                        else if (pion1.puissance === case_mange.puissance ){
-                            if (joueur === this.joueur_bleu) {
-                                this.un_mort(this.joueur_bleu, pion1.puissance);
-                            }
-                            else {
-                                this.un_mort(this.joueur_rouge, pion1.puissance);
-                            }
-
-                            if (joueur === this.joueur_bleu) {
-                                this.un_mort(this.joueur_rouge, case_mange.puissance);
-                            }
-                            else {
-                                this.un_mort(this.joueur_bleu, case_mange.puissance);
-                            }
-
-
-                            this.modif_grid(x_clic, y_clic, undefined);
-                            this.modif_grid(x_pos, y_pos, undefined);
-                        }
-
-                        //si pion est plus puisant que l'adversaire
-                        else if (pion1.puissance >= case_mange.puissance){
-                            if (joueur === this.joueur_bleu) {
-                                this.un_mort(this.joueur_rouge, case_mange.puissance);
-                            }
-                            else {
-                                this.un_mort(this.joueur_bleu, case_mange.puissance);
-                            }
-
-
-                            this.modif_grid(x_clic, y_clic, pion1);
-                            this.modif_grid(x_pos, y_pos, undefined);
-                        }
-
-                        //si pion est moins puisant que l'adversaire
-                        else if (pion1.puissance <= case_mange.puissance){
-                            if (joueur === this.joueur_bleu) {
-                                this.un_mort(this.joueur_bleu, pion1.puissance);
-                            }
-                            else {
-                                this.un_mort(this.joueur_rouge, pion1.puissance);
-                            }
-
-
-                            this.modif_grid(x_clic, y_clic, undefined);
-                        }
+                        return true;
                     }
-                    return true;
                 }
             }
+            return false;
         }
-        return false;
     }
 
 
@@ -387,7 +404,7 @@ class Stratego {
     }
 
 
-    //verifie que les deux joueurs ne peuvent plus jouer
+    //verifie que les deux joueurs ne peuvent plus jouer et fin de partie si c'est le cas
     is_egalite(){
         for (let i = 0; i < 10; i++){
             if (this.joueur_bleu.pions_vivant[i] !== 0 && this.joueur_rouge.pions_vivant[i] !==0){

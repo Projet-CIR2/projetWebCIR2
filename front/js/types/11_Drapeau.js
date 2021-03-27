@@ -7,5 +7,6 @@ class Drapeau extends Pions {
 
   init() {
     this.puissance = 11;
+    this.visible = 0;
   }
 }

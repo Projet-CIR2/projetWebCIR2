@@ -8,5 +8,6 @@ class General extends Pions {
   init() {
     this.capacite_de_deplacement.push([[+1, 0]], [[-1, 0]], [[0, -1]], [[0, +1]]);
     this.puissance = 9;
+    this.visible = 0;
   }
 }

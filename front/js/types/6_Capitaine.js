@@ -8,5 +8,6 @@ class Capitaine extends Pions {
   init() {
     this.capacite_de_deplacement.push([[+1, 0]], [[-1, 0]], [[0, -1]], [[0, +1]]);
     this.puissance = 6;
+    this.visible = 0;
   }
 }

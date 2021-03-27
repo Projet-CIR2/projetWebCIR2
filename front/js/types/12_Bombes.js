@@ -7,5 +7,6 @@ class Bombe extends Pions {
 
   init() {
     this.puissance = 12;
+    this.visible = 0;
   }
 }
