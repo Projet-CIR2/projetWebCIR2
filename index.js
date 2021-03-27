@@ -14,15 +14,13 @@ const { body, validationResult } = require('express-validator');
 const session = require('express-session')({
     secret: "30cm",
     resave: true,
-    saveUninitialized: true, 
+    saveUninitialized: true,
     cookie: {
         maxAge: 5*60*60*1000,
         secure: false,
     }
 
 });
-
-
 
 /* Import libs */
 const matchmaking = require("./back/matchmaking");
@@ -44,8 +42,8 @@ io.use(sharedsession(session, {
 //*** CODE ***//
 app.get('/', (req,res) => {
     let sessionData = req.session;
-    res.sendFile(__dirname + "/front/html/index.html");
-   
+    res.sendFile(__dirname + "/front/html/jeu.html");
+
 });
 
 app.get('/login.html', (req,res) =>{
@@ -61,8 +59,6 @@ app.get('/login.html', (req,res) =>{
 app.get('/signup.html', (req,res) =>{
     let sessionData = req.session;
     res.sendFile(__dirname + "/front/html/signup.html");
-
-    
 });
 
 
@@ -82,7 +78,6 @@ app.get('/attente.html', (req,res) =>{
     }
 
     res.sendFile(__dirname + "/front/html/attente.html");
-
 });
 
 
@@ -98,7 +93,7 @@ app.post('/login',  (req,res) =>{
         console.log("Big oof", errors);
     }
     else{
-        
+
         let sql = 'SELECT *FROM session WHERE Pseudo = \'' + logName + '\' AND Mdp = \'' + logPassword + '\'';
         con.query(sql, (err, result) => {
 
@@ -122,10 +117,10 @@ app.post('/login',  (req,res) =>{
                 //socket.emit('Pseudo', logName);
                 res.redirect('/');
             }
-        });    
-    
+        });
+
     }
-    
+
 });
 
 app.post('/signup', (req,res) =>{
@@ -182,8 +177,7 @@ const con = mysql.createConnection({
 con.connect(err=>{
     if (err) throw err;
     else console.log('Connexion reussie !');
-})
-
+});
 
 /************* Matchmaking **************/
 

@@ -1,7 +1,7 @@
 // objet contenant le Général
 class General extends Pions {
-  constructor(couleur, x, y) {
-    super(couleur, x, y, "Général");
+  constructor(couleur) {
+    super(couleur, "Général");
     this.init();
   }
 

@@ -1,7 +1,7 @@
 // objet contenant le Maréchal
 class Marechal extends Pions {
-  constructor(couleur, x, y) {
-    super(couleur, x, y, "Maréchal");
+  constructor(couleur) {
+    super(couleur, "Maréchal");
     this.init();
   }
 
