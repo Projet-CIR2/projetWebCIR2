@@ -7,8 +7,6 @@ class Pions {
     this.visible = 0; //la piece est-elle visible pour le joueur adverse
     this.capacite_de_deplacement = []; // liste des positions où peut se déplacer le pion autour de lui même
   }
-
-  get_pion_type() {
-    return this.type;
-  }
 }
+
+module.exports = Pions;
