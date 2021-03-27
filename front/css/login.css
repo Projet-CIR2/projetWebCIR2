@@ -1,50 +1,49 @@
-body{
+body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    height: 100vh;
     background-image: url("../assets/background_login.png");
     background-size: cover;
     padding-left: 3vmin;
 }
 
-label{
-  background-color: #3333333d;
-  color: #ffffff;
-  border-radius: 20px;
+label {
+    background-color: #3333334d;
+    color: #ffffff;
+    border-radius: 20px;
 }
 
-#trois{
-  background-color: #3333333d;
-  position: absolute;
-  font-style: italic;
-  font-size: 14px;
-  text-decoration: none;
-  color: #ffffff;
-  margin-top: 1vmin;
-  margin-left: -10vmin;
-  border-radius: 20px;
+#trois {
+    background-color: #3333334d;
+    font-style: italic;
+    font-size: 14px;
+    text-decoration: none;
+    color: #ffffff;
+    margin-top: 1vmin;
+    text-align: center;
+    border-radius: 20px;
 }
 
-#trois:hover{
-  color: red;
+#trois:hover {
+    color: red;
 }
 
-#titre{
-  background-color: #3333333d;
-  width: 45vmin;
-  color: #ffffff;
-  margin-bottom: 10vmin;
-  border-radius: 20px;
+#titre {
+    background-color: #3333334d;
+    width: 45vmin;
+    color: #ffffff;
+    margin-bottom: 10vmin;
+    border-radius: 20px;
 }
 
-#button_log{
-  margin-top: -1vmin;
+#button_log {
+    margin-top: -1vmin;
 }
 
 
 input[type=text], input[type=password] {
     width: 35vmin;
     height: 5vmin;
-    margin-top:3vmin;
-    margin-bottom:2vmin;
+    margin-top: 3vmin;
+    margin-bottom: 2vmin;
     display: block;
-    float: inline-start;
-  }
+}
