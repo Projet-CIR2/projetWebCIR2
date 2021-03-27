@@ -26,8 +26,8 @@ const session = require('express-session')({
 
 
 /* Import libs */
-const checkConnection = require("./back/connection/checkConnection");
-
+const matchmaking = require("./back/matchmaking");
+const room = require("./back/models/room")
 
 /* config */
 const jsonParser = bodyParser.json();
@@ -65,6 +65,27 @@ app.get('/signup.html', (req,res) =>{
 
     
 });
+
+
+app.get('/attente.html', (req,res) =>{
+    let sessionData = req.session;
+
+    if(req.session.inQueue == undefined){
+        waitingQueue.push(matchmaking.getPlayerName(sessionData));
+        console.log(waitingQueue);
+        req.session.inQueue = true;
+        req.session.save();
+    }
+    while(waitingQueue.length >= 2){
+        rooms.push(new room(waitingQueue[0], waitingQueue[1]));
+        waitingQueue.shift(); waitingQueue.shift();
+        console.log(rooms);
+    }
+
+    res.sendFile(__dirname + "/front/html/attente.html");
+
+});
+
 
 
 
@@ -146,14 +167,14 @@ io.on('connection', (socket) =>{
 });
 
 
-http.listen(4200, () => {
+http.listen(3306, () => {
     console.log("Bijour vous m'entendii ?")
 });
 
 // Initialisation de la connexion à la bdd
 const con = mysql.createConnection({
-    host: "localhost",
-    user: "root",
+    host: "nicob.space",
+    user: "projetCIR2",
     password: "",
     database: "compte"
 });
@@ -166,3 +187,7 @@ con.connect(err=>{
 })
 
 
+/************* Matchmaking **************/
+
+let waitingQueue = [];
+let rooms = [];
