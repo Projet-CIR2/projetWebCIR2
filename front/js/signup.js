@@ -1,12 +1,11 @@
 let form = document.getElementById('form');
 let firstName = document.getElementById('FirstName');
 let lastName = document.getElementById('LastName');
-let mail = document.getElementById('Mail');
 let username = document.getElementById('Pseudo');
 let pwrd = document.getElementById('Password');
 
 form.addEventListener('submit', event=> {
-    console.log(form);
+    console.log(firstName.value,lastName.value,username.value, pwrd.value);
     event.preventDefault();
-    logger.sendLogin(firstName.value,lastName.value,mail.value,username.value, pwrd.value);
+    signuper.sendLogin(firstName.value,lastName.value,username.value, pwrd.value);
 });

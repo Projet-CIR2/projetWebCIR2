@@ -1,64 +1,63 @@
-body{
+body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    height: 100vh;
     background-image: url("../assets/background_signup2.png");
     background-size: cover;
     padding-left: 3vmin;
 }
 
-label{
-  background-color: #3333333d;
-  color: #ffffff;
-  border-radius: 20px;
+label {
+    background-color: #3333334d;
+    color: #ffffff;
+    border-radius: 20px;
 }
 
-#trois{
-  background-color: #3333333d;
-  position: absolute;
-  font-style: italic;
-  font-size: 14px;
-  text-decoration: none;
-  color: #ffffff;
-  margin-top: 40vmin;
-  border-radius: 20px;
+#trois {
+    background-color: #3333334d;
+    position: absolute;
+    font-style: italic;
+    font-size: 14px;
+    text-decoration: none;
+    color: #ffffff;
+    margin-top: 40vmin;
+    border-radius: 20px;
 }
 
-#trois:hover{
-  color: red;
+#trois:hover {
+    color: red;
 }
 
-#titre{
-  background-color: #3333333d;
-  margin-left: 30vmin;
-  width: 45vmin;
-  color: #ffffff;
-  margin-bottom: 10vmin;
-  border-radius: 20px;
+#titre {
+    text-align: center;
+    background-color: #3333334d;
+    margin-left: 30vmin;
+    width: 45vmin;
+    color: #ffffff;
+    margin-bottom: 10vmin;
+    border-radius: 20px;
 }
 
-#un{
-  position: absolute;
-
+#un {
+    position: absolute;
 }
 
-#deux{
-  position: absolute;
-  margin-left: 70vmin;
+#deux {
+    position: absolute;
+    margin-left: 70vmin;
 }
 
 input[type=text], input[type=password] {
     width: 35vmin;
     height: 5vmin;
-    margin-top:3vmin;
-    margin-bottom:2vmin;
+    margin-top: 3vmin;
+    margin-bottom: 2vmin;
     display: block;
-    float: inline-start;
-  }
+}
 
-   input[type=email]{
-     width: 50vmin;
-     height: 5vmin;
-     margin-top:3vmin;
-     margin-bottom:2vmin;
-     display: block;
-     float: inline-start;
-   }
+input[type=email] {
+    width: 50vmin;
+    height: 5vmin;
+    margin-top: 3vmin;
+    margin-bottom: 2vmin;
+    display: block;
+}

@@ -3,8 +3,8 @@
 
 p {
     font-size: 7vw;
-    margin-bottom: 3vw ;
-    margin-top: 2vw ;
+    margin-bottom: 3vw;
+    margin-top: 2vw;
 }
 
 body {
@@ -14,7 +14,7 @@ body {
     color: white;
     background-color: #3c5cbb;
     background-image: url(../assets/marianne.jpg);
-    background-size: 100% auto;
+    background-size: cover;
     overflow: hidden;
     background-repeat: no-repeat;
     background-position-x: center;
@@ -48,18 +48,15 @@ body {
     top: -2vh;
     right: 1vw;
     font-size: 2vw;
-
 }
 
 .log a {
     color: white;
-
 }
 
 .log a:hover, #log a:focus, #log a:active {
     text-decoration: none;
     color: red;
-
 }
 
 html {
@@ -79,5 +76,4 @@ html {
 	width:18vw;
 	background-color:#777d88;
 	opacity:0.70;
-
 }
