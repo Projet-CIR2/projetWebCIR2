@@ -1,3 +1,5 @@
+const Pions = require('../Pions');
+
 // objet contenant la Bombe
 class Bombe extends Pions {
   constructor(couleur) {
@@ -7,5 +9,8 @@ class Bombe extends Pions {
 
   init() {
     this.puissance = 12;
+    this.visible = 0;
   }
 }
+
+module.exports = Bombe;

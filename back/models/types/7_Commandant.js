@@ -1,3 +1,5 @@
+const Pions = require('../Pions');
+
 // objet contenant le Commandant
 class Commandant extends Pions {
   constructor(couleur) {
@@ -8,5 +10,8 @@ class Commandant extends Pions {
   init() {
     this.capacite_de_deplacement.push([[+1, 0]], [[-1, 0]], [[0, -1]], [[0, +1]]);
     this.puissance = 7;
+    this.visible = 0;
   }
 }
+
+module.exports = Commandant;
