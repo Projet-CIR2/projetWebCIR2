@@ -213,7 +213,7 @@ class StrategoView {
         for (let j = 0; j < 10; j++) {
             for (let i = 0; i < 10; i++) {
                 if (tab.rows[i].cells[j].firstChild !== null) {
-                    tab.rows[i].cells[j].removeChild(tab.rows[i].cells[j].firstChild);
+                    if (tab.rows[i].cells[j].firstChild.getAttribute('src') !== '../assets/volcan.png') tab.rows[i].cells[j].removeChild(tab.rows[i].cells[j].firstChild);
                 }
             }
         }
