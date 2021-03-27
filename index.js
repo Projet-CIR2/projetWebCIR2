@@ -22,6 +22,10 @@ const session = require('express-session')({
 
 });
 
+/* Import libs */
+const matchmaking = require("./back/matchmaking");
+const room = require("./back/models/room")
+
 /* config */
 const jsonParser = bodyParser.json();
 const urlencodedParser = bodyParser.urlencoded({ extended: false});
@@ -56,6 +60,26 @@ app.get('/signup.html', (req,res) =>{
     let sessionData = req.session;
     res.sendFile(__dirname + "/front/html/signup.html");
 });
+
+
+app.get('/attente.html', (req,res) =>{
+    let sessionData = req.session;
+
+    if(req.session.inQueue == undefined){
+        waitingQueue.push(matchmaking.getPlayerName(sessionData));
+        console.log(waitingQueue);
+        req.session.inQueue = true;
+        req.session.save();
+    }
+    while(waitingQueue.length >= 2){
+        rooms.push(new room(waitingQueue[0], waitingQueue[1]));
+        waitingQueue.shift(); waitingQueue.shift();
+        console.log(rooms);
+    }
+
+    res.sendFile(__dirname + "/front/html/attente.html");
+});
+
 
 
 
@@ -99,6 +123,25 @@ app.post('/login',  (req,res) =>{
 
 });
 
+app.post('/signup', (req,res) =>{
+
+    const values = {
+        logName = req.body.pseudo,
+        logPassword = req.body.passwrd,
+        Victory=0,
+        Defeat=0,
+        adressmail= req.body.adrmail,
+        firstName = req.body.fName,
+        lastName = req.body.lName,
+    }
+
+    let sql = "INSERT INTO session SET ?";  
+        con.query(sql, values, (err, result) => {
+            if (err) throw err;
+            console.log("One Session inserted");
+        });
+});
+
 
 
 
@@ -118,7 +161,7 @@ io.on('connection', (socket) =>{
 });
 
 
-http.listen(4200, () => {
+http.listen(3306, () => {
     console.log("Bijour vous m'entendii ?")
 });
 
@@ -135,4 +178,9 @@ const con = mysql.createConnection({
 con.connect(err=>{
     if (err) throw err;
     else console.log('Connexion reussie !');
-})
+});
+
+/************* Matchmaking **************/
+
+let waitingQueue = [];
+let rooms = [];
