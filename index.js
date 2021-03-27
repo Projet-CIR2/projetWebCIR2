@@ -114,7 +114,7 @@ app.post('/login',  (req,res) =>{
                 req.session.logPassword = logPassword;
                 req.session.connect = true;
                 req.session.save();
-                socket.emit('Pseudo', logName);
+                //socket.emit('Pseudo', logName);
                 res.redirect('/');
             }
         });
@@ -126,13 +126,12 @@ app.post('/login',  (req,res) =>{
 app.post('/signup', (req,res) =>{
 
     const values = {
-        logName = req.body.pseudo,
-        logPassword = req.body.passwrd,
-        Victory=0,
-        Defeat=0,
-        adressmail= req.body.adrmail,
-        firstName = req.body.fName,
-        lastName = req.body.lName,
+        Pseudo : req.body.pseudo,
+        Mdp : req.body.passwrd,
+        Victoire :0,
+        defaite :0,
+        Nom : req.body.fName,
+        Prenom : req.body.lName,
     }
 
     let sql = "INSERT INTO session SET ?";  
@@ -161,7 +160,7 @@ io.on('connection', (socket) =>{
 });
 
 
-http.listen(3306, () => {
+http.listen(4200, () => {
     console.log("Bijour vous m'entendii ?")
 });
 
