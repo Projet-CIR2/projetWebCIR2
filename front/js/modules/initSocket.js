@@ -1,5 +1,6 @@
 let socketModule = (function () {
     let socket, view;
+
     function initJoueur() {
         socket.on('initJoueur', (joueur) => {
             view.affichePion(joueur);
@@ -19,8 +20,8 @@ let socketModule = (function () {
     }
 
     function affichePion() {
-        socket.on('affichePion', (type, x, y) => {
-            view.affichePion(type, x, y);
+        socket.on('affichePion', (type, x, y, joueur) => {
+            view.affichePion(type, x, y, joueur);
         });
     }
 

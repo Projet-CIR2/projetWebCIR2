@@ -40,7 +40,9 @@ const Bombes = require('./types/12_Bombes');
 }*/
 
 class Stratego {
-    constructor() {
+    constructor(socket) {
+        this.socket = socket;
+
         this.grid = []; // tableau de position en 10*10
         this.grid_default = [];
         this.tour = 0; // nombre pair : joueur 0, nombre impair : joueur 1
@@ -49,8 +51,11 @@ class Stratego {
         this.joueur_bleu = new Joueur(0);
         this.joueur_rouge = new Joueur(1);
 
+        ///////////////// A modifier
+        this.socket.emit('initJoueur', this.joueur_bleu);
+        this.socket.emit('initJoueur', this.joueur_rouge);
+
         this.egalite = false;
-        // this.deplacement(x_clic, y_clic, x_pos, y_pos);
         this.init_grid();
         this.reset();
     }
@@ -91,6 +96,9 @@ class Stratego {
         this.tour = 0;
         this.fini = undefined;
         this.egalite = false;
+
+        ///////////////// A modifier
+        this.socket.emit('removePions');
     }
 
     peut_placer_ses_pions(joueur, x, y) {
@@ -133,6 +141,7 @@ class Stratego {
         // vérifie que les coordonnées sont dans la grille
         if (0 <= x <= 9 && 0 <= y <= 9) {
             this.grid[y][x] = value;
+
             return true;
         }
         return false;
@@ -204,6 +213,9 @@ class Stratego {
         if (this.peut_placer_ses_pions(joueur, x, y) === true) {
             this.modif_grid_placer(joueur, x, y, value);
 
+            ///////////////// A modifier
+            this.socket.emit('affichePion', this.grid[y][x].type, x, y, joueur);
+
             if (joueur === this.joueur_rouge) {
                 this.joueur_rouge.pions_en_jeu[value - 1] += 1;
             }
@@ -215,14 +227,18 @@ class Stratego {
 
     //enleve un pion du plateau
     enlever(joueur, x, y, value) {
-        this.modif_grid(x, y, undefined);
         if (joueur === this.joueur_rouge) {
-            this.joueur_rouge.pions_en_jeu[value - 1] -= 1;
+            this.joueur_rouge.pions_en_jeu[this.getCaseState().value - 1] -= 1;
         } else {
-            this.joueur_bleu.pions_en_jeu[value - 1] -= 1;
+            this.joueur_bleu.pions_en_jeu[this.getCaseState().value - 1] -= 1;
         }
+        this.modif_grid(x, y, undefined);
+
+        ///////////////// A modifier
+        this.socket.emit('removePion', x, y);
     }
 
+    // retourne le type d'un pion en fonction de sa valeur
 
 
     //regarde si la partie peut etre lancer

@@ -53,7 +53,7 @@ class StrategoView {
                                     this.debut.case = [-1, -1];
 
                                     // on supprime le pion sur cette case
-                                    if (currentTab.firstChild !== null) currentTab.removeChild(currentTab.firstChild);
+                                    if (currentTab.firstChild !== null) socket.emit('enlever', this.joueur_courant, i, j);
                                 }
                             }
                         }
@@ -188,7 +188,7 @@ class StrategoView {
     }
 
     // affiche le pion de type type à la position x y
-    affichePion(type, x, y) {
+    affichePion(type, x, y, joueur) {
         let tab = document.getElementById('plateau');
 
         if (tab.rows[y].cells[x].firstChild !== null) this.removePion(x, y);
@@ -196,8 +196,14 @@ class StrategoView {
         let img = document.createElement('img');
         tab.rows[y].cells[x].appendChild(img);
         img.setAttribute('class', 'piece');
-        img.setAttribute('alt', type + this.joueur_courant.color ? ' rouge' : ' bleu');
-        img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
+        if (joueur === this.joueur_courant) {
+            img.setAttribute('alt', type + this.joueur_courant.color ? ' rouge' : ' bleu');
+            img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
+        }
+        else {
+            img.setAttribute('alt', 'dos' + !this.joueur_courant.color ? ' rouge' : ' bleu');
+            img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + 'dos.png');
+        }
     }
 
     removePion(x, y) {
