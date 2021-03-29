@@ -52,7 +52,7 @@ class Stratego {
         this.joueur_rouge = new Joueur(1);
 
         ///////////////// A modifier
-        this.socket.emit('initJoueur', this.joueur_bleu);
+        this.socket.emit('initJoueur', this.joueur_rouge);
         // this.socket.emit('initJoueur', this.joueur_rouge);
 
         this.egalite = false;
@@ -249,7 +249,7 @@ class Stratego {
         ///////////////// A modifier
         this.socket.emit('removePion', x, y);
     }
-    
+
     //regarde si la partie peut etre lancer
     pret(joueur){
         if (joueur.pions_vivant === joueur.pions_en_jeu) {

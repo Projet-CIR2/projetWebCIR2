@@ -1,8 +1,5 @@
 class StrategoView {
     constructor() {
-        this.createListenersTab();
-        this.createListenersAjouts();
-        this.listenersDescription();
         this.joueur_courant = 0;
         this.debut = {
             "enJeu": false,
@@ -11,7 +8,50 @@ class StrategoView {
             "value": -1,
             "case": [-1, -1]
         };
-        this.affichePlayer(this.joueur_courant);
+
+        this.initTab();
+        this.createListenersTab();
+        this.createListenersAjouts();
+        this.listenersDescription();
+    }
+
+    initTab() {
+        let currentDiv = document.getElementById('plateau');
+        let tr, td, img;
+
+        for (let j = 0; j < 10; ++j) {
+            tr = document.createElement('tr');
+            for (let i = 0; i < 10; ++i) {
+                td = document.createElement('td');
+
+                if (((2 <= i && i <= 3 ) || (6 <= i && i <= 7)) && (4 <= j && j <= 5)) {
+                    img = document.createElement('img');
+                    img.setAttribute('class', 'piece');
+                    img.setAttribute('src', '../assets/volcan.png');
+                    img.setAttribute('alt', 'volcan');
+
+                    td.appendChild(img)
+                }
+
+                tr.appendChild(td);
+            }
+            currentDiv.appendChild(tr);
+        }
+    }
+
+    initAjout() {
+        let tabImg = document.getElementsByClassName('piece');
+        let src;
+
+        if (this.joueur_courant.color) {
+            for (let currentImg of tabImg) {
+                if (currentImg.getAttribute('alt') !== 'volcan') {
+                    src = currentImg.getAttribute('src');
+                    src = src.replace('bleu', 'rouge');
+                    currentImg.setAttribute('src', src);
+                }
+            }
+        }
     }
 
     createListenersTab() {
@@ -98,8 +138,7 @@ class StrategoView {
                             this.debut.case = [-1, -1];
                             this.modifNombrePion(i, Number(currentCell.textContent[1]) - 1)
                         }
-                    }
-                    else {
+                    } else {
                         currentTab = currentDiv.rows[Math.trunc(i / 5)].cells[i % 5];
 
                         // cas où on click deux fois de suite sur deux cases de tab ajout différentes
@@ -145,63 +184,66 @@ class StrategoView {
         let currentLabel = document.getElementById('compteur');
         currentLabel.textContent = value;
 
-        if (value === 30) {
+        if (value === 40) {
             let currentButton = document.getElementById('bouton_placement');
             currentButton.removeAttribute('disabled');
             currentButton.setAttribute('enabled', '');
         }
     }
 
-    listenersDescription(){
-      let currentDiv = document.getElementById('tabAjout');
-      let currentDescription = document.getElementById('description');
-      for (let i = 0; i < 12; ++i) {
-        currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('mouseover', () => {
-          switch (i) {
-            case 0:
-              currentDescription.textContent = "je suis le un" ;
-              break;
-            case 1:
-              currentDescription.textContent = "je suis le deux" ;
-              break;
-            case 2:
-              currentDescription.textContent =  "je suis le trois" ;
-              break;
-            case 3:
-              currentDescription.textContent =  "je suis le quatre" ;
-              break;
-            case 4:
-              currentDescription.textContent =  "je suis le cinq" ;
-              break;
-            case 5:
-              currentDescription.textContent =  "je suis le six" ;
-              break;
-            case 6:
-              currentDescription.textContent =  "je suis le sept" ;
-              break;
-            case 7:
-              currentDescription.textContent =  "je suis le huit" ;
-              break;
-            case 8:
-              currentDescription.textContent =  "je suis le neuf" ;
-              break;
-            case 9:
-              currentDescription.textContent =  "je suis le dix" ;
-              break;
-            case 10:
-              currentDescription.textContent =  "je suis le onze" ;
-              break;
-            case 11:
-              currentDescription.textContent =  "je suis le douze" ;
-              break;
-          }
-        });
-      }
+    listenersDescription() {
+        let currentDiv = document.getElementById('tabAjout');
+        let currentDescription = document.getElementById('description');
+        for (let i = 0; i < 12; ++i) {
+            currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('mouseover', () => {
+                switch (i) {
+                    case 0:
+                        currentDescription.textContent = "je suis le un";
+                        break;
+                    case 1:
+                        currentDescription.textContent = "je suis le deux";
+                        break;
+                    case 2:
+                        currentDescription.textContent = "je suis le trois";
+                        break;
+                    case 3:
+                        currentDescription.textContent = "je suis le quatre";
+                        break;
+                    case 4:
+                        currentDescription.textContent = "je suis le cinq";
+                        break;
+                    case 5:
+                        currentDescription.textContent = "je suis le six";
+                        break;
+                    case 6:
+                        currentDescription.textContent = "je suis le sept";
+                        break;
+                    case 7:
+                        currentDescription.textContent = "je suis le huit";
+                        break;
+                    case 8:
+                        currentDescription.textContent = "je suis le neuf";
+                        break;
+                    case 9:
+                        currentDescription.textContent = "je suis le dix";
+                        break;
+                    case 10:
+                        currentDescription.textContent = "je suis le onze";
+                        break;
+                    case 11:
+                        currentDescription.textContent = "je suis le douze";
+                        break;
+                }
+            });
+        }
     }
 
     // initialise le joueur à qui appartient le visuel
     initJoueur(joueur) {
         this.joueur_courant = joueur;
+        this.affichePlayer(joueur);
+
+        this.initAjout();
     }
 
 
@@ -224,8 +266,7 @@ class StrategoView {
         if (joueur.color === this.joueur_courant.color) {
             img.setAttribute('alt', type + (this.joueur_courant.color ? ' rouge' : ' bleu'));
             img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
-        }
-        else {
+        } else {
             img.setAttribute('alt', 'dos' + (this.joueur_courant.color ? ' rouge' : ' bleu'));
             img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + 'dos.png');
         }
