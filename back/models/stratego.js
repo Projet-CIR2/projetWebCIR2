@@ -249,10 +249,7 @@ class Stratego {
         ///////////////// A modifier
         this.socket.emit('removePion', x, y);
     }
-
-    // retourne le type d'un pion en fonction de sa valeur
-
-
+    
     //regarde si la partie peut etre lancer
     pret(joueur){
         if (joueur.pions_vivant === joueur.pions_en_jeu) {

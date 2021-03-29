@@ -6,6 +6,7 @@ class StrategoView {
         this.joueur_courant = 0;
         this.debut = {
             "enJeu": false,
+            "pret": false,
             "click": false,
             "value": -1,
             "case": [-1, -1]
@@ -21,7 +22,7 @@ class StrategoView {
             for (let i = 0; i < 10; ++i) {
                 currentDiv.rows[j].cells[i].addEventListener('click', () => {
                     if (this.debut.enJeu) socket.emit('play', i, j);
-                    else {
+                    else if (!this.debut.pret) {
                         // si un click a déjà été fais
                         if (this.debut.click) {
                             // si le click précédent était sur la tab ajout
@@ -129,7 +130,9 @@ class StrategoView {
 
         let currentButton = document.getElementById('bouton_placement');
         currentButton.addEventListener('click', () => {
-            socket.emit('pret', this.joueur_courant);
+            // socket.emit('pret', this.joueur_courant);
+            this.debut.pret = true;
+            this.affichePlayer(this.joueur_courant);
         });
     }
 
@@ -205,6 +208,7 @@ class StrategoView {
     affichePlayer(joueur) {
         let currentP = document.getElementById('joueurQuiJoue');
         if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + (joueur.color ? 'rouge' : 'bleu');
+        else if (this.debut.pret) currentP.textContent = "En attente du joueur adverse";
         else currentP.textContent = "Vous pouvez placer vos pions";
     }
 
