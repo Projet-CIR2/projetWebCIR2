@@ -3,13 +3,19 @@ let socketModule = (function () {
 
     function initJoueur() {
         socket.on('initJoueur', (joueur) => {
-            view.affichePion(joueur);
+            view.initJoueur(joueur);
         });
     }
 
     function modifNombrePion() {
         socket.on('modifNombrePion', (numPion, value) => {
             view.modifNombrePion(numPion, value);
+        })
+    }
+
+    function modifNbPret() {
+        socket.on('modifNbPret', (value) => {
+            view.modifNbPret(value);
         })
     }
 
@@ -49,6 +55,7 @@ let socketModule = (function () {
             view = view_;
             initJoueur();
             modifNombrePion();
+            modifNbPret();
             affichePion();
             affichePlayer();
             removePion();

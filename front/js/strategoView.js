@@ -15,7 +15,7 @@ class StrategoView {
 
     createListenersTab() {
         let currentDiv = document.getElementById('plateau');
-        let currentTab;
+        let currentTab, currentCell;
 
         for (let j = 0; j < 10; ++j) {
             for (let i = 0; i < 10; ++i) {
@@ -26,11 +26,13 @@ class StrategoView {
                         if (this.debut.click) {
                             // si le click précédent était sur la tab ajout
                             if (this.debut.value !== -1) {
-                                if ((this.joueur_courant && j < 4) || (j > 5 && !this.joueur_courant)) {
+                                currentCell = document.getElementsByClassName('nb_piece')[this.debut.value];
+                                if (((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) && currentCell.textContent[1] !== '0') {
                                     currentTab = currentDiv.rows[j].cells[i];
 
                                     socket.emit('placePion', this.joueur_courant, i, j, this.debut.value + 1);
                                     document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
+                                    this.modifNombrePion(this.debut.value, Number(currentCell.textContent[1]) - 1)
                                     this.debut.click = false;
                                     this.debut.value = -1;
                                 }
@@ -40,7 +42,7 @@ class StrategoView {
                                 currentTab = currentDiv.rows[j].cells[i];
                                 // si on click deux fois sur 2 cases différentes
                                 if (!currentTab.hasAttribute('style')) {
-                                    if ((this.joueur_courant && j < 4) || (j > 5 && !this.joueur_courant)) {
+                                    if ((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) {
                                         document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]].removeAttribute('style');
                                         currentTab.setAttribute('style', 'background:green');
                                         this.debut.case = [i, j];
@@ -61,7 +63,7 @@ class StrategoView {
                         else {
                             currentTab = currentDiv.rows[j].cells[i];
                             // if (!(currentTab.firstChild != null && currentTab.firstChild.getAttribute('src') === '../assets/volcan.png')) {
-                            if ((this.joueur_courant && j < 4) || (j > 5 && !this.joueur_courant)) {
+                            if ((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) {
                                 currentTab.setAttribute('style', 'background:green');
                                 this.debut.click = true;
                                 this.debut.case = [i, j];
@@ -76,7 +78,7 @@ class StrategoView {
 
     createListenersAjouts() {
         let currentDiv = document.getElementById('tabAjout');
-        let currentTab;
+        let currentTab, currentCell;
 
         for (let i = 0; i < 12; ++i) {
             currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('click', () => {
@@ -84,12 +86,17 @@ class StrategoView {
                 if (this.debut.click) {
                     // si on a cliqué avant sur la grille du jeu
                     if (this.debut.case.every(element => element !== -1)) {
-                        currentTab = document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]];
+                        currentCell = document.getElementsByClassName('nb_piece')[i];
+                        if (currentCell.textContent[1] !== '0') {
 
-                        socket.emit('placePion', this.joueur_courant, this.debut.case[0], this.debut.case[1], i + 1);
-                        currentTab.removeAttribute('style');
-                        this.debut.click = false;
-                        this.debut.case = [-1, -1];
+                            currentTab = document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]];
+
+                            socket.emit('placePion', this.joueur_courant, this.debut.case[0], this.debut.case[1], i + 1);
+                            currentTab.removeAttribute('style');
+                            this.debut.click = false;
+                            this.debut.case = [-1, -1];
+                            this.modifNombrePion(i, Number(currentCell.textContent[1]) - 1)
+                        }
                     }
                     else {
                         currentTab = currentDiv.rows[Math.trunc(i / 5)].cells[i % 5];
@@ -110,9 +117,12 @@ class StrategoView {
                 }
                 // si aucun click n'a déjà été réalisé, on passe la couleur en vert
                 else {
-                    currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].setAttribute('style', 'background:green');
-                    this.debut.click = true;
-                    this.debut.value = i;
+                    currentCell = document.getElementsByClassName('nb_piece')[i];
+                    if (currentCell.textContent[1] !== '0') {
+                        currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].setAttribute('style', 'background:green');
+                        this.debut.click = true;
+                        this.debut.value = i;
+                    }
                 }
             });
         }
@@ -124,8 +134,19 @@ class StrategoView {
     }
 
     modifNombrePion(numPion, value) {
-        let currentP = document.getElementsByClassName('nb_piece')[numPion - 1];
+        let currentP = document.getElementsByClassName('nb_piece')[numPion];
         currentP.innerText = currentP.innerText.replace(currentP.innerText[1], value);
+    }
+
+    modifNbPret(value) {
+        let currentLabel = document.getElementById('compteur');
+        currentLabel.textContent = value;
+
+        if (value === 30) {
+            let currentButton = document.getElementById('bouton_placement');
+            currentButton.removeAttribute('disabled');
+            currentButton.setAttribute('enabled', '');
+        }
     }
 
     listenersDescription(){
@@ -183,7 +204,7 @@ class StrategoView {
 
     affichePlayer(joueur) {
         let currentP = document.getElementById('joueurQuiJoue');
-        if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + (this.joueur_courant.color ? 'rouge' : 'bleu');
+        if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + (joueur.color ? 'rouge' : 'bleu');
         else currentP.textContent = "Vous pouvez placer vos pions";
     }
 
@@ -196,12 +217,12 @@ class StrategoView {
         let img = document.createElement('img');
         tab.rows[y].cells[x].appendChild(img);
         img.setAttribute('class', 'piece');
-        if (joueur === this.joueur_courant) {
-            img.setAttribute('alt', type + this.joueur_courant.color ? ' rouge' : ' bleu');
+        if (joueur.color === this.joueur_courant.color) {
+            img.setAttribute('alt', type + (this.joueur_courant.color ? ' rouge' : ' bleu'));
             img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
         }
         else {
-            img.setAttribute('alt', 'dos' + !this.joueur_courant.color ? ' rouge' : ' bleu');
+            img.setAttribute('alt', 'dos' + (this.joueur_courant.color ? ' rouge' : ' bleu'));
             img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + 'dos.png');
         }
     }

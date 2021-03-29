@@ -16,9 +16,9 @@ const Bombes = require('./types/12_Bombes');
     constructor(socket) {
         this.socket = socket;
         this.socket.emit('removePions');
-        // this.socket.emit('affichePion', 'espion', 2, 5);
-        // this.socket.emit('removePion', 5, 5);
-        this.socket.emit('Pseudo', 'Michel');
+        this.socket.emit('affichePion', 'espion', 2, 5);
+        this.socket.emit('removePion', 5, 5);
+        // this.socket.emit('Pseudo', 'Michel');
     }
 
     play(x, y) {
@@ -53,11 +53,14 @@ class Stratego {
 
         ///////////////// A modifier
         this.socket.emit('initJoueur', this.joueur_bleu);
-        this.socket.emit('initJoueur', this.joueur_rouge);
+        // this.socket.emit('initJoueur', this.joueur_rouge);
 
         this.egalite = false;
         this.init_grid();
         this.reset();
+
+        // this.socket.emit('affichePion', 'espion', 1, 5, this.joueur_bleu);
+        // this.socket.emit('removePion', 1, 5);
     }
 
     // initialise la taille de la liste grid
@@ -103,16 +106,17 @@ class Stratego {
 
     peut_placer_ses_pions(joueur, x, y) {
         if (joueur === this.joueur_rouge) {
-            if (y < 4 && this.grid_default[x][y] !== undefined){
+            if (y < 4 && this.grid_default[y][x] !== undefined){
                 return false;
             }
         }
 
         else {
-            if (y > 5 && this.grid_default[x][y] !== undefined){
+            if (y > 5 && this.grid_default[y][x] !== undefined){
                 return false;
             }
         }
+        return true;
     }
 
     // renvoi le joueur
@@ -152,44 +156,44 @@ class Stratego {
     modif_grid_placer(joueur, x, y, value) {
         if (0 <= x <= 9 && 0 <= y <= 9) {
             switch (value) {
-                case '1':
+                case 1:
                     this.grid[y][x] = new Espion(joueur.color);
                     break;
-                case '2':
+                case 2:
                     this.grid[y][x] = new Eclaireur(joueur.color);
                     break;
-                case '3':
+                case 3:
                     this.grid[y][x] = new Demineur(joueur.color);
                     break;
-                case '4':
+                case 4:
                     this.grid[y][x] = new Sergent(joueur.color);
                     break;
-                case '5':
+                case 5:
                     this.grid[y][x] = new Lieutenant(joueur.color);
                     break;
-                case '6':
+                case 6:
                     this.grid[y][x] = new Capitaine(joueur.color);
                     break;
-                case '7':
+                case 7:
                     this.grid[y][x] = new Commandant(joueur.color);
                     break;
-                case '8':
+                case 8:
                     this.grid[y][x] = new Colonel(joueur.color);
                     break;
-                case '9':
+                case 9:
                     this.grid[y][x] = new General(joueur.color);
                     break;
-                case '10':
+                case 10:
                     this.grid[y][x] = new Marechal(joueur.color);
                     break;
-                case '11':
+                case 11:
                     this.grid[y][x] = new Drapeau(joueur.color);
                     break;
-                case '12':
+                case 12:
                     this.grid[y][x] = new Bombes(joueur.color);
                     break;
                 default:
-                    break;
+                    return false;
             }
             return true;
         }
@@ -210,17 +214,25 @@ class Stratego {
 
     //placer les pions en debut de partie
     placer(joueur, x, y, value) {
-        if (this.peut_placer_ses_pions(joueur, x, y) === true) {
+        if (this.peut_placer_ses_pions(joueur, x, y)) {
             this.modif_grid_placer(joueur, x, y, value);
-
             ///////////////// A modifier
-            this.socket.emit('affichePion', this.grid[y][x].type, x, y, joueur);
+            this.socket.emit('affichePion', this.getCaseState(x, y).type, x, y, joueur);
 
+            let somme = 0;
             if (joueur === this.joueur_rouge) {
                 this.joueur_rouge.pions_en_jeu[value - 1] += 1;
+                this.joueur_rouge.pions_en_jeu.forEach(element => somme += element);
+
+                ///////////////// A modifier
+                this.socket.emit('modifNbPret', this.joueur_rouge.pions_en_jeu[value - 1]);
             }
             else {
                 this.joueur_bleu.pions_en_jeu[value - 1] += 1;
+                this.joueur_bleu.pions_en_jeu.forEach(element => somme += element);
+
+                ///////////////// A modifier
+                this.socket.emit('modifNbPret', somme);
             }
         }
     }
@@ -228,9 +240,9 @@ class Stratego {
     //enleve un pion du plateau
     enlever(joueur, x, y, value) {
         if (joueur === this.joueur_rouge) {
-            this.joueur_rouge.pions_en_jeu[this.getCaseState().value - 1] -= 1;
+            this.joueur_rouge.pions_en_jeu[this.getCaseState(x, y).value - 1] -= 1;
         } else {
-            this.joueur_bleu.pions_en_jeu[this.getCaseState().value - 1] -= 1;
+            this.joueur_bleu.pions_en_jeu[this.getCaseState(x, y).value - 1] -= 1;
         }
         this.modif_grid(x, y, undefined);
 
