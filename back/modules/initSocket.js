@@ -20,7 +20,7 @@ let socketModule = (function () {
     }
 
     function enlever() {
-        socket.on('pret', (joueur, x, y) => {
+        socket.on('enlever', (joueur, x, y) => {
             game.enlever(joueur, x, y);
         });
     }

@@ -106,13 +106,11 @@ class Stratego {
 
     peut_placer_ses_pions(joueur, x, y) {
         if (joueur === this.joueur_rouge) {
-            if (y < 4 && this.grid_default[y][x] !== undefined){
+            if (y < 4 && this.grid_default[y][x] !== undefined) {
                 return false;
             }
-        }
-
-        else {
-            if (y > 5 && this.grid_default[y][x] !== undefined){
+        } else {
+            if (y > 5 && this.grid_default[y][x] !== undefined) {
                 return false;
             }
         }
@@ -121,10 +119,9 @@ class Stratego {
 
     // renvoi le joueur
     getCurrentPlayer() {
-        if (this.tour % 2 === 0){
+        if (this.tour % 2 === 0) {
             return this.joueur_bleu;
-        }
-        else {
+        } else {
             return this.joueur_rouge;
         }
         //return (this.tour % 2); // 0 bleu, 1 rouge
@@ -220,44 +217,53 @@ class Stratego {
             this.socket.emit('affichePion', this.getCaseState(x, y).type, x, y, joueur);
 
             let somme = 0;
-            if (joueur === this.joueur_rouge) {
+            if (joueur.color === this.joueur_rouge.color) {
                 this.joueur_rouge.pions_en_jeu[value - 1] += 1;
                 this.joueur_rouge.pions_en_jeu.forEach(element => somme += element);
-
-                ///////////////// A modifier
-                this.socket.emit('modifNbPret', this.joueur_rouge.pions_en_jeu[value - 1]);
-            }
-            else {
+            } else {
                 this.joueur_bleu.pions_en_jeu[value - 1] += 1;
                 this.joueur_bleu.pions_en_jeu.forEach(element => somme += element);
-
-                ///////////////// A modifier
-                this.socket.emit('modifNbPret', somme);
             }
+
+            ///////////////// A modifier
+            this.socket.emit('modifNbPret', somme);
         }
     }
 
     //enleve un pion du plateau
-    enlever(joueur, x, y, value) {
-        if (joueur === this.joueur_rouge) {
-            this.joueur_rouge.pions_en_jeu[this.getCaseState(x, y).value - 1] -= 1;
+    enlever(joueur, x, y) {
+        let somme = 0;
+        let value = this.getCaseState(x, y).value;
+        let nbPion;
+
+
+        if (joueur.color === this.joueur_rouge.color) {
+            this.joueur_rouge.pions_en_jeu[value - 1] -= 1;
+            this.joueur_rouge.pions_en_jeu.forEach(element => somme += element);
+            nbPion = this.joueur_rouge.pions_vivant[value - 1] - this.joueur_rouge.pions_en_jeu[value - 1];
+
         } else {
-            this.joueur_bleu.pions_en_jeu[this.getCaseState(x, y).value - 1] -= 1;
+            this.joueur_bleu.pions_en_jeu[value - 1] -= 1;
+            this.joueur_bleu.pions_en_jeu.forEach(element => somme += element);
+            nbPion = this.joueur_bleu.pions_vivant[value - 1] - this.joueur_bleu.pions_en_jeu[value - 1]
         }
+
         this.modif_grid(x, y, undefined);
 
         ///////////////// A modifier
         this.socket.emit('removePion', x, y);
+        this.socket.emit('modifNombrePion', value - 1, nbPion);
+        this.socket.emit('modifNbPret', somme);
     }
 
     //regarde si la partie peut etre lancer
-    pret(joueur){
+    pret(joueur) {
         if (joueur.pions_vivant === joueur.pions_en_jeu) {
             joueur.pret = 1;
         }
     }
 
-    lancer_partie(){
+    lancer_partie() {
         this.pret(this.joueur_bleu);
         this.pret(this.joueur_rouge);
 
@@ -267,17 +273,15 @@ class Stratego {
 
 
     //va enlever la piece du tableau en vie et la rajouter dans le tableau mort
-    un_mort(joueur, value){
+    un_mort(joueur, value) {
         if (joueur === this.joueur_rouge) {
             this.joueur_rouge.pions_vivant[value - 1] -= 1;
             this.joueur_rouge.pions_mort[value - 1] += 1;
-        }
-        else {
+        } else {
             this.joueur_bleu.pions_vivant[value - 1] -= 1;
             this.joueur_rouge.pions_mort[value - 1] += 1;
         }
     }
-
 
 
     //problème éventuel du 2
@@ -321,12 +325,6 @@ class Stratego {
 
         return list_deplacement;
     }
-
-
-
-
-
-
 
 
     // déplace le pion et vérifie si un pion est mangé
@@ -456,9 +454,9 @@ class Stratego {
 
 
     //vérifie si le joueur donner a encore des pions a déplacer
-    deplacement_impossible(joueur){
-        for (let i = 0; i < 10; i++){
-            if (joueur.pions_vivant[i] !== 0){
+    deplacement_impossible(joueur) {
+        for (let i = 0; i < 10; i++) {
+            if (joueur.pions_vivant[i] !== 0) {
                 return false;
             }
         }
@@ -468,9 +466,9 @@ class Stratego {
 
 
     //vérifie que les deux joueurs ne peuvent plus jouer et fin de partie si c'est le cas
-    is_egalite(){
-        for (let i = 0; i < 10; i++){
-            if (this.joueur_bleu.pions_vivant[i] !== 0 && this.joueur_rouge.pions_vivant[i] !==0){
+    is_egalite() {
+        for (let i = 0; i < 10; i++) {
+            if (this.joueur_bleu.pions_vivant[i] !== 0 && this.joueur_rouge.pions_vivant[i] !== 0) {
                 return false;
             }
         }
@@ -480,7 +478,7 @@ class Stratego {
     }
 
 
-    win(joueur){
+    win(joueur) {
         this.points_joueur();
         joueur.points += 40;
         this.fini = true;
