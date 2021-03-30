@@ -57,12 +57,20 @@ p {
 #bouton_placement {
     border: 0;
     text-align: center;
-    color: #D3D3D3;
-    text-shadow: 1vmin 1vmin 1vmin #000;
     border-radius: 10vmin;
     margin-left: 1vw;
     height: 5vh;
     width: 12vw;
+}
+
+#bouton_placement:disabled {
+    color: #D3D3D3;
+    text-shadow: 1vmin 1vmin 1vmin #000;
+}
+
+#bouton_placement:enabled {
+    color: #000000;
+    text-shadow: 1vmin 1vmin 1vmin #000000;
 }
 
 #plateau {
