@@ -258,17 +258,21 @@ class Stratego {
 
     //regarde si la partie peut etre lancer
     pret(joueur) {
-        if (joueur.pions_vivant === joueur.pions_en_jeu) {
-            joueur.pret = 1;
+        for (let i = 0; i < joueur.pions_vivant.length; i++) {
+            if (joueur.pions_vivant[i] !== joueur.pions_en_jeu[i]) {
+                joueur.pret = 0;
+                return;
+            }
         }
+        joueur.pret = 1;
     }
 
-    lancer_partie() {
+    lancerPartie() {
         this.pret(this.joueur_bleu);
         this.pret(this.joueur_rouge);
 
-        return this.joueur_bleu.pret === 1 && this.joueur_rouge.pret === 1;
-
+        if (this.joueur_bleu.pret && this.joueur_rouge.pret) this.socket.emit('removeTabAjout');
+        return this.joueur_bleu.pret && this.joueur_rouge.pret;
     }
 
 

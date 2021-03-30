@@ -19,6 +19,12 @@ let socketModule = (function () {
         });
     }
 
+    function lancerPartie() {
+        socket.on('lancerPartie', (joueur) => {
+            game.lancerPartie(joueur);
+        });
+    }
+
     function enlever() {
         socket.on('enlever', (joueur, x, y) => {
             game.enlever(joueur, x, y);
@@ -33,6 +39,7 @@ let socketModule = (function () {
             play();
             placePion();
             pret();
+            lancerPartie();
             enlever();
         }
     }

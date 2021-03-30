@@ -169,9 +169,14 @@ class StrategoView {
 
         let currentButton = document.getElementById('bouton_placement');
         currentButton.addEventListener('click', () => {
-            // socket.emit('pret', this.joueur_courant);
-            this.debut.pret = true;
-            this.affichePlayer(this.joueur_courant);
+            let currentLabel = document.getElementById('compteur');
+
+            if (currentLabel.textContent === '40') {
+                socket.emit('lancerPartie');
+                this.debut.pret = true;
+                this.affichePlayer(this.joueur_courant);
+            }
+            else console.log('pas pret');
         });
     }
 
@@ -246,7 +251,8 @@ class StrategoView {
         this.initAjout();
     }
 
-
+    // affiche à qui est le tour dans le cas où on est en partie, sinon qu'on peut jouer ou que tout est bon
+    // en attendant l'autre joueur
     affichePlayer(joueur) {
         let currentP = document.getElementById('joueurQuiJoue');
         if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + (joueur.color ? 'rouge' : 'bleu');
@@ -281,17 +287,23 @@ class StrategoView {
     // enlève tous les pions
     removePions() {
         let tab = document.getElementById('plateau');
+        let currentCell;
 
         for (let j = 0; j < 10; j++) {
             for (let i = 0; i < 10; i++) {
-                if (tab.rows[i].cells[j].firstChild !== null) {
-                    if (tab.rows[i].cells[j].firstChild.getAttribute('src') !== '../assets/volcan.png') tab.rows[i].cells[j].removeChild(tab.rows[i].cells[j].firstChild);
+                currentCell = tab.rows[i].cells[j];
+                if (currentCell.firstChild !== null) {
+                    if (currentCell.firstChild.getAttribute('src') !== '../assets/volcan.png') currentCell.firstChild.remove();
                 }
             }
         }
     }
 
     removeTabAjout() {
-        document.getElementById('cadre').remove();
+        let currentDiv = document.getElementById('cadre');
+        if (currentDiv != null) currentDiv.remove();
+        
+        currentDiv = document.getElementById('description');
+        if (currentDiv != null) currentDiv.remove();
     }
 }
