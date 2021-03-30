@@ -3,7 +3,7 @@ const Pions = require('../Pions');
 // objet contenant le Capitaine
 class Capitaine extends Pions {
   constructor(couleur) {
-    super(couleur, "Capitaine");
+    super(couleur, "Capitaine", 6);
     this.init();
   }
 

@@ -16,9 +16,9 @@ const Bombes = require('./types/12_Bombes');
     constructor(socket) {
         this.socket = socket;
         this.socket.emit('removePions');
-        // this.socket.emit('affichePion', 'espion', 2, 5);
-        // this.socket.emit('removePion', 5, 5);
-        this.socket.emit('Pseudo', 'Michel');
+        this.socket.emit('affichePion', 'espion', 2, 5);
+        this.socket.emit('removePion', 5, 5);
+        // this.socket.emit('Pseudo', 'Michel');
     }
 
     play(x, y) {
@@ -40,7 +40,9 @@ const Bombes = require('./types/12_Bombes');
 }*/
 
 class Stratego {
-    constructor() {
+    constructor(socket) {
+        this.socket = socket;
+
         this.grid = []; // tableau de position en 10*10
         this.grid_default = [];
         this.tour = 0; // nombre pair : joueur 0, nombre impair : joueur 1
@@ -49,10 +51,16 @@ class Stratego {
         this.joueur_bleu = new Joueur(0);
         this.joueur_rouge = new Joueur(1);
 
+        ///////////////// A modifier
+        this.socket.emit('initJoueur', this.joueur_rouge);
+        // this.socket.emit('initJoueur', this.joueur_rouge);
+
         this.egalite = false;
-        // this.deplacement(x_clic, y_clic, x_pos, y_pos);
         this.init_grid();
         this.reset();
+
+        // this.socket.emit('affichePion', 'espion', 1, 5, this.joueur_bleu);
+        // this.socket.emit('removePion', 1, 5);
     }
 
     // initialise la taille de la liste grid
@@ -91,28 +99,29 @@ class Stratego {
         this.tour = 0;
         this.fini = undefined;
         this.egalite = false;
+
+        ///////////////// A modifier
+        this.socket.emit('removePions');
     }
 
     peut_placer_ses_pions(joueur, x, y) {
         if (joueur === this.joueur_rouge) {
-            if (y < 4 && this.grid_default[x][y] !== undefined){
+            if (y < 4 && this.grid_default[y][x] !== undefined) {
+                return false;
+            }
+        } else {
+            if (y > 5 && this.grid_default[y][x] !== undefined) {
                 return false;
             }
         }
-
-        else {
-            if (y > 5 && this.grid_default[x][y] !== undefined){
-                return false;
-            }
-        }
+        return true;
     }
 
     // renvoi le joueur
     getCurrentPlayer() {
-        if (this.tour % 2 === 0){
+        if (this.tour % 2 === 0) {
             return this.joueur_bleu;
-        }
-        else {
+        } else {
             return this.joueur_rouge;
         }
         //return (this.tour % 2); // 0 bleu, 1 rouge
@@ -133,6 +142,7 @@ class Stratego {
         // vérifie que les coordonnées sont dans la grille
         if (0 <= x <= 9 && 0 <= y <= 9) {
             this.grid[y][x] = value;
+
             return true;
         }
         return false;
@@ -143,44 +153,44 @@ class Stratego {
     modif_grid_placer(joueur, x, y, value) {
         if (0 <= x <= 9 && 0 <= y <= 9) {
             switch (value) {
-                case '1':
+                case 1:
                     this.grid[y][x] = new Espion(joueur.color);
                     break;
-                case '2':
+                case 2:
                     this.grid[y][x] = new Eclaireur(joueur.color);
                     break;
-                case '3':
+                case 3:
                     this.grid[y][x] = new Demineur(joueur.color);
                     break;
-                case '4':
+                case 4:
                     this.grid[y][x] = new Sergent(joueur.color);
                     break;
-                case '5':
+                case 5:
                     this.grid[y][x] = new Lieutenant(joueur.color);
                     break;
-                case '6':
+                case 6:
                     this.grid[y][x] = new Capitaine(joueur.color);
                     break;
-                case '7':
+                case 7:
                     this.grid[y][x] = new Commandant(joueur.color);
                     break;
-                case '8':
+                case 8:
                     this.grid[y][x] = new Colonel(joueur.color);
                     break;
-                case '9':
+                case 9:
                     this.grid[y][x] = new General(joueur.color);
                     break;
-                case '10':
+                case 10:
                     this.grid[y][x] = new Marechal(joueur.color);
                     break;
-                case '11':
+                case 11:
                     this.grid[y][x] = new Drapeau(joueur.color);
                     break;
-                case '12':
+                case 12:
                     this.grid[y][x] = new Bombes(joueur.color);
                     break;
                 default:
-                    break;
+                    return false;
             }
             return true;
         }
@@ -201,58 +211,79 @@ class Stratego {
 
     //placer les pions en debut de partie
     placer(joueur, x, y, value) {
-        if (this.peut_placer_ses_pions(joueur, x, y) === true) {
+        if (this.peut_placer_ses_pions(joueur, x, y)) {
             this.modif_grid_placer(joueur, x, y, value);
+            ///////////////// A modifier
+            this.socket.emit('affichePion', this.getCaseState(x, y).type, x, y, joueur, value);
 
-            if (joueur === this.joueur_rouge) {
+            let somme = 0;
+            if (joueur.color === this.joueur_rouge.color) {
                 this.joueur_rouge.pions_en_jeu[value - 1] += 1;
-            }
-            else {
+                this.joueur_rouge.pions_en_jeu.forEach(element => somme += element);
+            } else {
                 this.joueur_bleu.pions_en_jeu[value - 1] += 1;
+                this.joueur_bleu.pions_en_jeu.forEach(element => somme += element);
             }
+
+            ///////////////// A modifier
+            if (!(this.joueur_bleu.pret && this.joueur_rouge.pret)) this.socket.emit('modifNbPret', somme);
         }
     }
 
     //enleve un pion du plateau
-    enlever(joueur, x, y, value) {
+    enlever(joueur, x, y) {
+        let value = this.getCaseState(x, y).value;
+
+        this.enlevePion(joueur, value);
         this.modif_grid(x, y, undefined);
-        if (joueur === this.joueur_rouge) {
-            this.joueur_rouge.pions_en_jeu[value - 1] -= 1;
-        } else {
-            this.joueur_bleu.pions_en_jeu[value - 1] -= 1;
-        }
+
+        ///////////////// A modifier
+        this.socket.emit('removePion', x, y);
     }
 
+    enlevePion(joueur, value) {
+        let somme = 0;
+        let joueurCourant = joueur.color ? this.joueur_rouge : this.joueur_bleu;
+        joueurCourant.pions_en_jeu[value - 1] -= 1;
+        joueurCourant.pions_en_jeu.forEach(element => somme += element);
+        let nbPion = joueurCourant.pions_vivant[value - 1] - joueurCourant.pions_en_jeu[value - 1];
 
+        if (!(this.joueur_bleu.pret && this.joueur_rouge.pret)) {
+            this.socket.emit('modifNombrePion', value - 1, nbPion);
+            this.socket.emit('modifNbPret', somme);
+        }
+    }
 
     //regarde si la partie peut etre lancer
-    pret(joueur){
-        if (joueur.pions_vivant === joueur.pions_en_jeu) {
-            joueur.pret = 1;
+    pret(joueur) {
+        for (let i = 0; i < joueur.pions_vivant.length; i++) {
+            if (joueur.pions_vivant[i] !== joueur.pions_en_jeu[i]) {
+                joueur.pret = 0;
+                return;
+            }
         }
+        joueur.pret = 1;
     }
 
-    lancer_partie(){
+    lancerPartie() {
         this.pret(this.joueur_bleu);
         this.pret(this.joueur_rouge);
 
-        return this.joueur_bleu.pret === 1 && this.joueur_rouge.pret === 1;
-
+        if (this.joueur_bleu.pret && this.joueur_rouge.pret) this.socket.emit('removeTabAjout');
+        return this.joueur_bleu.pret && this.joueur_rouge.pret;
     }
 
 
     //va enlever la piece du tableau en vie et la rajouter dans le tableau mort
-    un_mort(joueur, value){
+    un_mort(joueur, value) {
         if (joueur === this.joueur_rouge) {
             this.joueur_rouge.pions_vivant[value - 1] -= 1;
             this.joueur_rouge.pions_mort[value - 1] += 1;
-        }
-        else {
+        } else {
             this.joueur_bleu.pions_vivant[value - 1] -= 1;
             this.joueur_rouge.pions_mort[value - 1] += 1;
         }
     }
-
 
 
     //problème éventuel du 2
@@ -296,12 +327,6 @@ class Stratego {
 
         return list_deplacement;
     }
-
-
-
-
-
-
 
 
     // déplace le pion et vérifie si un pion est mangé
@@ -431,9 +456,9 @@ class Stratego {
 
 
     //vérifie si le joueur donner a encore des pions a déplacer
-    deplacement_impossible(joueur){
-        for (let i = 0; i < 10; i++){
-            if (joueur.pions_vivant[i] !== 0){
+    deplacement_impossible(joueur) {
+        for (let i = 0; i < 10; i++) {
+            if (joueur.pions_vivant[i] !== 0) {
                 return false;
             }
         }
@@ -443,9 +468,9 @@ class Stratego {
 
 
     //vérifie que les deux joueurs ne peuvent plus jouer et fin de partie si c'est le cas
-    is_egalite(){
-        for (let i = 0; i < 10; i++){
-            if (this.joueur_bleu.pions_vivant[i] !== 0 && this.joueur_rouge.pions_vivant[i] !==0){
+    is_egalite() {
+        for (let i = 0; i < 10; i++) {
+            if (this.joueur_bleu.pions_vivant[i] !== 0 && this.joueur_rouge.pions_vivant[i] !== 0) {
                 return false;
             }
         }
@@ -455,7 +480,7 @@ class Stratego {
     }
 
 
-    win(joueur){
+    win(joueur) {
         this.points_joueur();
         joueur.points += 40;
         this.fini = true;

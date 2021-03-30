@@ -1,34 +1,53 @@
 let socketModule = (function () {
-    function play(socket, game) {
+    let socket, game;
+
+    function play() {
         socket.on('play', (x, y) => {
             game.play(x, y);
         });
     }
 
-    function move(socket, game) {
-        socket.on('move', (x1, y1) => {
-            console.log(x1, y1);
-        });
-    }
-
-    function placePion(socket, game) {
+    function placePion() {
         socket.on('placePion', (joueur, x, y, value) => {
             game.placer(joueur, x, y, value);
         });
     }
 
-    function pret(socket, game) {
+    function pret() {
         socket.on('pret', (joueur) => {
             game.pret(joueur);
+        });
+    }
+
+    function lancerPartie() {
+        socket.on('lancerPartie', (joueur) => {
+            game.lancerPartie(joueur);
+        });
+    }
+
+    function enlever() {
+        socket.on('enlever', (joueur, x, y) => {
+            game.enlever(joueur, x, y);
+        });
+    }
+
+    function enlevePion() {
+        socket.on('enlevePion', (joueur, value) => {
+            game.enlevePion(joueur, value);
         })
     }
 
     return {
-        initSocket(socket, game) {
-            play(socket, game);
-            move(socket, game);
-            placePion(socket, game);
-            pret(socket, game);
+        initSocket(socket_, game_) {
+            socket = socket_;
+            game = game_;
+
+            play();
+            placePion();
+            pret();
+            lancerPartie();
+            enlever();
+            enlevePion();
         }
     }
 }) ();
