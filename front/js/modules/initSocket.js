@@ -1,14 +1,21 @@
 let socketModule = (function () {
     let socket, view;
+
     function initJoueur() {
         socket.on('initJoueur', (joueur) => {
-            view.affichePion(joueur);
+            view.initJoueur(joueur);
         });
     }
 
     function modifNombrePion() {
         socket.on('modifNombrePion', (numPion, value) => {
             view.modifNombrePion(numPion, value);
+        })
+    }
+
+    function modifNbPret() {
+        socket.on('modifNbPret', (value) => {
+            view.modifNbPret(value);
         })
     }
 
@@ -19,8 +26,8 @@ let socketModule = (function () {
     }
 
     function affichePion() {
-        socket.on('affichePion', (type, x, y) => {
-            view.affichePion(type, x, y);
+        socket.on('affichePion', (type, x, y, joueur, value) => {
+            view.affichePion(type, x, y, joueur, value);
         });
     }
 
@@ -48,6 +55,7 @@ let socketModule = (function () {
             view = view_;
             initJoueur();
             modifNombrePion();
+            modifNbPret();
             affichePion();
             affichePlayer();
             removePion();
