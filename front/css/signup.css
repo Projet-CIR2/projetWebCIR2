@@ -1,7 +1,7 @@
 body {
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     height: 100vh;
-    background-image: url("../assets/background_login.png");
+    background-image: url("../assets/background_signup2.png");
     background-size: cover;
     padding-left: 3vmin;
 }
@@ -14,12 +14,12 @@ label {
 
 #trois {
     background-color: #3333334d;
+    position: absolute;
     font-style: italic;
     font-size: 14px;
     text-decoration: none;
     color: #ffffff;
-    margin-top: 1vmin;
-    text-align: center;
+    margin-top: 40vmin;
     border-radius: 20px;
 }
 
@@ -28,20 +28,34 @@ label {
 }
 
 #titre {
+    text-align: center;
     background-color: #3333334d;
+    margin-left: 30vmin;
     width: 45vmin;
     color: #ffffff;
     margin-bottom: 10vmin;
     border-radius: 20px;
 }
 
-#button_log {
-    margin-top: -1vmin;
+#un {
+    position: absolute;
 }
 
+#deux {
+    position: absolute;
+    margin-left: 70vmin;
+}
 
 input[type=text], input[type=password] {
     width: 35vmin;
+    height: 5vmin;
+    margin-top: 3vmin;
+    margin-bottom: 2vmin;
+    display: block;
+}
+
+input[type=email] {
+    width: 50vmin;
     height: 5vmin;
     margin-top: 3vmin;
     margin-bottom: 2vmin;
