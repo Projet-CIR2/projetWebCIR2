@@ -26,8 +26,8 @@ let socketModule = (function () {
     }
 
     function affichePion() {
-        socket.on('affichePion', (type, x, y, joueur) => {
-            view.affichePion(type, x, y, joueur);
+        socket.on('affichePion', (type, x, y, joueur, value) => {
+            view.affichePion(type, x, y, joueur, value);
         });
     }
 

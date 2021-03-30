@@ -214,7 +214,7 @@ class Stratego {
         if (this.peut_placer_ses_pions(joueur, x, y)) {
             this.modif_grid_placer(joueur, x, y, value);
             ///////////////// A modifier
-            this.socket.emit('affichePion', this.getCaseState(x, y).type, x, y, joueur);
+            this.socket.emit('affichePion', this.getCaseState(x, y).type, x, y, joueur, value);
 
             let somme = 0;
             if (joueur.color === this.joueur_rouge.color) {
@@ -226,34 +226,32 @@ class Stratego {
             }
 
             ///////////////// A modifier
-            this.socket.emit('modifNbPret', somme);
+            if (!(this.joueur_bleu.pret && this.joueur_rouge.pret)) this.socket.emit('modifNbPret', somme);
         }
     }
 
     //enleve un pion du plateau
     enlever(joueur, x, y) {
-        let somme = 0;
         let value = this.getCaseState(x, y).value;
-        let nbPion;
 
-
-        if (joueur.color === this.joueur_rouge.color) {
-            this.joueur_rouge.pions_en_jeu[value - 1] -= 1;
-            this.joueur_rouge.pions_en_jeu.forEach(element => somme += element);
-            nbPion = this.joueur_rouge.pions_vivant[value - 1] - this.joueur_rouge.pions_en_jeu[value - 1];
-
-        } else {
-            this.joueur_bleu.pions_en_jeu[value - 1] -= 1;
-            this.joueur_bleu.pions_en_jeu.forEach(element => somme += element);
-            nbPion = this.joueur_bleu.pions_vivant[value - 1] - this.joueur_bleu.pions_en_jeu[value - 1]
-        }
-
+        this.enlevePion(joueur, value);
         this.modif_grid(x, y, undefined);
 
         ///////////////// A modifier
         this.socket.emit('removePion', x, y);
-        this.socket.emit('modifNombrePion', value - 1, nbPion);
-        this.socket.emit('modifNbPret', somme);
+    }
+
+    enlevePion(joueur, value) {
+        let somme = 0;
+        let joueurCourant = joueur.color ? this.joueur_rouge : this.joueur_bleu;
+        joueurCourant.pions_en_jeu[value - 1] -= 1;
+        joueurCourant.pions_en_jeu.forEach(element => somme += element);
+        let nbPion = joueurCourant.pions_vivant[value - 1] - joueurCourant.pions_en_jeu[value - 1];
+
+        if (!(this.joueur_bleu.pret && this.joueur_rouge.pret)) {
+            this.socket.emit('modifNombrePion', value - 1, nbPion);
+            this.socket.emit('modifNbPret', somme);
+        }
     }
 
     //regarde si la partie peut etre lancer

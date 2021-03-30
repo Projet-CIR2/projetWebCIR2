@@ -8,6 +8,7 @@ class StrategoView {
             "value": -1,
             "case": [-1, -1]
         };
+        this.sauter = false;
 
         this.initTab();
         this.createListenersTab();
@@ -24,7 +25,7 @@ class StrategoView {
             for (let i = 0; i < 10; ++i) {
                 td = document.createElement('td');
 
-                if (((2 <= i && i <= 3 ) || (6 <= i && i <= 7)) && (4 <= j && j <= 5)) {
+                if (((2 <= i && i <= 3) || (6 <= i && i <= 7)) && (4 <= j && j <= 5)) {
                     img = document.createElement('img');
                     img.setAttribute('class', 'piece');
                     img.setAttribute('src', '../assets/volcan.png');
@@ -94,6 +95,7 @@ class StrategoView {
                                     currentTab.removeAttribute('style');
                                     this.debut.click = false;
                                     this.debut.case = [-1, -1];
+                                    this.sauter = true;
 
                                     // on supprime le pion sur cette case
                                     if (currentTab.firstChild !== null) socket.emit('enlever', this.joueur_courant, i, j);
@@ -175,8 +177,7 @@ class StrategoView {
                 socket.emit('lancerPartie');
                 this.debut.pret = true;
                 this.affichePlayer(this.joueur_courant);
-            }
-            else console.log('pas pret');
+            } else console.log('pas pret');
         });
     }
 
@@ -261,27 +262,36 @@ class StrategoView {
     }
 
     // affiche le pion de type type à la position x y
-    affichePion(type, x, y, joueur) {
+    affichePion(type, x, y, joueur, value) {
         let tab = document.getElementById('plateau');
+        let currentCell = tab.rows[y].cells[x];
 
-        if (tab.rows[y].cells[x].firstChild !== null) this.removePion(x, y);
+        if (Number(currentCell.getAttribute('alt')) !== value) {
+            if (currentCell.firstChild !== null) this.removePion(x, y);
 
-        let img = document.createElement('img');
-        tab.rows[y].cells[x].appendChild(img);
-        img.setAttribute('class', 'piece');
-        if (joueur.color === this.joueur_courant.color) {
-            img.setAttribute('alt', type + (this.joueur_courant.color ? ' rouge' : ' bleu'));
-            img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
-        } else {
-            img.setAttribute('alt', 'dos' + (this.joueur_courant.color ? ' rouge' : ' bleu'));
-            img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + 'dos.png');
+            let img = document.createElement('img');
+            currentCell.appendChild(img);
+            img.setAttribute('class', 'piece');
+            if (joueur.color === this.joueur_courant.color) {
+                img.setAttribute('alt', value);
+                img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
+            } else {
+                img.setAttribute('alt', 'dos' + (this.joueur_courant.color ? ' rouge' : ' bleu'));
+                img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + 'dos.png');
+            }
         }
     }
 
     removePion(x, y) {
         let tab = document.getElementById('plateau');
         let cell = tab.rows[y].cells[x];
-        if (cell.firstChild !== null) cell.removeChild(cell.firstChild);
+        if (cell.firstChild !== null) {
+            if (!this.sauter) {
+                socket.emit('enlevePion', this.joueur_courant, Number(cell.firstChild.getAttribute('alt')));
+            } else this.sauter = false;
+
+            cell.removeChild(cell.firstChild);
+        }
     }
 
     // enlève tous les pions
@@ -302,7 +312,7 @@ class StrategoView {
     removeTabAjout() {
         let currentDiv = document.getElementById('cadre');
         if (currentDiv != null) currentDiv.remove();
-        
+
         currentDiv = document.getElementById('description');
         if (currentDiv != null) currentDiv.remove();
     }

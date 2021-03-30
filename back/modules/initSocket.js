@@ -31,6 +31,12 @@ let socketModule = (function () {
         });
     }
 
+    function enlevePion() {
+        socket.on('enlevePion', (joueur, value) => {
+            game.enlevePion(joueur, value);
+        })
+    }
+
     return {
         initSocket(socket_, game_) {
             socket = socket_;
@@ -41,6 +47,7 @@ let socketModule = (function () {
             pret();
             lancerPartie();
             enlever();
+            enlevePion();
         }
     }
 }) ();
