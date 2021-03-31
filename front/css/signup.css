@@ -14,12 +14,12 @@ label {
 
 #trois {
     background-color: #3333334d;
-    position: absolute;
+    position: fixed;
     font-style: italic;
     font-size: 14px;
     text-decoration: none;
     color: #ffffff;
-    margin-top: 40vmin;
+    /*margin-top: 40vmin;*/
     border-radius: 20px;
 }
 

@@ -7,6 +7,7 @@ const fs = require('fs');
 
 const Stratego = require('./back/models/stratego');
 const init = require('./back/modules/initSocket');
+let logName = undefined;
 
 const sharedsession = require("express-socket.io-session");
 const bodyParser = require('body-parser');
@@ -41,9 +42,9 @@ io.use(sharedsession(session, {
 
 //*** CODE ***//
 app.get('/', (req,res) => {
-    let sessionData = req.session;
+    console.log('session', req.session.logName);
+    logName = req.session.logName;
     res.sendFile(__dirname + "/front/html/index.html");
-
 });
 
 app.get('/login.html', (req,res) =>{
@@ -57,7 +58,6 @@ app.get('/login.html', (req,res) =>{
 });
 
 app.get('/signup.html', (req,res) =>{
-    let sessionData = req.session;
     res.sendFile(__dirname + "/front/html/signup.html");
 });
 
@@ -100,12 +100,10 @@ app.post('/login',  (req,res) =>{
             console.log(result);
             //pas connecté
             if (result[0] == undefined) {
-
                 console.log(result[0], "azerty");
                 req.session.connect = false;
                 req.session.errIdentifiants = true;
                 req.session.save();
-
             }
             //connecté
             else{
@@ -114,13 +112,10 @@ app.post('/login',  (req,res) =>{
                 req.session.logPassword = logPassword;
                 req.session.connect = true;
                 req.session.save();
-                //socket.emit('Pseudo', logName);
-                res.redirect('/');
+                res.send('ok');
             }
         });
-
     }
-
 });
 
 app.post('/signup', (req,res) =>{
@@ -143,12 +138,9 @@ app.post('/signup', (req,res) =>{
 
 
 app.post('/deconnection', (req,res) =>{
-
-    if (req.body.deco == true) {
-        socket.on('disconnect', () => {
-            console.log("Deconnection");
-        });
-    }
+    req.session.logName = undefined;
+    req.session.save();
+    res.redirect('/');
 });
 
 
@@ -159,14 +151,17 @@ io.on('connection', (socket) =>{
 
     socket.on('login', () =>{
         console.log(socket.handshake.session.username);
+    });
 
-    })
+    socket.on('pseudo', () => {
+        if (logName !== undefined) socket.emit('Pseudo', logName);
+    });
+
+    socket.on('deconnexion', () => {
+        logName = undefined;
+    });
 
     init.initSocket(socket, game);
-
-    socket.on('disconnect', () => {
-        console.log("Deconnection");
-    });
 });
 
 

@@ -8,6 +8,7 @@ let deconnectionner = (function(){
                 deco: deco,
             },
             success: () => {
+                console.log('hello world');
                 window.location.href = "/";
             },
         });
