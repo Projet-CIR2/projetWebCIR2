@@ -6,9 +6,10 @@ body {
 p {
     color: #D3D3D3;
     text-align: center;
+    /*font-size: 2vh;*/
 }
 
-.nb_piece {
+.nom_piece {
     font-size: 1vw;
 }
 
@@ -48,7 +49,7 @@ p {
 }
 
 #cadre2 {
-    margin-top: 10vh;
+    margin-top: 7vh;
     font-size: 3vmin;
     padding-right: 3vw;
     margin-left: 1vw;
