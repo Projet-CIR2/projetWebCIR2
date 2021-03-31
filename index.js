@@ -42,7 +42,6 @@ io.use(sharedsession(session, {
 
 //*** CODE ***//
 app.get('/', (req,res) => {
-    console.log('session', req.session.logName);
     logName = req.session.logName;
     res.sendFile(__dirname + "/front/html/index.html");
 });
@@ -147,7 +146,7 @@ app.post('/deconnection', (req,res) =>{
 
 io.on('connection', (socket) =>{
     console.log("New connection");
-    const game = new Stratego(socket);
+    const game = new Stratego(socket, "j1", "j2");
 
     socket.on('login', () =>{
         console.log(socket.handshake.session.username);

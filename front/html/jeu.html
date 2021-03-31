@@ -4,154 +4,19 @@
     <meta charset="utf-8">
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="../css/jeu.css">
+    <link id="icon" rel="icon" type="image/x-ico" href="../assets/icon.png">
     <script type="text/javascript" src="../js/strategoView.js"></script>
     <script type="text/javascript" src="../js/modules/initSocket.js"></script>
-    <script type="text/javascript" src="../js/Pions.js"></script>
-    <script type="text/javascript" src="../js/types/1_Espion.js"></script>
-    <script type="text/javascript" src="../js/types/2_Eclaireur.js"></script>
-    <script type="text/javascript" src="../js/types/3_Démineur.js"></script>
-    <script type="text/javascript" src="../js/types/4_Sergent.js"></script>
-    <script type="text/javascript" src="../js/types/5_Lieutenant.js"></script>
-    <script type="text/javascript" src="../js/types/6_Capitaine.js"></script>
-    <script type="text/javascript" src="../js/types/7_Commandant.js"></script>
-    <script type="text/javascript" src="../js/types/8_Colonel.js"></script>
-    <script type="text/javascript" src="../js/types/9_Général.js"></script>
-    <script type="text/javascript" src="../js/types/10_Maréchal.js"></script>
-    <script type="text/javascript" src="../js/types/11_Drapeau.js"></script>
-    <script type="text/javascript" src="../js/types/12_Bombes.js"></script>
-    <script type="text/javascript" src="../js/Joueur.js"></script>
-    <script type="text/javascript" src="../js/Stratego.js"></script>
     <script type="text/javascript" src="../js/main.js"></script>
     <title>Stratego</title>
 </head>
 <body>
 <div id="corps">
     <table id="plateau">
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td><img class="piece" src="../assets/volcan.png"></td>
-            <td><img class="piece" src="../assets/volcan.png"></td>
-            <td></td>
-            <td></td>
-            <td><img class="piece" src="../assets/volcan.png"></td>
-            <td><img class="piece" src="../assets/volcan.png"></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td><img class="piece" src="../assets/volcan.png"></td>
-            <td><img class="piece" src="../assets/volcan.png"></td>
-            <td></td>
-            <td></td>
-            <td><img class="piece" src="../assets/volcan.png"></td>
-            <td><img class="piece" src="../assets/volcan.png"></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-
     </table>
 </div>
 <div id="placement_piece">
-</br>
+    <br>
     <div id="cadre">
         <table id="tabAjout">
             <tr>
@@ -189,11 +54,11 @@
                 </td>
             </tr>
             <tr>
-                <td><img class="piece" src="../assets/bleu/bombe.png">
-                    <p class="nom_piece">x6</br>Bombe</p>
-                </td>
                 <td><img class="piece" src="../assets/bleu/drapeau.png">
-                    <p class="nom_piece">x1</br>Drapeau</p>
+                    <p class="nom_piece">x1<br>Drapeau</p>
+                </td>
+                <td><img class="piece" src="../assets/bleu/bombe.png">
+                    <p class="nom_piece">x6<br>Bombe</p>
                 </td>
                 <td colspan="3">
                     <button id="bouton_placement" type="button" disabled> prêt</button>
@@ -201,17 +66,16 @@
             </tr>
         </table>
         <div id="sous_cadre">
-            <p id="compteur"> pions posés : 0/30 </p>
+            <p> pions posés : <label id="compteur">0</label>/40 </p>
         </div>
     </div>
     <div id="cadre2">
-      <p id="description">Haec igitur prima lex amicitiae sanciatur,
-        ut ab amicis honesta petamus, amicorum causa honesta faciamus,
-         ne exspectemus quidem, dum rogemur; studium semper adsit,
-          cunctatio absit; consilium vero dare audeamus libere.
-      </p>
+        <p id="joueurQuiJoue"></p>
+        <p id="description"></p>
+        <p id="valeur"></p>
     </div>
-  </body>
+</div>
+</body>
 <script>
     let socket = io();
     main();
