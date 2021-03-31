@@ -353,6 +353,9 @@ class Stratego {
                         // si la case sur laquelle on veut aller est un pion
                         if (case_mange !== undefined) {
 
+                            pion1.visible = 1;
+                            case_mange.visible = 1;
+
                             //d'abord on vérifie que la partie n'est pas gagné
                             if (case_mange.puissance === 11) {
                                 this.win(joueur); //faire la win
@@ -366,8 +369,6 @@ class Stratego {
                                     this.un_mort(this.joueur_bleu, case_mange.puissance);
                                 }
 
-                                pion1.visible = 1;
-                                case_mange.visible = 1;
 
 
                                 this.modif_grid(x_clic, y_clic, pion1);
@@ -381,10 +382,6 @@ class Stratego {
                                 } else {
                                     this.un_mort(this.joueur_bleu, case_mange.puissance);
                                 }
-
-
-                                pion1.visible = 1;
-                                case_mange.visible = 1;
 
 
                                 this.modif_grid(x_clic, y_clic, pion1);
@@ -406,10 +403,6 @@ class Stratego {
                                 }
 
 
-                                pion1.visible = 1;
-                                case_mange.visible = 1;
-
-
                                 this.modif_grid(x_clic, y_clic, undefined);
                                 this.modif_grid(x_pos, y_pos, undefined);
                             }
@@ -423,10 +416,6 @@ class Stratego {
                                 }
 
 
-                                pion1.visible = 1;
-                                case_mange.visible = 1;
-
-
                                 this.modif_grid(x_clic, y_clic, pion1);
                                 this.modif_grid(x_pos, y_pos, undefined);
                             }
@@ -438,10 +427,6 @@ class Stratego {
                                 } else {
                                     this.un_mort(this.joueur_rouge, pion1.puissance);
                                 }
-
-
-                                pion1.visible = 1;
-                                case_mange.visible = 1;
 
                                 this.modif_grid(x_clic, y_clic, undefined);
                             }
