@@ -142,6 +142,15 @@ app.post('/signup', (req,res) =>{
 });
 
 
+app.post('/deconnection', (req,res) =>{
+
+    if (req.body.deco == true) {
+        socket.on('disconnect', () => {
+            console.log("Deconnection");
+        });
+    }
+});
+
 
 
 io.on('connection', (socket) =>{
