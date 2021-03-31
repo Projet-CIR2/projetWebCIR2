@@ -256,7 +256,7 @@ class StrategoView {
     // en attendant l'autre joueur
     affichePlayer(joueur) {
         let currentP = document.getElementById('joueurQuiJoue');
-        if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + (joueur.color ? 'rouge' : 'bleu');
+        if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + joueur.pseudo;
         else if (this.debut.pret) currentP.textContent = "En attente du joueur adverse";
         else currentP.textContent = "Vous pouvez placer vos pions";
     }

@@ -1,14 +1,14 @@
-let logger = (function(){
+let deconnectionner = (function(){
 
-    function post(name, password){
+    function post(deco){
         $.ajax({
             type: "POST", 
-            url: "/login/", 
+            url: "/deconnection/", 
             data: {
-                login: name,
-                passwrd: password,
+                deco: deco,
             },
             success: () => {
+                console.log('hello world');
                 window.location.href = "/";
             },
         });
@@ -16,8 +16,8 @@ let logger = (function(){
     }
 
     return {
-        sendLogin(name, password){
-            post(name, password);
+        senddeco(deco){
+            post(deco);
         }
     }
 })();
