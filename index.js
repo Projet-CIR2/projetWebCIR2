@@ -129,7 +129,7 @@ app.post('/signup', (req,res) =>{
         Prenom : req.body.lName,
     }
 
-    let sql = "INSERT INTO session SET ?";  
+    let sql = "INSERT INTO session SET ?";
         con.query(sql, values, (err, result) => {
             if (err) throw err;
             console.log("One Session inserted");
