@@ -40,7 +40,7 @@ const Bombes = require('./types/12_Bombes');
 }*/
 
 class Stratego {
-    constructor(socket) {
+    constructor(socket, pseudoJoueur1, pseudoJoueur2) {
         this.socket = socket;
 
         this.grid = []; // tableau de position en 10*10
@@ -48,8 +48,8 @@ class Stratego {
         this.tour = 0; // nombre pair : joueur 0, nombre impair : joueur 1
         this.fini = false;
 
-        this.joueur_bleu = new Joueur(0);
-        this.joueur_rouge = new Joueur(1);
+        this.joueur_bleu = new Joueur(0, pseudoJoueur1);
+        this.joueur_rouge = new Joueur(1, pseudoJoueur2);
 
         ///////////////// A modifier
         this.socket.emit('initJoueur', this.joueur_rouge);
