@@ -133,6 +133,8 @@ app.post('/signup', (req,res) =>{
             if (err) throw err;
             console.log("One Session inserted");
         });
+
+    res.send('ok');
 });
 
 
