@@ -8,6 +8,7 @@ const fs = require('fs');
 const Stratego = require('./back/models/stratego');
 const init = require('./back/modules/initSocket');
 let logName = undefined;
+let socketBkp;
 
 const sharedsession = require("express-socket.io-session");
 const bodyParser = require('body-parser');
@@ -42,7 +43,6 @@ io.use(sharedsession(session, {
 
 //*** CODE ***//
 app.get('/', (req,res) => {
-    console.log('session', req.session.logName);
     logName = req.session.logName;
     res.sendFile(__dirname + "/front/html/index.html");
 });
@@ -72,7 +72,7 @@ app.get('/attente.html', (req,res) =>{
         req.session.save();
     }
     while(waitingQueue.length >= 2){
-        rooms.push(new room(waitingQueue[0], waitingQueue[1]));
+        rooms.push(new room(socketBkp, waitingQueue[0], waitingQueue[1]));
         waitingQueue.shift(); waitingQueue.shift();
         console.log(rooms);
     }
@@ -134,6 +134,8 @@ app.post('/signup', (req,res) =>{
             if (err) throw err;
             console.log("One Session inserted");
         });
+
+    res.send('ok');
 });
 
 
@@ -147,7 +149,8 @@ app.post('/deconnection', (req,res) =>{
 
 io.on('connection', (socket) =>{
     console.log("New connection");
-    const game = new Stratego(socket);
+    socketBkp = socket;
+    const game = new Stratego(socket, "j1", "j2");
 
     socket.on('login', () =>{
         console.log(socket.handshake.session.username);
