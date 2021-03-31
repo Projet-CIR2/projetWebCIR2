@@ -6,4 +6,5 @@ form.addEventListener('submit', event=> {
     console.log(form);
     event.preventDefault();
     logger.sendLogin(username.value, pwrd.value);
+
 });

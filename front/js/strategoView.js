@@ -169,6 +169,7 @@ class StrategoView {
             });
         }
 
+<<<<<<< Updated upstream
         let currentButton = document.getElementById('bouton_placement');
         currentButton.addEventListener('click', () => {
             let currentLabel = document.getElementById('compteur');
@@ -178,6 +179,53 @@ class StrategoView {
                 this.debut.pret = true;
                 this.affichePlayer(this.joueur_courant);
             } else console.log('pas pret');
+=======
+    listenersDescription(){
+      let currentDiv = document.getElementById('tabAjout');
+      let currentDescription = document.getElementById('description');
+      for (let i = 0; i < 12; ++i) {
+        currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('mouseover', () => {
+          switch (i) {
+            case 0:
+              currentDescription.textContent = "Elle se déplace d'une case à la fois dans la direction qu'elle veut.";
+              currentDescription.textContent += "L'Espion bat le Maréchal si c'est l'espion qui attaque le Maréchal" ;
+              break;
+            case 1:
+              currentDescription.textContent = "L'Éclaireur peut se déplacer d'autant de cases libres qu'il le souhaite, en ligne droite dans les 4 directions" ;
+              currentDescription.textContent += "La valeur de ce pion est 2";
+              break;
+            case 2:
+              currentDescription.textContent =  "je suis le trois" ;
+              break;
+            case 3:
+              currentDescription.textContent =  "je suis le quatre" ;
+              break;
+            case 4:
+              currentDescription.textContent =  "je suis le cinq" ;
+              break;
+            case 5:
+              currentDescription.textContent =  "je suis le six" ;
+              break;
+            case 6:
+              currentDescription.textContent =  "je suis le sept" ;
+              break;
+            case 7:
+              currentDescription.textContent =  "je suis le huit" ;
+              break;
+            case 8:
+              currentDescription.textContent =  "je suis le neuf" ;
+              break;
+            case 9:
+              currentDescription.textContent =  "je suis le dix" ;
+              break;
+            case 10:
+              currentDescription.textContent =  "je suis le onze" ;
+              break;
+            case 11:
+              currentDescription.textContent =  "je suis le douze" ;
+              break;
+          }
+>>>>>>> Stashed changes
         });
     }
 
@@ -200,48 +248,62 @@ class StrategoView {
     listenersDescription() {
         let currentDiv = document.getElementById('tabAjout');
         let currentDescription = document.getElementById('description');
+        let currentValeur = document.getElementById('valeur');
         for (let i = 0; i < 12; ++i) {
             currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('mouseover', () => {
                 switch (i) {
                     case 0:
-                        currentDescription.textContent = "je suis le un";
+                        currentDescription.textContent = "L'espion se déplace d'une case dans n'importe quelle direction.";
+                        currentValeur.textContent ="L'espion est l'unité la plus faible, un de force. Mais si elle attaque le maréchal en premier, le maréchal meurt.";
                         break;
                     case 1:
-                        currentDescription.textContent = "je suis le deux";
+                        currentDescription.textContent = "L'éclaireur est l'unité la plus rapide, elle peut se déplacer en ligne droite autant de case qu'elle veut. L'éclaireur peut se déplacer dans n'importe quelle direction.";
+                        currentValeur.textContent = "L'éclaireur a une force de 2.";
                         break;
                     case 2:
-                        currentDescription.textContent = "je suis le trois";
+                        currentDescription.textContent = "Le démineur est l'unité qui permet de détruire les bombes, elle se déplace d'une case dans n'importe quelle direction.";
+                        currentValeur.textContent = "Le démineur a une force de 3.";
                         break;
                     case 3:
-                        currentDescription.textContent = "je suis le quatre";
+                        currentDescription.textContent = "Le sergent est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
+                        currentValeur.textContent = "Le démineur a une force de 4.";
                         break;
                     case 4:
-                        currentDescription.textContent = "je suis le cinq";
+                        currentDescription.textContent = "Le lieutenant est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
+                        currentValeur.textContent = "Le démineur a une force de 5.";
                         break;
                     case 5:
-                        currentDescription.textContent = "je suis le six";
+                        currentDescription.textContent = "Le capitaine est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
+                        currentValeur.textContent = "Le démineur a une force de 6.";
                         break;
                     case 6:
-                        currentDescription.textContent = "je suis le sept";
+                        currentDescription.textContent = "Le commandant est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
+                        currentValeur.textContent = "Le démineur a une force de 7.";
                         break;
                     case 7:
-                        currentDescription.textContent = "je suis le huit";
+                        currentDescription.textContent = "Le colonel est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
+                        currentValeur.textContent = "Le démineur a une force de 8.";
                         break;
                     case 8:
-                        currentDescription.textContent = "je suis le neuf";
+                        currentDescription.textContent = "Le general est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
+                        currentValeur.textContent = "Le démineur a une force de 9.";
                         break;
                     case 9:
-                        currentDescription.textContent = "je suis le dix";
+                        currentDescription.textContent = "Le marechal est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
+                        currentValeur.textContent = "Le démineur a une force de 10.";
                         break;
                     case 10:
-                        currentDescription.textContent = "je suis le onze";
+                        currentDescription.textContent = "Le drapeau est le pion à protéger, il ne peut pas ce déplacer.";
+                        currentValeur.textContent = "Si le drapeau se fait attaquer par n'importe qu'elle unité la partie est perdue.";
                         break;
                     case 11:
-                        currentDescription.textContent = "je suis le douze";
+                        currentDescription.textContent = "La bombe ne se déplace pas mais elle est une très bonne unité de défense.";
+                        currentValeur.textContent = "La bombe détruit n'importe qu'elle unité sauf le démineur.";
                         break;
                 }
             });
         }
+      }
     }
 
     // initialise le joueur à qui appartient le visuel
@@ -256,7 +318,7 @@ class StrategoView {
     // en attendant l'autre joueur
     affichePlayer(joueur) {
         let currentP = document.getElementById('joueurQuiJoue');
-        if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + (joueur.color ? 'rouge' : 'bleu');
+        if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + joueur.pseudo;
         else if (this.debut.pret) currentP.textContent = "En attente du joueur adverse";
         else currentP.textContent = "Vous pouvez placer vos pions";
     }
