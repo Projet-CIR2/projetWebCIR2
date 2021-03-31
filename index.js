@@ -164,9 +164,9 @@ io.on('connection', (socket) =>{
 
     init.initSocket(socket, game);
 
-    socket.on('disconnect', () => {
+    /*socket.on('disconnect', () => {
         console.log("Deconnection");
-    });
+    });*/
 });
 
 
