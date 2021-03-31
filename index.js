@@ -42,7 +42,7 @@ io.use(sharedsession(session, {
 //*** CODE ***//
 app.get('/', (req,res) => {
     let sessionData = req.session;
-    res.sendFile(__dirname + "/front/html/jeu.html");
+    res.sendFile(__dirname + "/front/html/index.html");
 
 });
 
@@ -159,6 +159,7 @@ io.on('connection', (socket) =>{
 
     socket.on('login', () =>{
         console.log(socket.handshake.session.username);
+
     })
 
     init.initSocket(socket, game);
@@ -192,3 +193,5 @@ con.connect(err=>{
 
 let waitingQueue = [];
 let rooms = [];
+
+let playerSockets = [];
