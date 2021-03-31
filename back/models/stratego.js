@@ -281,6 +281,17 @@ class Stratego {
             this.joueur_rouge.pions_mort[value - 1] += 1;
         } else {
             this.joueur_bleu.pions_vivant[value - 1] -= 1;
+            this.joueur_bleu.pions_mort[value - 1] += 1;
+        }
+    }
+
+    //fonction un_mort mais inversé
+    un_mort_inverse(joueur, value) {
+        if (joueur === this.joueur_rouge) {
+            this.joueur_bleu.pions_vivant[value - 1] -= 1;
+            this.joueur_bleu.pions_mort[value - 1] += 1;
+        } else {
+            this.joueur_rouge.pions_vivant[value - 1] -= 1;
             this.joueur_rouge.pions_mort[value - 1] += 1;
         }
     }
@@ -353,6 +364,9 @@ class Stratego {
                         // si la case sur laquelle on veut aller est un pion
                         if (case_mange !== undefined) {
 
+                            pion1.visible = 1;
+                            case_mange.visible = 1;
+
                             //d'abord on vérifie que la partie n'est pas gagné
                             if (case_mange.puissance === 11) {
                                 this.win(joueur); //faire la win
@@ -360,15 +374,8 @@ class Stratego {
 
                             //puis si le général est mangé par l'espion
                             else if (pion1.puissance === 1 && case_mange.puissance === 10) {
-                                if (joueur === this.joueur_bleu) {
-                                    this.un_mort(this.joueur_rouge, case_mange.puissance);
-                                } else {
-                                    this.un_mort(this.joueur_bleu, case_mange.puissance);
-                                }
 
-                                pion1.visible = 1;
-                                case_mange.visible = 1;
-
+                                this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
 
                                 this.modif_grid(x_clic, y_clic, pion1);
                                 this.modif_grid(x_pos, y_pos, undefined);
@@ -376,16 +383,8 @@ class Stratego {
 
                             //puis si une bombe a été détruite
                             else if (pion1.puissance === 3 && case_mange.puissance === 12) {
-                                if (joueur === this.joueur_bleu) {
-                                    this.un_mort(this.joueur_rouge, case_mange.puissance);
-                                } else {
-                                    this.un_mort(this.joueur_bleu, case_mange.puissance);
-                                }
 
-
-                                pion1.visible = 1;
-                                case_mange.visible = 1;
-
+                                this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
 
                                 this.modif_grid(x_clic, y_clic, pion1);
                                 this.modif_grid(x_pos, y_pos, undefined);
@@ -393,22 +392,9 @@ class Stratego {
 
                             //si les puissances sont les même
                             else if (pion1.puissance === case_mange.puissance) {
-                                if (joueur === this.joueur_bleu) {
-                                    this.un_mort(this.joueur_bleu, pion1.puissance);
-                                } else {
-                                    this.un_mort(this.joueur_rouge, pion1.puissance);
-                                }
 
-                                if (joueur === this.joueur_bleu) {
-                                    this.un_mort(this.joueur_rouge, case_mange.puissance);
-                                } else {
-                                    this.un_mort(this.joueur_bleu, case_mange.puissance);
-                                }
-
-
-                                pion1.visible = 1;
-                                case_mange.visible = 1;
-
+                                this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
+                                this.un_mort(joueur, case_mange.puissance);//mon pion detruit
 
                                 this.modif_grid(x_clic, y_clic, undefined);
                                 this.modif_grid(x_pos, y_pos, undefined);
@@ -416,16 +402,8 @@ class Stratego {
 
                             //si pion est plus puisant que l'adversaire
                             else if (pion1.puissance >= case_mange.puissance) {
-                                if (joueur === this.joueur_bleu) {
-                                    this.un_mort(this.joueur_rouge, case_mange.puissance);
-                                } else {
-                                    this.un_mort(this.joueur_bleu, case_mange.puissance);
-                                }
 
-
-                                pion1.visible = 1;
-                                case_mange.visible = 1;
-
+                                this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
 
                                 this.modif_grid(x_clic, y_clic, pion1);
                                 this.modif_grid(x_pos, y_pos, undefined);
@@ -433,15 +411,8 @@ class Stratego {
 
                             //si pion est moins puisant que l'adversaire
                             else if (pion1.puissance <= case_mange.puissance) {
-                                if (joueur === this.joueur_bleu) {
-                                    this.un_mort(this.joueur_bleu, pion1.puissance);
-                                } else {
-                                    this.un_mort(this.joueur_rouge, pion1.puissance);
-                                }
 
-
-                                pion1.visible = 1;
-                                case_mange.visible = 1;
+                                this.un_mort(joueur, case_mange.puissance);//mon pion detruit
 
                                 this.modif_grid(x_clic, y_clic, undefined);
                             }
