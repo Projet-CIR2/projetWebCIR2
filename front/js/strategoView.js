@@ -68,7 +68,7 @@ class StrategoView {
                         if (this.debut.click) {
                             // si le click précédent était sur la tab ajout
                             if (this.debut.value !== -1) {
-                                currentCell = document.getElementsByClassName('nb_piece')[this.debut.value];
+                                currentCell = document.getElementsByClassName('nom_piece')[this.debut.value];
                                 if (((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) && currentCell.textContent[1] !== '0') {
                                     currentTab = currentDiv.rows[j].cells[i];
 
@@ -129,7 +129,7 @@ class StrategoView {
                 if (this.debut.click) {
                     // si on a cliqué avant sur la grille du jeu
                     if (this.debut.case.every(element => element !== -1)) {
-                        currentCell = document.getElementsByClassName('nb_piece')[i];
+                        currentCell = document.getElementsByClassName('nom_piece')[i];
                         if (currentCell.textContent[1] !== '0') {
 
                             currentTab = document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]];
@@ -159,7 +159,7 @@ class StrategoView {
                 }
                 // si aucun click n'a déjà été réalisé, on passe la couleur en vert
                 else {
-                    currentCell = document.getElementsByClassName('nb_piece')[i];
+                    currentCell = document.getElementsByClassName('nom_piece')[i];
                     if (currentCell.textContent[1] !== '0') {
                         currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].setAttribute('style', 'background:green');
                         this.debut.click = true;
@@ -169,7 +169,6 @@ class StrategoView {
             });
         }
 
-<<<<<<< Updated upstream
         let currentButton = document.getElementById('bouton_placement');
         currentButton.addEventListener('click', () => {
             let currentLabel = document.getElementById('compteur');
@@ -179,58 +178,11 @@ class StrategoView {
                 this.debut.pret = true;
                 this.affichePlayer(this.joueur_courant);
             } else console.log('pas pret');
-=======
-    listenersDescription(){
-      let currentDiv = document.getElementById('tabAjout');
-      let currentDescription = document.getElementById('description');
-      for (let i = 0; i < 12; ++i) {
-        currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('mouseover', () => {
-          switch (i) {
-            case 0:
-              currentDescription.textContent = "Elle se déplace d'une case à la fois dans la direction qu'elle veut.";
-              currentDescription.textContent += "L'Espion bat le Maréchal si c'est l'espion qui attaque le Maréchal" ;
-              break;
-            case 1:
-              currentDescription.textContent = "L'Éclaireur peut se déplacer d'autant de cases libres qu'il le souhaite, en ligne droite dans les 4 directions" ;
-              currentDescription.textContent += "La valeur de ce pion est 2";
-              break;
-            case 2:
-              currentDescription.textContent =  "je suis le trois" ;
-              break;
-            case 3:
-              currentDescription.textContent =  "je suis le quatre" ;
-              break;
-            case 4:
-              currentDescription.textContent =  "je suis le cinq" ;
-              break;
-            case 5:
-              currentDescription.textContent =  "je suis le six" ;
-              break;
-            case 6:
-              currentDescription.textContent =  "je suis le sept" ;
-              break;
-            case 7:
-              currentDescription.textContent =  "je suis le huit" ;
-              break;
-            case 8:
-              currentDescription.textContent =  "je suis le neuf" ;
-              break;
-            case 9:
-              currentDescription.textContent =  "je suis le dix" ;
-              break;
-            case 10:
-              currentDescription.textContent =  "je suis le onze" ;
-              break;
-            case 11:
-              currentDescription.textContent =  "je suis le douze" ;
-              break;
-          }
->>>>>>> Stashed changes
         });
     }
 
     modifNombrePion(numPion, value) {
-        let currentP = document.getElementsByClassName('nb_piece')[numPion];
+        let currentP = document.getElementsByClassName('nom_piece')[numPion];
         currentP.innerText = currentP.innerText.replace(currentP.innerText[1], value);
     }
 
@@ -254,7 +206,7 @@ class StrategoView {
                 switch (i) {
                     case 0:
                         currentDescription.textContent = "L'espion se déplace d'une case dans n'importe quelle direction.";
-                        currentValeur.textContent ="L'espion est l'unité la plus faible, un de force. Mais si elle attaque le maréchal en premier, le maréchal meurt.";
+                        currentValeur.textContent = "L'espion est l'unité la plus faible, un de force. Mais si elle attaque le maréchal en premier, le maréchal meurt.";
                         break;
                     case 1:
                         currentDescription.textContent = "L'éclaireur est l'unité la plus rapide, elle peut se déplacer en ligne droite autant de case qu'elle veut. L'éclaireur peut se déplacer dans n'importe quelle direction.";
@@ -303,10 +255,10 @@ class StrategoView {
                 }
             });
         }
-      }
     }
 
-    // initialise le joueur à qui appartient le visuel
+
+// initialise le joueur à qui appartient le visuel
     initJoueur(joueur) {
         this.joueur_courant = joueur;
         this.affichePlayer(joueur);
@@ -314,8 +266,8 @@ class StrategoView {
         this.initAjout();
     }
 
-    // affiche à qui est le tour dans le cas où on est en partie, sinon qu'on peut jouer ou que tout est bon
-    // en attendant l'autre joueur
+// affiche à qui est le tour dans le cas où on est en partie, sinon qu'on peut jouer ou que tout est bon
+// en attendant l'autre joueur
     affichePlayer(joueur) {
         let currentP = document.getElementById('joueurQuiJoue');
         if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + joueur.pseudo;
@@ -323,7 +275,7 @@ class StrategoView {
         else currentP.textContent = "Vous pouvez placer vos pions";
     }
 
-    // affiche le pion de type type à la position x y
+// affiche le pion de type type à la position x y
     affichePion(type, x, y, joueur, value) {
         let tab = document.getElementById('plateau');
         let currentCell = tab.rows[y].cells[x];
@@ -356,7 +308,7 @@ class StrategoView {
         }
     }
 
-    // enlève tous les pions
+// enlève tous les pions
     removePions() {
         let tab = document.getElementById('plateau');
         let currentCell;
@@ -376,6 +328,9 @@ class StrategoView {
         if (currentDiv != null) currentDiv.remove();
 
         currentDiv = document.getElementById('description');
+        if (currentDiv != null) currentDiv.remove();
+
+        currentDiv = document.getElementById('valeur');
         if (currentDiv != null) currentDiv.remove();
     }
 }
