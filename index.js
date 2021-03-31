@@ -42,7 +42,7 @@ io.use(sharedsession(session, {
 //*** CODE ***//
 app.get('/', (req,res) => {
     let sessionData = req.session;
-    res.sendFile(__dirname + "/front/html/index.html");
+    res.sendFile(__dirname + "/front/html/jeu.html");
 
 });
 
