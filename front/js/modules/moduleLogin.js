@@ -6,7 +6,8 @@ let log = (function () {
           let currentDiv = document.getElementById("connect");
           currentDiv.textContent=pseudo + " | ";
           let deco = document.createElement('a');
-          deco.setAttribute('href',"deconnection.html");
+          deco.setAttribute('href',"#");
+          deco.setAttribute('id',"deconnection");
           deco.setAttribute('title',"Coucou c'est moi");
 
           deco.textContent="se deconnecter";
