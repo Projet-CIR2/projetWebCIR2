@@ -5,8 +5,7 @@ const io = require('socket.io')(http);
 const mysql = require('mysql');
 const fs = require('fs');
 
-const Stratego = require('./back/models/stratego');
-const init = require('./back/modules/initSocket');
+
 let logName = undefined;
 let socketBkp;
 
@@ -27,6 +26,8 @@ const session = require('express-session')({
 /* Import libs */
 const matchmaking = require("./back/matchmaking");
 const room = require("./back/models/room")
+const Stratego = require('./back/models/stratego');
+const init = require('./back/modules/initSocket');
 
 /* config */
 const jsonParser = bodyParser.json();
@@ -66,10 +67,12 @@ app.get('/attente.html', (req,res) =>{
     let sessionData = req.session;
 
     if(req.session.inQueue == undefined){
-        waitingQueue.push(matchmaking.getPlayerName(sessionData));
-        console.log(waitingQueue);
         req.session.inQueue = true;
         req.session.save();
+        waitingQueue.push(req.session.id);
+        console.log(waitingQueue);
+
+
     }
     while(waitingQueue.length >= 2){
         rooms.push(new room(socketBkp, waitingQueue[0], waitingQueue[1]));
@@ -152,6 +155,9 @@ io.on('connection', (socket) =>{
     socketBkp = socket;
     const game = new Stratego(socket, "j1", "j2");
 
+    countPlayer ++;
+    playerSockets.push(socket);
+
     socket.on('login', () =>{
         console.log(socket.handshake.session.username);
     });
@@ -192,4 +198,5 @@ con.connect(err=>{
 let waitingQueue = [];
 let rooms = [];
 
+let countPlayer = 0;
 let playerSockets = [];
