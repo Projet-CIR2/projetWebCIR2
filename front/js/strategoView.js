@@ -74,7 +74,7 @@ class StrategoView {
 
                                     socket.emit('placePion', this.joueur_courant, i, j, this.debut.value + 1);
                                     document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
-                                    this.modifNombrePion(this.debut.value, Number(currentCell.textContent[1]) - 1)
+                                    this.modifNombrePion(this.joueur_courant, this.debut.value, Number(currentCell.textContent[1]) - 1)
                                     this.debut.click = false;
                                     this.debut.value = -1;
                                 }
@@ -138,7 +138,7 @@ class StrategoView {
                             currentTab.removeAttribute('style');
                             this.debut.click = false;
                             this.debut.case = [-1, -1];
-                            this.modifNombrePion(i, Number(currentCell.textContent[1]) - 1)
+                            this.modifNombrePion(this.joueur_courant, i, Number(currentCell.textContent[1]) - 1)
                         }
                     } else {
                         currentTab = currentDiv.rows[Math.trunc(i / 5)].cells[i % 5];

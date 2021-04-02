@@ -15,10 +15,6 @@ body {
 
 div#divGif {
     position: absolute;
-    /*float: left;*/
-    /*width: 60%;*/
-    /*margin-left: 5vw;*/
-    /*height: 70vh;*/
     width: 50vw;
     text-align: center;
     margin-top: 10vh;
@@ -28,7 +24,6 @@ div#divGif {
 }
 
 #gif {
-    /*margin-left: 5vw;*/
     width: 40vw;
     height: 60vh;
 }
