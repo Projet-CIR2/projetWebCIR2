@@ -68,6 +68,7 @@ app.get('/signup.html', (req,res) =>{
 
 app.get('/attente.html', (req,res) =>{
     let sessionData = req.session;
+    let token;
 
     if(req.session.inQueue == undefined){
         req.session.inQueue = true;
@@ -82,6 +83,12 @@ app.get('/attente.html', (req,res) =>{
     }
     while(waitingQueue.length >= 2){
         // ioBkp.in('attente').emit('coucou');
+        token = randtoken.generate(16);
+        ioBkp.to(playerSockets[0].id).emit('hey', token);
+        playerSockets.shift();
+        console.log('playerSocket[0]', playerSockets.length - 1);
+        ioBkp.to(playerSockets[0].id).emit('hey', token);
+        playerSockets.pop();
         rooms.push(new room(socketBkp, waitingQueue[0], waitingQueue[1]));
         waitingQueue.shift(); waitingQueue.shift();
         // res.redirect('/jeu');
@@ -163,15 +170,15 @@ app.post('/deconnection', (req,res) =>{
 io.on('connection', (socket) =>{
     console.log("New connection");
     socketBkp = socket;
-    ioBkp = io;
-    socket.join(socket.id);
+    // socket.join(socket.id);
+    // socket.emit()
+    io.to(socket.id).emit("hey", "I just met you");
     // io.in('attente').emit('coucou');
     const game = new Stratego(socket, "j1", "j2");
 
     countPlayer ++;
     playerSockets.push(socket);
     console.log(socket.id, " pushed");
-
 
     socket.on('login', () =>{
         console.log(socket.handshake.session.username);
@@ -200,6 +207,8 @@ io.on('connection', (socket) =>{
     });
 
     init.initSocket(socket, game);
+
+    ioBkp = io;
 });
 
 

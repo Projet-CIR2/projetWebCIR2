@@ -17,12 +17,19 @@ let socketModule = (function () {
         })
     }
 
+    function hey(socket) {
+        socket.on('hey', (text) => {
+            console.log(text);
+        })
+    }
+
     return {
         initSocket(socket) {
             console.log('hola !');
             lanceJeu(socket);
             changeRoom(socket);
             coucou(socket);
+            hey(socket);
         }
     }
 }) ();
