@@ -170,6 +170,8 @@ io.on('connection', (socket) =>{
 
     countPlayer ++;
     playerSockets.push(socket);
+    console.log(socket.id, " pushed");
+
 
     socket.on('login', () =>{
         console.log(socket.handshake.session.username);
@@ -185,6 +187,16 @@ io.on('connection', (socket) =>{
 
     socket.on('deconnexion', () => {
         logName = undefined;
+    });
+
+    socket.on('disconnect', () =>{
+        console.log("deconnected");
+        for(let i =0;i< playerSockets.length; i++){
+            if (socket.id == playerSockets[i].id){
+                playerSockets.splice(i, 1);
+                console.log(socket.id, " spliced");
+            }
+        }
     });
 
     init.initSocket(socket, game);
