@@ -34,7 +34,6 @@ const session = require('express-session')({
 
 /* Import libs */
 const matchmaking = require("./back/matchmaking");
-const user = require("./back/models/user");
 const room = require("./back/models/room")
 const Stratego = require('./back/models/stratego');
 const init = require('./back/modules/initSocket');
@@ -57,9 +56,9 @@ app.get('/', (req,res) => {
     logName = req.session.logName;
     res.sendFile(__dirname + "/front/html/index.html");
 
-    if(users.find(element => element.id === req.session.id) === undefined){
-        users.push(new user(req.session));
-    }
+    // if(users.find(element => element.id === req.session.id) === undefined){
+    //     users.push(new user(req.session));
+    // }
     
  
 
@@ -81,6 +80,25 @@ app.get('/signup.html', (req,res) =>{
 
 
 app.get('/attente.html', (req,res) =>{
+    // let sessionData = req.session;
+    // let token;
+    //
+    // if(req.session.inQueue == undefined){
+    //     req.session.inQueue = true;
+    //     req.session.save();
+    //     waitingQueue.push(req.session.id);
+    //     // waitingQueue.push(socketBkp.id);
+    //     console.log('id', socketBkp.id, req.session.id);
+    //     console.log(waitingQueue);
+    //     // socketBkp.join('attente');
+    //
+    //     // ioBkp.in('attente').emit('coucou');
+    // }
+
+    res.sendFile(__dirname + "/front/html/attente.html");
+});
+
+app.get('/jeu.html', (req, res) => {
     let sessionData = req.session;
     let token;
 
@@ -89,17 +107,13 @@ app.get('/attente.html', (req,res) =>{
         req.session.save();
         waitingQueue.push(req.session.id);
         // waitingQueue.push(socketBkp.id);
-        console.log('id', socketBkp.id, req.session.id);
-        console.log(waitingQueue);
+        // console.log('id', socketBkp.id, req.session.id);
+        // console.log(waitingQueue);
         // socketBkp.join('attente');
 
         // ioBkp.in('attente').emit('coucou');
     }
 
-    res.sendFile(__dirname + "/front/html/attente.html");
-});
-
-app.get('/jeu', (req, res) => {
     res.sendFile(__dirname + "/front/html/jeu.html")
 })
 
@@ -175,7 +189,7 @@ io.on('connection', (socket) =>{
     // socket.emit()
     io.to(socket.id).emit("hey", "I just met you");
     // io.in('attente').emit('coucou');
-    const game = new Stratego(socket, "j1", "j2");
+    // const game = new Stratego(socket, "j1", "j2");
 
     countPlayer ++;
     playerSockets.push(socket);
@@ -206,31 +220,37 @@ io.on('connection', (socket) =>{
         }
     });
 
-    init.initSocket(socket, game);
+    // init.initSocket(socket, game);
 
     changeRoom(socket);
-    ioBkp = io;
 });
 
 function changeRoom(socket) {
-    let token;
+    let token, game;
     while(waitingQueue.length >= 2){
         token = randtoken.generate(16);
 
         io.to(playerSockets[playerSockets.length - 1].id).emit('hey', token);
         playerSockets[playerSockets.length - 1].join(token);
-        playerSockets.pop();
+        // playerSockets.pop();
         console.log('playerSocket[0]', playerSockets.length - 1);
-        io.to(playerSockets[playerSockets.length - 1].id).emit('hey', token + 'coucou');
-        playerSockets[playerSockets.length - 1].join(token);
-        playerSockets.pop();
+        io.to(playerSockets[playerSockets.length - 2].id).emit('hey', token + 'coucou');
+        playerSockets[playerSockets.length - 2].join(token);
+        // playerSockets.pop();
 
         socket.to(token).emit('hey', 'je suis content');
         // io.to('attente').emit('hey', token + 'coucou');
 
-        rooms.push(new room(socketBkp, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1])));
+        // io.to(token).emit('lanceJeu');
+        game = new Stratego(socket, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1]));
+        console.log(playerSockets.length);
+        init.initSocket(playerSockets[playerSockets.length - 1], game);
+        playerSockets.pop();
+        init.initSocket(playerSockets[playerSockets.length - 1], game);
+        playerSockets.pop();
+        // rooms.push(new room(socketBkp, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1])));
+        rooms.push(game);
         waitingQueue.shift(); waitingQueue.shift();
-        io.to(token).emit('lanceJeu');
         console.log(rooms);
     }
 }

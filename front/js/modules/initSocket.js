@@ -49,6 +49,12 @@ let socketModule = (function () {
         });
     }
 
+    function hey() {
+        socket.on('hey', (text) => {
+            console.log(text);
+        })
+    }
+
     return {
         initSocket(socket_, view_) {
             socket = socket_;
@@ -61,6 +67,7 @@ let socketModule = (function () {
             removePion();
             removePions();
             removeTabAjout();
+            hey();
         }
     }
 }) ();

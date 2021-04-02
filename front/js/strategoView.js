@@ -260,10 +260,13 @@ class StrategoView {
 
 // initialise le joueur à qui appartient le visuel
     initJoueur(joueur) {
-        this.joueur_courant = joueur;
-        this.affichePlayer(joueur);
+        if (this.joueur_courant === 0) {
+            console.log('j initialise le joueur');
+            this.joueur_courant = joueur;
+            this.affichePlayer(joueur);
 
-        this.initAjout();
+            this.initAjout();
+        }
     }
 
 // affiche à qui est le tour dans le cas où on est en partie, sinon qu'on peut jouer ou que tout est bon
@@ -290,8 +293,8 @@ class StrategoView {
                 img.setAttribute('alt', value);
                 img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
             } else {
-                img.setAttribute('alt', 'dos' + (this.joueur_courant.color ? ' rouge' : ' bleu'));
-                img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + 'dos.png');
+                img.setAttribute('alt', 'dos' + (!this.joueur_courant.color ? ' rouge' : ' bleu'));
+                img.setAttribute('src', '../assets/' + (!this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + 'dos.png');
             }
         }
     }

@@ -1,7 +1,7 @@
 let socketModule = (function () {
     function lanceJeu(socket) {
         socket.on('lanceJeu', () => {
-            document.location.href="jeu"
+            document.location.href="jeu";
         })
     }
 

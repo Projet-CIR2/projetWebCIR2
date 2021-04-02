@@ -13,19 +13,34 @@ const Drapeau = require('./types/11_Drapeau');
 const Bombes = require('./types/12_Bombes');
 
 class Stratego {
-    constructor(socket, pseudoJoueur1, pseudoJoueur2) {
-        this.socket = socket;
+    // io;
+    // constructor(socket, io, token, pseudoJoueur1, pseudoJoueur2) {
+    constructor(socket_, io_, token, player1, player2) {
+        this.player1 = player1;
+        this.player2 = player2;
+        if (this.player1 === this.player2) {
+            this.player1 += ' 1';
+            this.player2 += ' 2';
+        }
+
+        this.socket = socket_;
+        this.io = io_;
+        this.token = token;
 
         this.grid = []; // tableau de position en 10*10
         this.grid_default = [];
         this.tour = 0; // nombre pair : joueur 0, nombre impair : joueur 1
         this.fini = false;
 
-        this.joueur_bleu = new Joueur(0, pseudoJoueur1);
-        this.joueur_rouge = new Joueur(1, pseudoJoueur2);
+        this.joueur_bleu = new Joueur(0, player1);
+        this.joueur_rouge = new Joueur(1, player2);
+
+        this.io.to(token).emit('hey', 'je suis dans le jeu');
 
         ///////////////// A modifier
-        this.socket.emit('initJoueur', this.joueur_rouge);
+        this.socket.emit('initJoueur', this.joueur_bleu);
+        this.io.to(this.token).emit('initJoueur', this.joueur_rouge);
+        // this.socket.emit('initJoueur', this.joueur_rouge);
         // this.socket.emit('initJoueur', this.joueur_rouge);
 
         this.egalite = false;
@@ -74,7 +89,7 @@ class Stratego {
         this.egalite = false;
 
         ///////////////// A modifier
-        this.socket.emit('removePions');
+        this.io.in(this.token).emit('removePions');
     }
 
     peut_placer_ses_pions(joueur, x, y) {
@@ -187,7 +202,7 @@ class Stratego {
         if (this.peut_placer_ses_pions(joueur, x, y)) {
             this.modif_grid_placer(joueur, x, y, value);
             ///////////////// A modifier
-            this.socket.emit('affichePion', this.getCaseState(x, y).type, x, y, joueur, value);
+            this.io.to(this.token).emit('affichePion', this.getCaseState(x, y).type, x, y, joueur, value);
 
             let somme = 0;
             if (joueur.color === this.joueur_rouge.color) {
@@ -211,7 +226,7 @@ class Stratego {
         this.modif_grid(x, y, undefined);
 
         ///////////////// A modifier
-        this.socket.emit('removePion', x, y);
+        this.io.to(this.token).emit('removePion', x, y);
     }
 
     enlevePion(joueur, value) {
