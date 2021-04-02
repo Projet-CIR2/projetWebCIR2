@@ -220,8 +220,6 @@ io.on('connection', (socket) =>{
         }
     });
 
-    // init.initSocket(socket, game);
-
     changeRoom(socket);
 });
 
@@ -232,18 +230,12 @@ function changeRoom(socket) {
 
         io.to(playerSockets[playerSockets.length - 1].id).emit('hey', token);
         playerSockets[playerSockets.length - 1].join(token);
-        // playerSockets.pop();
-        console.log('playerSocket[0]', playerSockets.length - 1);
         io.to(playerSockets[playerSockets.length - 2].id).emit('hey', token + 'coucou');
         playerSockets[playerSockets.length - 2].join(token);
-        // playerSockets.pop();
 
         socket.to(token).emit('hey', 'je suis content');
-        // io.to('attente').emit('hey', token + 'coucou');
 
-        // io.to(token).emit('lanceJeu');
         game = new Stratego(socket, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1]));
-        console.log(playerSockets.length);
         init.initSocket(playerSockets[playerSockets.length - 1], game);
         playerSockets.pop();
         init.initSocket(playerSockets[playerSockets.length - 1], game);
@@ -251,7 +243,7 @@ function changeRoom(socket) {
         // rooms.push(new room(socketBkp, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1])));
         rooms.push(game);
         waitingQueue.shift(); waitingQueue.shift();
-        console.log(rooms);
+        // console.log(rooms);
     }
 }
 
