@@ -4,10 +4,13 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const mysql = require('mysql');
 const fs = require('fs');
+const randtoken = require('rand-token');
 
 
 let logName = undefined;
 let socketBkp;
+let ioBkp;
+let socketToToken = [];
 
 const sharedsession = require("express-socket.io-session");
 const bodyParser = require('body-parser');
@@ -70,20 +73,27 @@ app.get('/attente.html', (req,res) =>{
         req.session.inQueue = true;
         req.session.save();
         waitingQueue.push(req.session.id);
+        // waitingQueue.push(socketBkp.id);
+        console.log('id', socketBkp.id, req.session.id);
         console.log(waitingQueue);
+        socketBkp.join('attente');
 
-
+        // ioBkp.in('attente').emit('coucou');
     }
     while(waitingQueue.length >= 2){
+        // ioBkp.in('attente').emit('coucou');
         rooms.push(new room(socketBkp, waitingQueue[0], waitingQueue[1]));
         waitingQueue.shift(); waitingQueue.shift();
+        // res.redirect('/jeu');
         console.log(rooms);
     }
 
     res.sendFile(__dirname + "/front/html/attente.html");
 });
 
-
+app.get('/jeu', (req, res) => {
+    res.sendFile(__dirname + "/front/html/jeu.html")
+})
 
 
 app.post('/login',  (req,res) =>{
@@ -153,6 +163,9 @@ app.post('/deconnection', (req,res) =>{
 io.on('connection', (socket) =>{
     console.log("New connection");
     socketBkp = socket;
+    ioBkp = io;
+    socket.join(socket.id);
+    // io.in('attente').emit('coucou');
     const game = new Stratego(socket, "j1", "j2");
 
     countPlayer ++;
@@ -164,6 +177,10 @@ io.on('connection', (socket) =>{
 
     socket.on('pseudo', () => {
         if (logName !== undefined) socket.emit('Pseudo', logName);
+    });
+
+    socket.on('changeRoom', (idRoom) => {
+        socket.join(idRoom);
     });
 
     socket.on('deconnexion', () => {
