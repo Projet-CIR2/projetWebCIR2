@@ -9,8 +9,14 @@ const randtoken = require('rand-token');
 
 let logName = undefined;
 let socketBkp;
-let ioBkp;
-let socketToToken = [];
+
+
+let waitingQueue = [];
+let rooms = [];
+
+let countPlayer = 0;
+let playerSockets = [];
+let users = [];
 
 const sharedsession = require("express-socket.io-session");
 const bodyParser = require('body-parser');
@@ -28,6 +34,7 @@ const session = require('express-session')({
 
 /* Import libs */
 const matchmaking = require("./back/matchmaking");
+const user = require("./back/models/user");
 const room = require("./back/models/room")
 const Stratego = require('./back/models/stratego');
 const init = require('./back/modules/initSocket');
@@ -49,6 +56,13 @@ io.use(sharedsession(session, {
 app.get('/', (req,res) => {
     logName = req.session.logName;
     res.sendFile(__dirname + "/front/html/index.html");
+
+    if(users.find(element => element.id === req.session.id) === undefined){
+        users.push(new user(req.session));
+    }
+    
+ 
+
 });
 
 app.get('/login.html', (req,res) =>{
@@ -184,8 +198,9 @@ io.on('connection', (socket) =>{
 
     socket.on('disconnect', () =>{
         console.log("deconnected");
+        countPlayer--;
         for(let i =0;i< playerSockets.length; i++){
-            if (socket.id == playerSockets[i].id){
+            if (socket.id === playerSockets[i].id){
                 playerSockets.splice(i, 1);
             }
         }
@@ -241,8 +256,3 @@ con.connect(err=>{
 
 /************* Matchmaking **************/
 
-let waitingQueue = [];
-let rooms = [];
-
-let countPlayer = 0;
-let playerSockets = [];
