@@ -77,22 +77,9 @@ app.get('/attente.html', (req,res) =>{
         // waitingQueue.push(socketBkp.id);
         console.log('id', socketBkp.id, req.session.id);
         console.log(waitingQueue);
-        socketBkp.join('attente');
+        // socketBkp.join('attente');
 
         // ioBkp.in('attente').emit('coucou');
-    }
-    while(waitingQueue.length >= 2){
-        // ioBkp.in('attente').emit('coucou');
-        token = randtoken.generate(16);
-        ioBkp.to(playerSockets[0].id).emit('hey', token);
-        playerSockets.shift();
-        console.log('playerSocket[0]', playerSockets.length - 1);
-        ioBkp.to(playerSockets[0].id).emit('hey', token);
-        playerSockets.pop();
-        rooms.push(new room(socketBkp, waitingQueue[0], waitingQueue[1]));
-        waitingQueue.shift(); waitingQueue.shift();
-        // res.redirect('/jeu');
-        console.log(rooms);
     }
 
     res.sendFile(__dirname + "/front/html/attente.html");
@@ -170,7 +157,7 @@ app.post('/deconnection', (req,res) =>{
 io.on('connection', (socket) =>{
     console.log("New connection");
     socketBkp = socket;
-    // socket.join(socket.id);
+    // socket.join('attente');
     // socket.emit()
     io.to(socket.id).emit("hey", "I just met you");
     // io.in('attente').emit('coucou');
@@ -178,7 +165,6 @@ io.on('connection', (socket) =>{
 
     countPlayer ++;
     playerSockets.push(socket);
-    console.log(socket.id, " pushed");
 
     socket.on('login', () =>{
         console.log(socket.handshake.session.username);
@@ -201,16 +187,38 @@ io.on('connection', (socket) =>{
         for(let i =0;i< playerSockets.length; i++){
             if (socket.id == playerSockets[i].id){
                 playerSockets.splice(i, 1);
-                console.log(socket.id, " spliced");
             }
         }
     });
 
     init.initSocket(socket, game);
 
+    changeRoom(socket);
     ioBkp = io;
 });
 
+function changeRoom(socket) {
+    let token;
+    while(waitingQueue.length >= 2){
+        token = randtoken.generate(16);
+
+        io.to(playerSockets[playerSockets.length - 1].id).emit('hey', token);
+        playerSockets[playerSockets.length - 1].join(token);
+        playerSockets.pop();
+        console.log('playerSocket[0]', playerSockets.length - 1);
+        io.to(playerSockets[playerSockets.length - 1].id).emit('hey', token + 'coucou');
+        playerSockets[playerSockets.length - 1].join(token);
+        playerSockets.pop();
+
+        socket.to(token).emit('hey', 'je suis content');
+        // io.to('attente').emit('hey', token + 'coucou');
+
+        rooms.push(new room(socketBkp, waitingQueue[0], waitingQueue[1]));
+        waitingQueue.shift(); waitingQueue.shift();
+        // res.redirect('/jeu');
+        console.log(rooms);
+    }
+}
 
 http.listen(4200, () => {
     console.log("Bijour vous m'entendii ?")

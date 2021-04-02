@@ -32,4 +32,4 @@ let socketModule = (function () {
             hey(socket);
         }
     }
-}) ();
+})();
