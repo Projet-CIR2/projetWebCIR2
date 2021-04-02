@@ -13,24 +13,31 @@ body {
     z-index: 10;
 }
 
-div#gif {
+div#divGif {
     position: absolute;
     /*float: left;*/
     /*width: 60%;*/
-    margin-left: 5vw;
-    height: 60vh;
-    width: 40vw;
+    /*margin-left: 5vw;*/
+    /*height: 70vh;*/
+    width: 50vw;
     text-align: center;
     margin-top: 10vh;
     z-index: 11;
-    color:white;
+    color: white;
     font-family: 'Courgette', sans-serif;
+}
+
+#gif {
+    /*margin-left: 5vw;*/
+    width: 40vw;
+    height: 60vh;
 }
 
 div#att {
     padding-top: 20vh;
-    margin-left: 50vw;
-    color:white;
+    margin-left: 55vw;
+    margin-right: 5vw;
+    color: white;
     font-family: 'Courgette', sans-serif;
 }
 
