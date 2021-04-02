@@ -184,7 +184,6 @@ class StrategoView {
     modifNombrePion(joueur, numPion, value) {
         if (joueur.color === this.joueur_courant.color) {
             let currentP = document.getElementsByClassName('nom_piece')[numPion];
-            console.log(currentP);
             currentP.innerText = currentP.innerText.replace(currentP.innerText[1], value);
         }
     }
@@ -342,5 +341,10 @@ class StrategoView {
 
         currentDiv = document.getElementById('valeur');
         if (currentDiv != null) currentDiv.remove();
+    }
+
+    removeAttente() {
+        let currentDiv = document.getElementById('attente');
+        currentDiv.remove();
     }
 }

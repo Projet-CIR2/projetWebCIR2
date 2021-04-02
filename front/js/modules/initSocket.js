@@ -49,6 +49,12 @@ let socketModule = (function () {
         });
     }
 
+    function removeAttente() {
+        socket.on('removeAttente', () => {
+            view.removeAttente();
+        })
+    }
+
     function hey() {
         socket.on('hey', (text) => {
             console.log(text);
@@ -67,6 +73,7 @@ let socketModule = (function () {
             removePion();
             removePions();
             removeTabAjout();
+            removeAttente();
             hey();
         }
     }

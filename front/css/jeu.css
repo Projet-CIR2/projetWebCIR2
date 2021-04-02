@@ -1,6 +1,37 @@
+@import url(https://fonts.googleapis.com/css?family=Courgette&display=swap);
+
 body {
     background-size: cover;
     background-color: #333;
+}
+
+#attente {
+    position: absolute;
+    background-color: #3D3D3D;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+}
+
+div#gif {
+    position: absolute;
+    /*float: left;*/
+    /*width: 60%;*/
+    margin-left: 5vw;
+    height: 60vh;
+    width: 40vw;
+    text-align: center;
+    margin-top: 10vh;
+    z-index: 11;
+    color:white;
+    font-family: 'Courgette', sans-serif;
+}
+
+div#att {
+    padding-top: 20vh;
+    margin-left: 50vw;
+    color:white;
+    font-family: 'Courgette', sans-serif;
 }
 
 p {

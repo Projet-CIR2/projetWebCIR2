@@ -37,15 +37,13 @@ class Stratego {
 
         this.io.to(token).emit('hey', 'je suis dans le jeu');
 
-        ///////////////// A modifier
         this.socket.emit('initJoueur', this.joueur_bleu);
         this.io.to(this.token).emit('initJoueur', this.joueur_rouge);
-        // this.socket.emit('initJoueur', this.joueur_rouge);
-        // this.socket.emit('initJoueur', this.joueur_rouge);
 
         this.egalite = false;
         this.init_grid();
         this.reset();
+        this.io.to(token).emit('removeAttente');
 
         // this.socket.emit('affichePion', 'espion', 1, 5, this.joueur_bleu);
         // this.socket.emit('removePion', 1, 5);
