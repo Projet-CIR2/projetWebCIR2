@@ -8,14 +8,14 @@ let socketModule = (function () {
     }
 
     function modifNombrePion() {
-        socket.on('modifNombrePion', (numPion, value) => {
-            view.modifNombrePion(numPion, value);
+        socket.on('modifNombrePion', (joueur, numPion, value) => {
+            view.modifNombrePion(joueur, numPion, value);
         })
     }
 
     function modifNbPret() {
-        socket.on('modifNbPret', (value) => {
-            view.modifNbPret(value);
+        socket.on('modifNbPret', (joueur, value) => {
+            view.modifNbPret(joueur, value);
         })
     }
 
@@ -32,8 +32,8 @@ let socketModule = (function () {
     }
 
     function removePion() {
-        socket.on('removePion', (x, y) => {
-            view.removePion(x, y);
+        socket.on('removePion', (joueur, x, y) => {
+            view.removePion(joueur, x, y);
         });
     }
 

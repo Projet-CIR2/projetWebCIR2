@@ -88,8 +88,7 @@ class Stratego {
         this.fini = undefined;
         this.egalite = false;
 
-        ///////////////// A modifier
-        this.io.in(this.token).emit('removePions');
+        this.io.to(this.token).emit('removePions');
     }
 
     peut_placer_ses_pions(joueur, x, y) {
@@ -201,7 +200,7 @@ class Stratego {
     placer(joueur, x, y, value) {
         if (this.peut_placer_ses_pions(joueur, x, y)) {
             this.modif_grid_placer(joueur, x, y, value);
-            ///////////////// A modifier
+
             this.io.to(this.token).emit('affichePion', this.getCaseState(x, y).type, x, y, joueur, value);
 
             let somme = 0;
@@ -213,8 +212,7 @@ class Stratego {
                 this.joueur_bleu.pions_en_jeu.forEach(element => somme += element);
             }
 
-            ///////////////// A modifier
-            if (!(this.joueur_bleu.pret && this.joueur_rouge.pret)) this.socket.emit('modifNbPret', somme);
+            if (!(this.joueur_bleu.pret && this.joueur_rouge.pret)) this.io.to(this.token).emit('modifNbPret', joueur, somme);
         }
     }
 
@@ -225,8 +223,7 @@ class Stratego {
         this.enlevePion(joueur, value);
         this.modif_grid(x, y, undefined);
 
-        ///////////////// A modifier
-        this.io.to(this.token).emit('removePion', x, y);
+        this.io.to(this.token).emit('removePion', joueur, x, y);
     }
 
     enlevePion(joueur, value) {
@@ -237,8 +234,8 @@ class Stratego {
         let nbPion = joueurCourant.pions_vivant[value - 1] - joueurCourant.pions_en_jeu[value - 1];
 
         if (!(this.joueur_bleu.pret && this.joueur_rouge.pret)) {
-            this.socket.emit('modifNombrePion', value - 1, nbPion);
-            this.socket.emit('modifNbPret', somme);
+            this.io.to(this.token).emit('modifNombrePion', joueur, value - 1, nbPion);
+            this.io.to(this.token).emit('modifNbPret', joueur, somme);
         }
     }
 
@@ -257,7 +254,7 @@ class Stratego {
         this.pret(this.joueur_bleu);
         this.pret(this.joueur_rouge);
 
-        if (this.joueur_bleu.pret && this.joueur_rouge.pret) this.socket.emit('removeTabAjout');
+        if (this.joueur_bleu.pret && this.joueur_rouge.pret) this.io.to(this.token).emit('removeTabAjout');
         return this.joueur_bleu.pret && this.joueur_rouge.pret;
     }
 

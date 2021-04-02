@@ -181,19 +181,24 @@ class StrategoView {
         });
     }
 
-    modifNombrePion(numPion, value) {
-        let currentP = document.getElementsByClassName('nom_piece')[numPion];
-        currentP.innerText = currentP.innerText.replace(currentP.innerText[1], value);
+    modifNombrePion(joueur, numPion, value) {
+        if (joueur.color === this.joueur_courant.color) {
+            let currentP = document.getElementsByClassName('nom_piece')[numPion];
+            console.log(currentP);
+            currentP.innerText = currentP.innerText.replace(currentP.innerText[1], value);
+        }
     }
 
-    modifNbPret(value) {
-        let currentLabel = document.getElementById('compteur');
-        currentLabel.textContent = value;
+    modifNbPret(joueur, value) {
+        if (joueur.color === this.joueur_courant.color) {
+            let currentLabel = document.getElementById('compteur');
+            currentLabel.textContent = value;
 
-        if (value === 40) {
-            let currentButton = document.getElementById('bouton_placement');
-            currentButton.removeAttribute('disabled');
-            currentButton.setAttribute('enabled', '');
+            if (value === 40) {
+                let currentButton = document.getElementById('bouton_placement');
+                currentButton.removeAttribute('disabled');
+                currentButton.setAttribute('enabled', '');
+            }
         }
     }
 
@@ -299,12 +304,14 @@ class StrategoView {
         }
     }
 
-    removePion(x, y) {
+    removePion(joueur, x, y) {
         let tab = document.getElementById('plateau');
         let cell = tab.rows[y].cells[x];
         if (cell.firstChild !== null) {
             if (!this.sauter) {
-                socket.emit('enlevePion', this.joueur_courant, Number(cell.firstChild.getAttribute('alt')));
+                if (joueur.color === this.joueur_courant.color) {
+                    socket.emit('enlevePion', this.joueur_courant, Number(cell.firstChild.getAttribute('alt')));
+                }
             } else this.sauter = false;
 
             cell.removeChild(cell.firstChild);
