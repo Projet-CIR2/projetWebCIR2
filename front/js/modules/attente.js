@@ -1,7 +1,7 @@
 let socketModule = (function () {
     function lanceJeu(socket) {
         socket.on('lanceJeu', () => {
-            window.history.pushState("", "", '/jeu');
+            document.location.href="jeu"
         })
     }
 

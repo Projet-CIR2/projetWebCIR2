@@ -228,9 +228,9 @@ function changeRoom(socket) {
         socket.to(token).emit('hey', 'je suis content');
         // io.to('attente').emit('hey', token + 'coucou');
 
-        rooms.push(new room(socketBkp, waitingQueue[0], waitingQueue[1]));
+        rooms.push(new room(socketBkp, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1])));
         waitingQueue.shift(); waitingQueue.shift();
-        // res.redirect('/jeu');
+        io.to(token).emit('lanceJeu');
         console.log(rooms);
     }
 }
