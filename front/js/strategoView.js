@@ -331,7 +331,10 @@ class StrategoView {
         let currentCell = tab.rows[y].cells[x];
 
         if (Number(currentCell.getAttribute('alt')) !== value) {
-            if (currentCell.firstChild !== null) this.removePion(joueur, x, y);
+            if (currentCell.firstChild !== null) {
+                if (!this.debut.enJeu) this.removePion(joueur, x, y);
+                else currentCell.firstChild.remove();
+            }
 
             let img = document.createElement('img');
             currentCell.appendChild(img);

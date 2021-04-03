@@ -324,7 +324,7 @@ class Stratego {
             // on vérifie que la case de départ n'est pas vide
             if (pion1 !== undefined) {
                 // on récupère les endroits où le pion peut se déplacer
-                let list_capa = this.affiche(pion1.x, pion1.y);
+                let list_capa = this.affiche(x_pos, y_pos);
 
                 // on parcours le tableau des positions possibles pour le pion de départ
                 for (let pos_tmp of list_capa) {
@@ -337,6 +337,9 @@ class Stratego {
 
                             pion1.visible = 1;
                             case_mange.visible = 1;
+
+                            // affichePion(type, x, y, joueur, value, visible) *2
+
 
                             //d'abord on vérifie que la partie n'est pas gagné
                             if (case_mange.puissance === 11) {
