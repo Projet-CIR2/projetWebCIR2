@@ -13,8 +13,6 @@ const Drapeau = require('./types/11_Drapeau');
 const Bombes = require('./types/12_Bombes');
 
 class Stratego {
-    // io;
-    // constructor(socket, io, token, pseudoJoueur1, pseudoJoueur2) {
     constructor(socket_, io_, token, player1, player2) {
         this.player1 = player1;
         this.player2 = player2;
@@ -32,8 +30,8 @@ class Stratego {
         this.tour = 0; // nombre pair : joueur 0, nombre impair : joueur 1
         this.fini = false;
 
-        this.joueur_bleu = new Joueur(0, player1);
-        this.joueur_rouge = new Joueur(1, player2);
+        this.joueur_bleu = new Joueur(0, this.player1);
+        this.joueur_rouge = new Joueur(1, this.player2);
 
         this.io.to(token).emit('hey', 'je suis dans le jeu');
 
@@ -63,16 +61,16 @@ class Stratego {
         }
 
         //premier lac
-        this.grid_default[2][4] = -1;
-        this.grid_default[3][4] = -1;
-        this.grid_default[3][5] = -1;
-        this.grid_default[2][5] = -1;
+        this.grid_default[4][2] = -1;
+        this.grid_default[4][3] = -1;
+        this.grid_default[5][3] = -1;
+        this.grid_default[5][2] = -1;
 
         //deuxième lac
-        this.grid_default[6][4] = -1;
-        this.grid_default[7][4] = -1;
-        this.grid_default[6][5] = -1;
-        this.grid_default[7][5] = -1;
+        this.grid_default[4][6] = -1;
+        this.grid_default[4][7] = -1;
+        this.grid_default[5][6] = -1;
+        this.grid_default[5][7] = -1;
 
         return this.grid_default;
     }
@@ -90,26 +88,17 @@ class Stratego {
     }
 
     peut_placer_ses_pions(joueur, x, y) {
-        if (joueur === this.joueur_rouge) {
-            if (y < 4 && this.grid_default[y][x] !== undefined) {
-                return false;
-            }
+        if (joueur.color === this.joueur_rouge.color) {
+            if (y >= 4 || this.grid_default[y][x] === -1) return false;
         } else {
-            if (y > 5 && this.grid_default[y][x] !== undefined) {
-                return false;
-            }
+            if (y <= 5 || this.grid_default[y][x] === -1) return false;
         }
         return true;
     }
 
     // renvoi le joueur
     getCurrentPlayer() {
-        if (this.tour % 2 === 0) {
-            return this.joueur_bleu;
-        } else {
-            return this.joueur_rouge;
-        }
-        //return (this.tour % 2); // 0 bleu, 1 rouge
+        return this.tour % 2 === 0 ? this.joueur_bleu : this.joueur_rouge;
     }
 
     // renvoi l'état d'une case
@@ -252,7 +241,10 @@ class Stratego {
         this.pret(this.joueur_bleu);
         this.pret(this.joueur_rouge);
 
-        if (this.joueur_bleu.pret && this.joueur_rouge.pret) this.io.to(this.token).emit('removeTabAjout');
+        if (this.joueur_bleu.pret && this.joueur_rouge.pret) {
+            this.io.to(this.token).emit('joueursPrets');
+            this.io.to(this.token).emit('affichePlayer', this.getCurrentPlayer());
+        }
         return this.joueur_bleu.pret && this.joueur_rouge.pret;
     }
 
@@ -318,12 +310,13 @@ class Stratego {
             }
         }
 
-
+        this.io.to(this.token).emit('affiche', list_deplacement);
         return list_deplacement;
     }
 
 
     // déplace le pion et vérifie si un pion est mangé
+    // clic position d'arrivé, pos position de départ
     deplacement(x_clic, y_clic, x_pos, y_pos) {
         //vérifie que la partie n'est pas fini
         if (this.egalite === false || this.fini === false) {
@@ -400,6 +393,7 @@ class Stratego {
                                 this.modif_grid(x_clic, y_clic, undefined);
                             }
                         }
+                        this.io.to(this.token).emit('removeCasesJouables');
                         return true;
                     }
                 }

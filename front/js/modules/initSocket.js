@@ -52,13 +52,31 @@ let socketModule = (function () {
     function removeAttente() {
         socket.on('removeAttente', () => {
             view.removeAttente();
-        })
+        });
+    }
+
+    function joueursPrets() {
+        socket.on('joueursPrets', () => {
+            view.joueursPrets();
+        });
+    }
+
+    function afficheCasesJouables() {
+        socket.on('afficheCasesJouables', (listDeplacement) => {
+            view.afficheCasesJouables(listDeplacement);
+        });
+    }
+
+    function removeCasesJouables() {
+        socket.on('removeCasesJouables', () => {
+            view.removeCasesJouables();
+        });
     }
 
     function hey() {
         socket.on('hey', (text) => {
             console.log(text);
-        })
+        });
     }
 
     return {
@@ -74,6 +92,9 @@ let socketModule = (function () {
             removePions();
             removeTabAjout();
             removeAttente();
+            joueursPrets();
+            afficheCasesJouables();
+            removeCasesJouables();
             hey();
         }
     }

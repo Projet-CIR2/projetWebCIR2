@@ -37,6 +37,18 @@ let socketModule = (function () {
         })
     }
 
+    function deplacement() {
+        socket.on('deplacement', (x_clic, y_clic, x_pos, y_pos) => {
+            game.deplacement(x_clic, y_clic, x_pos, y_pos);
+        });
+    }
+
+    function affiche() {
+        socket.on('affiche', (x_pos, y_pos) => {
+            game.affiche(x_pos, y_pos);
+        });
+    }
+
     return {
         initSocket(socket_, game_) {
             socket = socket_;
@@ -48,6 +60,8 @@ let socketModule = (function () {
             lancerPartie();
             enlever();
             enlevePion();
+            deplacement();
+            affiche();
         }
     }
 }) ();

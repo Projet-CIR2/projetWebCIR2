@@ -62,8 +62,17 @@ class StrategoView {
         for (let j = 0; j < 10; ++j) {
             for (let i = 0; i < 10; ++i) {
                 currentDiv.rows[j].cells[i].addEventListener('click', () => {
-                    if (this.debut.enJeu) socket.emit('play', i, j);
-                    else if (!this.debut.pret) {
+                    if (this.debut.enJeu) {
+                        if (this.debut.case.every(element => element !== -1)) {
+                            socket.emit('deplacement', i, j, this.debut.case[0], this.debut.case[1]);
+
+                            this.debut.case = [-1, -1];
+                        } else {
+                            this.debut.case = [i, j];
+
+                            socket.emit('affiche', i, j);
+                        }
+                    } else if (!this.debut.pret) {
                         // si un click a déjà été fais
                         if (this.debut.click) {
                             // si le click précédent était sur la tab ajout
@@ -146,7 +155,7 @@ class StrategoView {
                         // cas où on click deux fois de suite sur deux cases de tab ajout différentes
                         if (!currentTab.hasAttribute('style')) {
                             document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
-                            currentTab.setAttribute('style', 'background:green');
+                            currentTab.setAttribute('style', 'background: green');
                             this.debut.value = i;
                         }
                         // cas où on click deux fois de suite sur la même case
@@ -161,7 +170,7 @@ class StrategoView {
                 else {
                     currentCell = document.getElementsByClassName('nom_piece')[i];
                     if (currentCell.textContent[1] !== '0') {
-                        currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].setAttribute('style', 'background:green');
+                        currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].setAttribute('style', 'background: green');
                         this.debut.click = true;
                         this.debut.value = i;
                     }
@@ -261,7 +270,6 @@ class StrategoView {
         }
     }
 
-
 // initialise le joueur à qui appartient le visuel
     initJoueur(joueur) {
         if (this.joueur_courant === 0) {
@@ -288,7 +296,7 @@ class StrategoView {
         let currentCell = tab.rows[y].cells[x];
 
         if (Number(currentCell.getAttribute('alt')) !== value) {
-            if (currentCell.firstChild !== null) this.removePion(x, y);
+            if (currentCell.firstChild !== null) this.removePion(joueur, x, y);
 
             let img = document.createElement('img');
             currentCell.appendChild(img);
@@ -346,5 +354,39 @@ class StrategoView {
     removeAttente() {
         let currentDiv = document.getElementById('attente');
         currentDiv.remove();
+    }
+
+    joueursPrets() {
+        this.removeTabAjout();
+
+        this.debut = {
+            "enJeu": true,
+            "pret": false,
+            "click": false,
+            "value": -1,
+            "case": [-1, -1]
+        };
+    }
+
+    afficheCasesJouables(listDeplacement) {
+        let currentTab = document.getElementById('plateau');
+        let x, y, currentCell;
+
+        for ([x, y] in listDeplacement) {
+            currentCell = currentTab.rows[y].cells[x];
+
+            if (currentCell.firstChild !== null) currentCell.setAttribute('style', 'background: red');
+            else currentCell.setAttribute('style', 'background: green');
+        }
+    }
+
+    removeCasesJouables() {
+        let currentTab = document.getElementById('plateau');
+
+        for (let j = 0; j < 10; ++j) {
+            for (let i = 0; i < 10; ++i) {
+                if (currentTab.rows[j].cells[i].getAttribute('style') !== null) currentTab.rows[j].cells[i].removeAttribute('style');
+            }
+        }
     }
 }
