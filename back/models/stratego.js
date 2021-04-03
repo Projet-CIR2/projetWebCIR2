@@ -42,9 +42,6 @@ class Stratego {
         this.init_grid();
         this.reset();
         this.io.to(token).emit('removeAttente');
-
-        // this.socket.emit('affichePion', 'espion', 1, 5, this.joueur_bleu);
-        // this.socket.emit('removePion', 1, 5);
     }
 
     // initialise la taille de la liste grid
@@ -104,11 +101,11 @@ class Stratego {
     // renvoi l'état d'une case
     getCaseState(x, y) {
         // vérifie que les coordonnées sont dans la grille
-        if (0 <= x <= 9 && 0 <= y <= 9) {
+        if (0 <= x && x <= 9 && 0 <= y && y <= 9) {
             return this.grid[y][x];
         }
         // sinon la case n'existe pas
-        return false;
+        return undefined;
     }
 
     //permet de modifier la grille
@@ -188,7 +185,7 @@ class Stratego {
         if (this.peut_placer_ses_pions(joueur, x, y)) {
             this.modif_grid_placer(joueur, x, y, value);
 
-            this.io.to(this.token).emit('affichePion', this.getCaseState(x, y).type, x, y, joueur, value);
+            this.io.to(this.token).emit('affichePion', this.getCaseState(x, y).type, x, y, joueur, value, this.getCaseState(x, y).visible);
 
             let somme = 0;
             if (joueur.color === this.joueur_rouge.color) {
@@ -245,6 +242,7 @@ class Stratego {
             this.io.to(this.token).emit('joueursPrets');
             this.io.to(this.token).emit('affichePlayer', this.getCurrentPlayer());
         }
+
         return this.joueur_bleu.pret && this.joueur_rouge.pret;
     }
 
@@ -283,22 +281,19 @@ class Stratego {
         let capa_copie;
 
         // vérifie que la case cliqué contient un pion
-        if (pion !== undefined && pion.color === this.getCurrentPlayer()) {
+        if (pion !== undefined && pion.color === this.getCurrentPlayer().color) {
             capa_copie = pion.capacite_de_deplacement;
-
             // parcours la liste des possibilités de déplacements du pions
             for (let list_capa of capa_copie) {
                 for (let capa of list_capa) {
-
                     // vérifie que les coordonnées sont dans le tableau
-                    if (0 < (capa[0] + pion.x) < 9 && 0 < (capa[1] + pion.y) < 9) {
+                    if (0 <= (capa[0] + x_pos) && (capa[0] + x_pos) <= 9 && 0 <= (capa[1] + y_pos) && (capa[1] + y_pos) <= 9) {
                         // récupère la case de la position
-                        case_tmp = this.getCaseState(capa[0] + pion.x, capa[1] + pion.y);
-
+                        case_tmp = this.getCaseState(capa[0] + x_pos, capa[1] + y_pos);
                         if (case_tmp === undefined) { // si la case est vide, alors on peut se déplacer dessus
-                            list_deplacement.push([capa[0] + pion.x, capa[1] + pion.y]);
+                            list_deplacement.push([capa[0] + x_pos, capa[1] + y_pos]);
                         } else if (case_tmp.color !== pion.color) { // sinon on vérifie que c'est un pion ennemi
-                            list_deplacement.push([capa[0] + pion.x, capa[1] + pion.y]);
+                            list_deplacement.push([capa[0] + x_pos, capa[1] + y_pos]);
                             break;
                         } else if (case_tmp === -1) { //si la case est un lac, alors il bloque cette direction
                             break;
@@ -310,7 +305,7 @@ class Stratego {
             }
         }
 
-        this.io.to(this.token).emit('affiche', list_deplacement);
+        this.io.to(this.token).emit('afficheCasesJouables', this.getCurrentPlayer(), list_deplacement);
         return list_deplacement;
     }
 

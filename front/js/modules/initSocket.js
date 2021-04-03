@@ -26,8 +26,8 @@ let socketModule = (function () {
     }
 
     function affichePion() {
-        socket.on('affichePion', (type, x, y, joueur, value) => {
-            view.affichePion(type, x, y, joueur, value);
+        socket.on('affichePion', (type, x, y, joueur, value, visible) => {
+            view.affichePion(type, x, y, joueur, value, visible);
         });
     }
 
@@ -62,8 +62,8 @@ let socketModule = (function () {
     }
 
     function afficheCasesJouables() {
-        socket.on('afficheCasesJouables', (listDeplacement) => {
-            view.afficheCasesJouables(listDeplacement);
+        socket.on('afficheCasesJouables', (joueur, listDeplacement) => {
+            view.afficheCasesJouables(joueur, listDeplacement);
         });
     }
 

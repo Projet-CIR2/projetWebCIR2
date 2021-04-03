@@ -64,10 +64,12 @@ class StrategoView {
                 currentDiv.rows[j].cells[i].addEventListener('click', () => {
                     if (this.debut.enJeu) {
                         if (this.debut.case.every(element => element !== -1)) {
+                            console.log('je déplace');
                             socket.emit('deplacement', i, j, this.debut.case[0], this.debut.case[1]);
 
                             this.debut.case = [-1, -1];
                         } else {
+                            console.log('premier clic');
                             this.debut.case = [i, j];
 
                             socket.emit('affiche', i, j);
@@ -270,7 +272,7 @@ class StrategoView {
         }
     }
 
-// initialise le joueur à qui appartient le visuel
+    // initialise le joueur à qui appartient le visuel
     initJoueur(joueur) {
         if (this.joueur_courant === 0) {
             console.log('j initialise le joueur');
@@ -278,11 +280,35 @@ class StrategoView {
             this.affichePlayer(joueur);
 
             this.initAjout();
+            this.initDebug();
         }
     }
 
-// affiche à qui est le tour dans le cas où on est en partie, sinon qu'on peut jouer ou que tout est bon
-// en attendant l'autre joueur
+    initDebug() {
+        let compteur = 0;
+        let tabPions = this.joueur_courant.pions_vivant;
+        let min, max;
+
+        if (this.joueur_courant.color) {
+            min = 0;
+            max = 4;
+        }
+        else {
+            min = 6;
+            max = 10;
+        }
+
+        for (let j = min; j < max; ++j) {
+            for (let i = 0; i < 10; ++i) {
+                if (tabPions[compteur] === 0) compteur++;
+                socket.emit('placePion', this.joueur_courant, i, j, compteur + 1);
+                tabPions[compteur]--;
+            }
+        }
+    }
+
+    // affiche à qui est le tour dans le cas où on est en partie, sinon qu'on peut jouer ou que tout est bon
+    // en attendant l'autre joueur
     affichePlayer(joueur) {
         let currentP = document.getElementById('joueurQuiJoue');
         if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + joueur.pseudo;
@@ -290,8 +316,8 @@ class StrategoView {
         else currentP.textContent = "Vous pouvez placer vos pions";
     }
 
-// affiche le pion de type type à la position x y
-    affichePion(type, x, y, joueur, value) {
+    // affiche le pion de type type à la position x y
+    affichePion(type, x, y, joueur, value, visible) {
         let tab = document.getElementById('plateau');
         let currentCell = tab.rows[y].cells[x];
 
@@ -305,8 +331,13 @@ class StrategoView {
                 img.setAttribute('alt', value);
                 img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
             } else {
-                img.setAttribute('alt', 'dos' + (!this.joueur_courant.color ? ' rouge' : ' bleu'));
-                img.setAttribute('src', '../assets/' + (!this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + 'dos.png');
+                if (visible) {
+                    img.setAttribute('alt', value);
+                    img.setAttribute('src', '../assets/' + (!this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
+                } else {
+                    img.setAttribute('alt', 'dos' + (!this.joueur_courant.color ? ' rouge' : ' bleu'));
+                    img.setAttribute('src', '../assets/' + (!this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + 'dos.png');
+                }
             }
         }
     }
@@ -325,7 +356,7 @@ class StrategoView {
         }
     }
 
-// enlève tous les pions
+    // enlève tous les pions
     removePions() {
         let tab = document.getElementById('plateau');
         let currentCell;
@@ -368,15 +399,17 @@ class StrategoView {
         };
     }
 
-    afficheCasesJouables(listDeplacement) {
-        let currentTab = document.getElementById('plateau');
-        let x, y, currentCell;
+    afficheCasesJouables(joueur, listDeplacement) {
+        if (joueur.color === this.joueur_courant.color) {
+            let currentTab = document.getElementById('plateau');
+            let x, y, currentCell;
 
-        for ([x, y] in listDeplacement) {
-            currentCell = currentTab.rows[y].cells[x];
+            for ([x, y] of listDeplacement) {
+                currentCell = currentTab.rows[y].cells[x];
 
-            if (currentCell.firstChild !== null) currentCell.setAttribute('style', 'background: red');
-            else currentCell.setAttribute('style', 'background: green');
+                if (currentCell.firstChild !== null) currentCell.setAttribute('style', 'background: red');
+                else currentCell.setAttribute('style', 'background: green');
+            }
         }
     }
 
