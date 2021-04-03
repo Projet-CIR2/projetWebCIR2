@@ -64,15 +64,24 @@ class StrategoView {
                 currentDiv.rows[j].cells[i].addEventListener('click', () => {
                     if (this.debut.enJeu) {
                         if (this.debut.case.every(element => element !== -1)) {
-                            console.log('je déplace');
-                            socket.emit('deplacement', i, j, this.debut.case[0], this.debut.case[1]);
+                            this.removeCasesJouables();
+                            if (0 < currentDiv.rows[this.debut.case[1]].cells[this.debut.case[0]].getAttribute('alt')) {
+                                this.debut.case = [i, j];
+                                socket.emit('affiche', i, j);
+                            }
+                            else {
+                                console.log('je déplace');
+                                socket.emit('deplacement', i, j, this.debut.case[0], this.debut.case[1]);
+                                this.removeCasesJouables();
 
-                            this.debut.case = [-1, -1];
+                                this.debut.case = [-1, -1];
+
+                            }
+
                         } else {
-                            console.log('premier clic');
                             this.debut.case = [i, j];
-
                             socket.emit('affiche', i, j);
+
                         }
                     } else if (!this.debut.pret) {
                         // si un click a déjà été fais
@@ -332,7 +341,7 @@ class StrategoView {
                 img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
             } else {
                 if (visible) {
-                    img.setAttribute('alt', value);
+                    img.setAttribute('alt', type + (!this.joueur_courant.color ? ' rouge' : ' bleu'));
                     img.setAttribute('src', '../assets/' + (!this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
                 } else {
                     img.setAttribute('alt', 'dos' + (!this.joueur_courant.color ? ' rouge' : ' bleu'));
