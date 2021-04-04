@@ -65,8 +65,8 @@ class StrategoView {
                     if (this.debut.enJeu) {
                         this.removeCasesJouables();
                         if (this.debut.case.every(element => element !== -1)) {
-                            if (0 < Number(currentDiv.rows[this.debut.case[1]].cells[this.debut.case[0]].firstChild.getAttribute('alt'))) {
-                                console.log('je passe dedans');
+                            currentCell = currentDiv.rows[j].cells[i].firstChild;
+                            if (currentCell !== null && 0 < Number(currentCell.getAttribute('alt'))) {
                                 this.debut.case = [i, j];
                                 socket.emit('affiche', i, j);
                             }
