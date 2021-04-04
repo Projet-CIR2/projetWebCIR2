@@ -36,6 +36,14 @@ div#att {
     font-family: 'Courgette', sans-serif;
 }
 
+div#exit_div {
+    padding-top: 20vh;
+    margin-left: 55vw;
+    margin-right: 5vw;
+    color: white;
+    font-family: 'Courgette', sans-serif;
+}
+
 p {
     color: #D3D3D3;
     text-align: center;

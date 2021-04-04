@@ -16,7 +16,6 @@ let rooms = [];
 
 let countPlayer = 0;
 let playerSockets = [];
-let users = [];
 
 const sharedsession = require("express-socket.io-session");
 const bodyParser = require('body-parser');
@@ -56,10 +55,9 @@ app.get('/', (req,res) => {
     logName = req.session.logName;
     res.sendFile(__dirname + "/front/html/index.html");
 
-    // if(users.find(element => element.id === req.session.id) === undefined){
-    //     users.push(new user(req.session));
-    // }
     
+    let i = waitingQueue.find(el => el === req.session.id);
+    if (i != undefined)waitingQueue.splice(i, 1);
  
 
 });
@@ -102,9 +100,8 @@ app.get('/jeu.html', (req, res) => {
     let sessionData = req.session;
     let token;
 
-    if(req.session.inQueue == undefined){
-        req.session.inQueue = true;
-        req.session.save();
+    if(waitingQueue.find(element => element === req.session.id) === undefined){
+      
         waitingQueue.push(req.session.id);
         // waitingQueue.push(socketBkp.id);
         // console.log('id', socketBkp.id, req.session.id);
@@ -180,6 +177,13 @@ app.post('/deconnection', (req,res) =>{
     res.redirect('/');
 });
 
+app.post('/exit', (req,res) => {
+    let i = waitingQueue.find(el => el === req.session.id);
+    if (i != undefined)waitingQueue.splice(i, 1);
+    res.redirect('/');
+
+});
+
 
 
 io.on('connection', (socket) =>{
@@ -220,6 +224,10 @@ io.on('connection', (socket) =>{
         }
     });
 
+    socket.on('exit', () =>{
+
+    });
+
     changeRoom(socket);
 });
 
@@ -242,7 +250,11 @@ function changeRoom(socket) {
         playerSockets.pop();
         // rooms.push(new room(socketBkp, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1])));
         rooms.push(game);
-        waitingQueue.shift(); waitingQueue.shift();
+
+        for(let i=0; i< 2; i++){
+            waitingQueue.shift(); 
+        }
+        
         // console.log(rooms);
     }
 }
