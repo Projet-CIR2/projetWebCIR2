@@ -73,6 +73,12 @@ let socketModule = (function () {
         });
     }
 
+    function finDuJeu() {
+        socket.on('finDuJeu', (joueur, texte) => {
+            view.finDuJeu(joueur, texte);
+        });
+    }
+
     function hey() {
         socket.on('hey', (text) => {
             console.log(text);
@@ -95,6 +101,7 @@ let socketModule = (function () {
             joueursPrets();
             afficheCasesJouables();
             removeCasesJouables();
+            finDuJeu();
             hey();
         }
     }

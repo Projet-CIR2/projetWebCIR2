@@ -169,22 +169,6 @@ class Stratego {
         return false;
     }
 
-    //calcule les points des joueur a la fin de partie
-    points_joueur() {
-        this.joueur_bleu.points = 0;
-        this.joueur_rouge.points = 0;
-
-        let temps_ecouler = (Date.now() - this.date) / 60000;
-
-        for (let i = 0; i < 12; i++) {
-            this.joueur_bleu.points += this.joueur_rouge.pions_mort[i] * (i + 1);
-            this.joueur_rouge.points += this.joueur_bleu.pions_mort[i] * (i + 1);
-        }
-
-        this.joueur_bleu.points += (temps_ecouler / Math.pow(temps_ecouler, 2)) * 1000;
-        this.joueur_rouge.points += (temps_ecouler / Math.pow(temps_ecouler, 2)) * 1000;
-    }
-
 
     //placer les pions en debut de partie
     placer(joueur, x, y, value) {
@@ -352,6 +336,7 @@ class Stratego {
                                 this.win(joueur); //faire la win
                                 this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
                                 this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
+                                return;
                             }
 
                                 //puis si le général est mangé par l'espion ou
@@ -400,11 +385,14 @@ class Stratego {
                             this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
                         }
 
-                        this.tour++;
-                        this.io.to(this.token).emit('removeCasesJouables');
-                        this.io.to(this.token).emit('affichePlayer', this.getCurrentPlayer());
+                        if (!this.is_egalite()) {
+                            this.tour++;
+                            this.io.to(this.token).emit('affichePlayer', this.getCurrentPlayer());
 
-                        if (!this.is_egalite()) this.deplacement_impossible();
+                            this.deplacement_impossible();
+                        }
+                        this.io.to(this.token).emit('removeCasesJouables');
+
                         return true;
                     }
                 }
@@ -430,6 +418,24 @@ class Stratego {
     }
 
 
+    //calcule les points des joueur a la fin de partie
+    points_joueur() {
+        this.joueur_bleu.points = 0;
+        this.joueur_rouge.points = 0;
+
+        let temps_ecoule = (Date.now() - this.date) / 60000;
+
+        for (let i = 0; i < 12; i++) {
+            this.joueur_bleu.points += this.joueur_rouge.pions_mort[i] * (i + 1);
+            this.joueur_rouge.points += this.joueur_bleu.pions_mort[i] * (i + 1);
+        }
+        this.joueur_bleu.points += (temps_ecoule / Math.pow(temps_ecoule, 2)) * 1000;
+        this.joueur_rouge.points += (temps_ecoule / Math.pow(temps_ecoule, 2)) * 1000;
+
+        this.joueur_bleu.points = Math.round(this.joueur_bleu.points);
+        this.joueur_rouge.points = Math.round(this.joueur_rouge.points);
+    }
+
     //vérifie que les deux joueurs ne peuvent plus jouer et fin de partie si c'est le cas
     is_egalite() {
         for(let i = 0; i < 10; ++i) {
@@ -439,10 +445,15 @@ class Stratego {
                 }
             }
         }
+
         this.points_joueur();
         this.egalite = true;
 
         // lance affichage win
+        let texte;
+        if (this.joueur_rouge.points === this.joueur_bleu.points) texte = 'Il y a une égalité parfaite entre les deux joueurs avec ' + this.joueur_bleu.points + ' points chacun !'
+        else texte = 'Avec ' + this.joueur_bleu.points + ' points pour ' + this.joueur_bleu.pseudo + ' et ' + this.joueur_rouge.points + ' points pour ' + this.joueur_rouge.pseudo;
+        this.io.to(this.token).emit('finDuJeu', this.getWinner(), texte);
 
         return true;
     }
@@ -452,14 +463,16 @@ class Stratego {
         this.points_joueur();
         joueur.points += 75;
         this.fini = true;
-        return this.getWinner();
+
+        let texte = 'Avec ' + this.joueur_bleu.points + ' points pour ' + this.joueur_bleu.pseudo + ' et ' + this.joueur_rouge.points + ' points pour ' + this.joueur_rouge.pseudo;
+        this.io.to(this.token).emit('finDuJeu', this.getWinner(), texte);
     }
 
 
     // retourne le joueur gagnant
     getWinner() {
         // le gagnant est le dernier joueur à avoir joué
-        return this.getCurrentPlayer();
+        return this.joueur_rouge.points > this.joueur_bleu.points ? this.joueur_rouge : this.joueur_bleu;
     }
 }
 

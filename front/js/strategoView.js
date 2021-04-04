@@ -3,6 +3,7 @@ class StrategoView {
         this.joueur_courant = 0;
         this.debut = {
             "enJeu": false,
+            "jeuFini": false,
             "pret": false,
             "click": false,
             "value": -1,
@@ -62,80 +63,81 @@ class StrategoView {
         for (let j = 0; j < 10; ++j) {
             for (let i = 0; i < 10; ++i) {
                 currentDiv.rows[j].cells[i].addEventListener('click', () => {
-                    if (this.debut.enJeu) {
-                        this.removeCasesJouables();
-                        if (this.debut.case.every(element => element !== -1)) {
-                            currentCell = currentDiv.rows[j].cells[i].firstChild;
-                            if (currentCell !== null && 0 < Number(currentCell.getAttribute('alt'))) {
-                                console.log('affiche mais -1 -1');
-                                this.debut.case = [i, j];
-                                socket.emit('affiche', this.joueur_courant, i, j);
-                            }
-                            else {
+                    if (!this.debut.jeuFini) {
+                        if (this.debut.enJeu) {
+                            this.removeCasesJouables();
+                            if (this.debut.case.every(element => element !== -1)) {
+                                currentCell = currentDiv.rows[j].cells[i].firstChild;
+                                if (currentCell !== null && 0 < Number(currentCell.getAttribute('alt'))) {
+                                    console.log('affiche mais -1 -1');
+                                    this.debut.case = [i, j];
+                                    socket.emit('affiche', this.joueur_courant, i, j);
+                                } else {
                                     socket.emit('deplacement', i, j, this.debut.case[0], this.debut.case[1]);
                                     this.removeCasesJouables();
 
                                     this.debut.case = [-1, -1];
-                            }
-                        } else {
-                            console.log('affiche');
-                            currentCell = currentDiv.rows[j].cells[i].firstChild;
-                            if (currentCell !== null && 0 < Number(currentCell.getAttribute('alt'))) {
-
-                                this.debut.case = [i, j];
-                                socket.emit('affiche', this.joueur_courant, i, j);
-                            }
-
-                        }
-                    } else if (!this.debut.pret) {
-                        // si un click a déjà été fais
-                        if (this.debut.click) {
-                            // si le click précédent était sur la tab ajout
-                            if (this.debut.value !== -1) {
-                                currentCell = document.getElementsByClassName('nom_piece')[this.debut.value];
-                                if (((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) && currentCell.textContent[1] !== '0') {
-                                    currentTab = currentDiv.rows[j].cells[i];
-
-                                    socket.emit('placePion', this.joueur_courant, i, j, this.debut.value + 1);
-                                    document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
-                                    this.modifNombrePion(this.joueur_courant, this.debut.value, Number(currentCell.textContent[1]) - 1)
-                                    this.debut.click = false;
-                                    this.debut.value = -1;
                                 }
+                            } else {
+                                console.log('affiche');
+                                currentCell = currentDiv.rows[j].cells[i].firstChild;
+                                if (currentCell !== null && 0 < Number(currentCell.getAttribute('alt'))) {
+
+                                    this.debut.case = [i, j];
+                                    socket.emit('affiche', this.joueur_courant, i, j);
+                                }
+
                             }
-                            // sinon c'est qu'on click deux fois de suite sur la grille de jeu
-                            else {
-                                currentTab = currentDiv.rows[j].cells[i];
-                                // si on click deux fois sur 2 cases différentes
-                                if (!currentTab.hasAttribute('style')) {
-                                    if ((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) {
-                                        document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]].removeAttribute('style');
-                                        currentTab.setAttribute('style', 'background:green');
-                                        this.debut.case = [i, j];
+                        } else if (!this.debut.pret) {
+                            // si un click a déjà été fais
+                            if (this.debut.click) {
+                                // si le click précédent était sur la tab ajout
+                                if (this.debut.value !== -1) {
+                                    currentCell = document.getElementsByClassName('nom_piece')[this.debut.value];
+                                    if (((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) && currentCell.textContent[1] !== '0') {
+                                        currentTab = currentDiv.rows[j].cells[i];
+
+                                        socket.emit('placePion', this.joueur_courant, i, j, this.debut.value + 1);
+                                        document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
+                                        this.modifNombrePion(this.joueur_courant, this.debut.value, Number(currentCell.textContent[1]) - 1)
+                                        this.debut.click = false;
+                                        this.debut.value = -1;
                                     }
                                 }
-                                // si on click deux fois sur la même case
+                                // sinon c'est qu'on click deux fois de suite sur la grille de jeu
                                 else {
-                                    currentTab.removeAttribute('style');
-                                    this.debut.click = false;
-                                    this.debut.case = [-1, -1];
-                                    this.sauter = true;
+                                    currentTab = currentDiv.rows[j].cells[i];
+                                    // si on click deux fois sur 2 cases différentes
+                                    if (!currentTab.hasAttribute('style')) {
+                                        if ((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) {
+                                            document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]].removeAttribute('style');
+                                            currentTab.setAttribute('style', 'background:green');
+                                            this.debut.case = [i, j];
+                                        }
+                                    }
+                                    // si on click deux fois sur la même case
+                                    else {
+                                        currentTab.removeAttribute('style');
+                                        this.debut.click = false;
+                                        this.debut.case = [-1, -1];
+                                        this.sauter = true;
 
-                                    // on supprime le pion sur cette case
-                                    if (currentTab.firstChild !== null) socket.emit('enlever', this.joueur_courant, i, j);
+                                        // on supprime le pion sur cette case
+                                        if (currentTab.firstChild !== null) socket.emit('enlever', this.joueur_courant, i, j);
+                                    }
                                 }
                             }
-                        }
-                        // on affiche la case clické en vert
-                        else {
-                            currentTab = currentDiv.rows[j].cells[i];
-                            // if (!(currentTab.firstChild != null && currentTab.firstChild.getAttribute('src') === '../assets/volcan.png')) {
-                            if ((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) {
-                                currentTab.setAttribute('style', 'background:green');
-                                this.debut.click = true;
-                                this.debut.case = [i, j];
-                            }
+                            // on affiche la case clické en vert
+                            else {
+                                currentTab = currentDiv.rows[j].cells[i];
+                                // if (!(currentTab.firstChild != null && currentTab.firstChild.getAttribute('src') === '../assets/volcan.png')) {
+                                if ((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) {
+                                    currentTab.setAttribute('style', 'background:green');
+                                    this.debut.click = true;
+                                    this.debut.case = [i, j];
+                                }
 
+                            }
                         }
                     }
                 });
@@ -322,11 +324,17 @@ class StrategoView {
 
     // affiche à qui est le tour dans le cas où on est en partie, sinon qu'on peut jouer ou que tout est bon
     // en attendant l'autre joueur
-    affichePlayer(joueur) {
+    affichePlayer(joueur, texte) {
         let currentP = document.getElementById('joueurQuiJoue');
-        if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + joueur.pseudo;
-        else if (this.debut.pret) currentP.textContent = "En attente du joueur adverse";
-        else currentP.textContent = "Vous pouvez placer vos pions";
+        if (texte === undefined) {
+            if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + joueur.pseudo;
+            else if (this.debut.pret) currentP.textContent = 'En attente du joueur adverse';
+            else currentP.textContent = 'Vous pouvez placer vos pions';
+        }
+        else {
+            if (texte.lastIndexOf('égalité') !== -1) currentP.textContent = texte;
+            else currentP.innerHTML = 'Le joueur ' + joueur.pseudo + ' a gagné ! <br>' + texte;
+        }
     }
 
     // affiche le pion de type type à la position x y
@@ -436,5 +444,10 @@ class StrategoView {
                 if (currentTab.rows[j].cells[i].getAttribute('style') !== null) currentTab.rows[j].cells[i].removeAttribute('style');
             }
         }
+    }
+
+    finDuJeu(joueur, texte) {
+        this.debut.jeuFini = true;
+        this.affichePlayer(joueur, texte);
     }
 }
