@@ -282,7 +282,7 @@ class Stratego {
     affiche(joueur, x_pos, y_pos) {
         let list_deplacement = [];
 
-        if (joueur.color === this.getCurrentPlayer().color) {
+        if (joueur.color === this.getCurrentPlayer().color && !this.egalite && !this.fini) {
             // récupère la case
             let pion = this.getCaseState(x_pos, y_pos);
             let case_tmp;
@@ -323,7 +323,7 @@ class Stratego {
     // clic position d'arrivé, pos position de départ
     deplacement(x_clic, y_clic, x_pos, y_pos) {
         //vérifie que la partie n'est pas fini
-        if (this.egalite === false || this.fini === false) {
+        if (!this.egalite && !this.fini) {
 
             // récupère la case
             let pion1 = this.getCaseState(x_pos, y_pos);
@@ -354,8 +354,8 @@ class Stratego {
                                 this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
                             }
 
-                            //puis si le général est mangé par l'espion ou
-                            //puis si une bombe a été détruite ou
+                                //puis si le général est mangé par l'espion ou
+                                //puis si une bombe a été détruite ou
                             //si pion est plus puisant que l'adversaire
                             else if ((pion1.puissance === 1 && case_mange.puissance === 10) || (pion1.puissance === 3 && case_mange.puissance === 12) || (pion1.puissance > case_mange.puissance)) {
 
@@ -370,7 +370,7 @@ class Stratego {
 
                             //si pion est moins puisant que l'adversaire
                             else if (pion1.puissance < case_mange.puissance) {
-                                
+
                                 this.un_mort(joueur, case_mange.puissance);//mon pion detruit
 
                                 this.modif_grid(x_pos, y_pos, undefined);
@@ -404,7 +404,7 @@ class Stratego {
                         this.io.to(this.token).emit('removeCasesJouables');
                         this.io.to(this.token).emit('affichePlayer', this.getCurrentPlayer());
 
-                        this.is_egalite();
+                        if (!this.is_egalite()) this.deplacement_impossible();
                         return true;
                     }
                 }
@@ -415,26 +415,35 @@ class Stratego {
 
 
     //vérifie si le joueur donner a encore des pions a déplacer
-    deplacement_impossible(joueur) {
-        for (let i = 0; i < 10; i++) {
-            if (joueur.pions_vivant[i] !== 0) {
-                return false;
+    deplacement_impossible() {
+        for (let i = 0; i < 10; ++i) {
+            for (let j = 0; j < 10; ++j) {
+                if (this.getCaseState(j, i) !== undefined && this.getCaseState(j, i).color === this.getCurrentPlayer().color){
+                    if (this.affiche(j, i) !== undefined){
+                        return false;
+                    }
+                }
             }
         }
         this.tour += 1;
-        return true;
+        return this.is_egalite();
     }
 
 
     //vérifie que les deux joueurs ne peuvent plus jouer et fin de partie si c'est le cas
     is_egalite() {
-        for (let i = 0; i < 10; i++) {
-            if (this.joueur_bleu.pions_vivant[i] !== 0 && this.joueur_rouge.pions_vivant[i] !== 0) {
-                return false;
+        for(let i = 0; i < 10; ++i) {
+            for (let j = 0; j < 10; ++j) {
+                if (this.affiche(i, j) !== undefined) {
+                    return false;
+                }
             }
         }
         this.points_joueur();
         this.egalite = true;
+
+        // lance affichage win
+
         return true;
     }
 
