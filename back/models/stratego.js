@@ -354,31 +354,29 @@ class Stratego {
                                 this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
                             }
 
-                            //puis si le général est mangé par l'espion
-                            else if (pion1.puissance === 1 && case_mange.puissance === 10) {
+                            //puis si le général est mangé par l'espion ou
+                            //puis si une bombe a été détruite ou
+                            //si pion est plus puisant que l'adversaire
+                            else if ((pion1.puissance === 1 && case_mange.puissance === 10) || (pion1.puissance === 3 && case_mange.puissance === 12) || (pion1.puissance > case_mange.puissance)) {
 
                                 this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
-
 
                                 this.modif_grid(x_clic, y_clic, pion1);
                                 this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
 
                                 this.modif_grid(x_pos, y_pos, undefined);
                                 this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
-
                             }
 
-                            //puis si une bombe a été détruite
-                            else if (pion1.puissance === 3 && case_mange.puissance === 12) {
-
-                                this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
-
-                                this.modif_grid(x_clic, y_clic, pion1);
-                                this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
+                            //si pion est moins puisant que l'adversaire
+                            else if (pion1.puissance < case_mange.puissance) {
+                                
+                                this.un_mort(joueur, case_mange.puissance);//mon pion detruit
 
                                 this.modif_grid(x_pos, y_pos, undefined);
                                 this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
 
+                                this.io.to(this.token).emit('affichePion', case_mange.type, x_clic, y_clic, (joueur.color) ? this.joueur_bleu : this.joueur_rouge, case_mange.value, case_mange.visible);
                             }
 
                             //si les puissances sont les même
@@ -392,43 +390,21 @@ class Stratego {
 
                                 this.modif_grid(x_pos, y_pos, undefined);
                                 this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
-
                             }
 
-                            //si pion est plus puisant que l'adversaire
-                            else if (pion1.puissance > case_mange.puissance) {
-                                this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
-
-                                this.modif_grid(x_clic, y_clic, pion1);
-                                this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
-
-                                this.modif_grid(x_pos, y_pos, undefined);
-                                this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
-
-                            }
-
-                            //si pion est moins puisant que l'adversaire
-                            else if (pion1.puissance < case_mange.puissance) {
-                                this.un_mort(joueur, case_mange.puissance);//mon pion detruit
-
-                                this.modif_grid(x_pos, y_pos, undefined);
-                                this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
-
-                                this.io.to(this.token).emit('affichePion', case_mange.type, x_clic, y_clic, (joueur.color) ? this.joueur_bleu : this.joueur_rouge, case_mange.value, case_mange.visible);
-
-                            }
                         } else {
                             this.modif_grid(x_clic, y_clic, pion1);
                             this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
 
                             this.modif_grid(x_pos, y_pos, undefined);
                             this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
-
                         }
+
                         this.tour++;
                         this.io.to(this.token).emit('removeCasesJouables');
                         this.io.to(this.token).emit('affichePlayer', this.getCurrentPlayer());
 
+                        this.is_egalite();
                         return true;
                     }
                 }
@@ -465,7 +441,7 @@ class Stratego {
 
     win(joueur) {
         this.points_joueur();
-        joueur.points += 40;
+        joueur.points += 75;
         this.fini = true;
         return this.getWinner();
     }
