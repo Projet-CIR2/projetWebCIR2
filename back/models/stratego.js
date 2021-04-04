@@ -290,12 +290,13 @@ class Stratego {
                     if (0 <= (capa[0] + x_pos) && (capa[0] + x_pos) <= 9 && 0 <= (capa[1] + y_pos) && (capa[1] + y_pos) <= 9) {
                         // récupère la case de la position
                         case_tmp = this.getCaseState(capa[0] + x_pos, capa[1] + y_pos);
+                        // console.log(case_tmp);
                         if (case_tmp === undefined) { // si la case est vide, alors on peut se déplacer dessus
                             list_deplacement.push([capa[0] + x_pos, capa[1] + y_pos]);
+                        } else if (case_tmp === -1) { //si la case est un lac, alors il bloque cette direction
+                            break;
                         } else if (case_tmp.color !== pion.color) { // sinon on vérifie que c'est un pion ennemi
                             list_deplacement.push([capa[0] + x_pos, capa[1] + y_pos]);
-                            break;
-                        } else if (case_tmp === -1) { //si la case est un lac, alors il bloque cette direction
                             break;
                         } else { // sinon c'est un pion allié, on ne peut pas le manger et il bloque cette direction
                             break;
