@@ -29,6 +29,7 @@ class Stratego {
         this.grid_default = [];
         this.tour = 0; // nombre pair : joueur 0, nombre impair : joueur 1
         this.fini = false;
+        this.date = Date.now();
 
         this.joueur_bleu = new Joueur(0, this.player1);
         this.joueur_rouge = new Joueur(1, this.player2);
@@ -173,10 +174,15 @@ class Stratego {
         this.joueur_bleu.points = 0;
         this.joueur_rouge.points = 0;
 
+        let temps_ecouler = (Date.now() - this.date) / 60000;
+
         for (let i = 0; i < 12; i++) {
             this.joueur_bleu.points += this.joueur_rouge.pions_mort[i] * (i + 1);
             this.joueur_rouge.points += this.joueur_bleu.pions_mort[i] * (i + 1);
         }
+
+        this.joueur_bleu.points += (temps_ecouler / Math.pow(temps_ecouler, 2)) * 1000;
+        this.joueur_rouge.points += (temps_ecouler / Math.pow(temps_ecouler, 2)) * 1000;
     }
 
 
