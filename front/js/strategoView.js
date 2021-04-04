@@ -67,21 +67,24 @@ class StrategoView {
                         if (this.debut.case.every(element => element !== -1)) {
                             currentCell = currentDiv.rows[j].cells[i].firstChild;
                             if (currentCell !== null && 0 < Number(currentCell.getAttribute('alt'))) {
+                                console.log('affiche mais -1 -1');
                                 this.debut.case = [i, j];
-                                socket.emit('affiche', i, j);
+                                socket.emit('affiche', this.joueur_courant, i, j);
                             }
                             else {
-                                console.log('je déplace');
-                                socket.emit('deplacement', i, j, this.debut.case[0], this.debut.case[1]);
-                                this.removeCasesJouables();
+                                    socket.emit('deplacement', i, j, this.debut.case[0], this.debut.case[1]);
+                                    this.removeCasesJouables();
 
-                                this.debut.case = [-1, -1];
-
+                                    this.debut.case = [-1, -1];
                             }
-
                         } else {
-                            this.debut.case = [i, j];
-                            socket.emit('affiche', i, j);
+                            console.log('affiche');
+                            currentCell = currentDiv.rows[j].cells[i].firstChild;
+                            if (currentCell !== null && 0 < Number(currentCell.getAttribute('alt'))) {
+
+                                this.debut.case = [i, j];
+                                socket.emit('affiche', this.joueur_courant, i, j);
+                            }
 
                         }
                     } else if (!this.debut.pret) {
@@ -332,10 +335,7 @@ class StrategoView {
         let currentCell = tab.rows[y].cells[x];
 
         if (Number(currentCell.getAttribute('alt')) !== value) {
-            if (currentCell.firstChild !== null) {
-                if (!this.debut.enJeu) this.removePion(joueur, x, y);
-                else currentCell.firstChild.remove();
-            }
+            if (currentCell.firstChild !== null) this.removePion(joueur, x, y);
 
             let img = document.createElement('img');
             currentCell.appendChild(img);
@@ -359,7 +359,7 @@ class StrategoView {
         let tab = document.getElementById('plateau');
         let cell = tab.rows[y].cells[x];
         if (cell.firstChild !== null) {
-            if (!this.sauter) {
+            if (!this.sauter && !this.debut.enJeu) {
                 if (joueur.color === this.joueur_courant.color) {
                     socket.emit('enlevePion', this.joueur_courant, Number(cell.firstChild.getAttribute('alt')));
                 }
@@ -376,9 +376,9 @@ class StrategoView {
 
         for (let j = 0; j < 10; j++) {
             for (let i = 0; i < 10; i++) {
-                currentCell = tab.rows[i].cells[j];
-                if (currentCell.firstChild !== null) {
-                    if (currentCell.firstChild.getAttribute('src') !== '../assets/volcan.png') currentCell.firstChild.remove();
+                currentCell = tab.rows[i].cells[j].firstChild;
+                if (currentCell !== null) {
+                    if (currentCell.getAttribute('src') !== '../assets/volcan.png') currentCell.firstChild.remove();
                 }
             }
         }
@@ -402,6 +402,7 @@ class StrategoView {
 
     joueursPrets() {
         this.removeTabAjout();
+        this.removeCasesJouables();
 
         this.debut = {
             "enJeu": true,
@@ -410,6 +411,7 @@ class StrategoView {
             "value": -1,
             "case": [-1, -1]
         };
+        this.sauter = false;
     }
 
     afficheCasesJouables(joueur, listDeplacement) {

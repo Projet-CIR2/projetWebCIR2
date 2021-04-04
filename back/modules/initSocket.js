@@ -44,8 +44,8 @@ let socketModule = (function () {
     }
 
     function affiche() {
-        socket.on('affiche', (x_pos, y_pos) => {
-            game.affiche(x_pos, y_pos);
+        socket.on('affiche', (joueur, x_pos, y_pos) => {
+            game.affiche(joueur, x_pos, y_pos);
         });
     }
 

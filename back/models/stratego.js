@@ -112,7 +112,7 @@ class Stratego {
     //permet de modifier la grille
     modif_grid(x, y, value) {
         // vérifie que les coordonnées sont dans la grille
-        if (0 <= x <= 9 && 0 <= y <= 9) {
+        if (0 <= x && x <= 9 && 0 <= y && y <= 9) {
             this.grid[y][x] = value;
 
             return true;
@@ -279,40 +279,42 @@ class Stratego {
     //problème éventuel du 2
 
     // affiche lors du clic sur une case les cases possibles et les pions qui peuvent être pris
-    affiche(x_pos, y_pos) {
-        // récupère la case
-        let pion = this.getCaseState(x_pos, y_pos);
-        let case_tmp;
+    affiche(joueur, x_pos, y_pos) {
         let list_deplacement = [];
-        let capa_copie;
 
-        // vérifie que la case cliqué contient un pion
-        if (pion !== undefined && pion.color === this.getCurrentPlayer().color) {
-            capa_copie = pion.capacite_de_deplacement;
-            // parcours la liste des possibilités de déplacements du pions
-            for (let list_capa of capa_copie) {
-                for (let capa of list_capa) {
-                    // vérifie que les coordonnées sont dans le tableau
-                    if (0 <= (capa[0] + x_pos) && (capa[0] + x_pos) <= 9 && 0 <= (capa[1] + y_pos) && (capa[1] + y_pos) <= 9) {
-                        // récupère la case de la position
-                        case_tmp = this.getCaseState(capa[0] + x_pos, capa[1] + y_pos);
-                        // console.log(case_tmp);
-                        if (case_tmp === undefined) { // si la case est vide, alors on peut se déplacer dessus
-                            list_deplacement.push([capa[0] + x_pos, capa[1] + y_pos]);
-                        } else if (case_tmp === -1) { //si la case est un lac, alors il bloque cette direction
-                            break;
-                        } else if (case_tmp.color !== pion.color) { // sinon on vérifie que c'est un pion ennemi
-                            list_deplacement.push([capa[0] + x_pos, capa[1] + y_pos]);
-                            break;
-                        } else { // sinon c'est un pion allié, on ne peut pas le manger et il bloque cette direction
-                            break;
+        if (joueur.color === this.getCurrentPlayer().color) {
+            // récupère la case
+            let pion = this.getCaseState(x_pos, y_pos);
+            let case_tmp;
+            let capa_copie;
+
+            // vérifie que la case cliqué contient un pion
+            if (pion !== undefined && pion.color === this.getCurrentPlayer().color) {
+                capa_copie = pion.capacite_de_deplacement;
+                // parcours la liste des possibilités de déplacements du pions
+                for (let list_capa of capa_copie) {
+                    for (let capa of list_capa) {
+                        // vérifie que les coordonnées sont dans le tableau
+                        if (0 <= (capa[0] + x_pos) && (capa[0] + x_pos) <= 9 && 0 <= (capa[1] + y_pos) && (capa[1] + y_pos) <= 9) {
+                            // récupère la case de la position
+                            case_tmp = this.getCaseState(capa[0] + x_pos, capa[1] + y_pos);
+                            // console.log(case_tmp);
+                            if (case_tmp === undefined) { // si la case est vide, alors on peut se déplacer dessus
+                                list_deplacement.push([capa[0] + x_pos, capa[1] + y_pos]);
+                            } else if (case_tmp === -1) { //si la case est un lac, alors il bloque cette direction
+                                break;
+                            } else if (case_tmp.color !== pion.color) { // sinon on vérifie que c'est un pion ennemi
+                                list_deplacement.push([capa[0] + x_pos, capa[1] + y_pos]);
+                                break;
+                            } else { // sinon c'est un pion allié, on ne peut pas le manger et il bloque cette direction
+                                break;
+                            }
                         }
                     }
                 }
             }
+            this.io.to(this.token).emit('afficheCasesJouables', this.getCurrentPlayer(), list_deplacement);
         }
-
-        this.io.to(this.token).emit('afficheCasesJouables', this.getCurrentPlayer(), list_deplacement);
         return list_deplacement;
     }
 
@@ -331,7 +333,7 @@ class Stratego {
             // on vérifie que la case de départ n'est pas vide
             if (pion1 !== undefined) {
                 // on récupère les endroits où le pion peut se déplacer
-                let list_capa = this.affiche(x_pos, y_pos);
+                let list_capa = this.affiche(this.getCurrentPlayer(), x_pos, y_pos);
 
                 // on parcours le tableau des positions possibles pour le pion de départ
                 for (let pos_tmp of list_capa) {
@@ -345,12 +347,11 @@ class Stratego {
                             pion1.visible = 1;
                             case_mange.visible = 1;
 
-                            // affichePion(type, x, y, joueur, value, visible) *2
-
-
                             //d'abord on vérifie que la partie n'est pas gagné
                             if (case_mange.puissance === 11) {
                                 this.win(joueur); //faire la win
+                                this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
+                                this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
                             }
 
                             //puis si le général est mangé par l'espion
@@ -358,8 +359,13 @@ class Stratego {
 
                                 this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
 
+
                                 this.modif_grid(x_clic, y_clic, pion1);
+                                this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
+
                                 this.modif_grid(x_pos, y_pos, undefined);
+                                this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
+
                             }
 
                             //puis si une bombe a été détruite
@@ -368,7 +374,11 @@ class Stratego {
                                 this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
 
                                 this.modif_grid(x_clic, y_clic, pion1);
+                                this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
+
                                 this.modif_grid(x_pos, y_pos, undefined);
+                                this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
+
                             }
 
                             //si les puissances sont les même
@@ -378,27 +388,47 @@ class Stratego {
                                 this.un_mort(joueur, case_mange.puissance);//mon pion detruit
 
                                 this.modif_grid(x_clic, y_clic, undefined);
+                                this.io.to(this.token).emit('removePion', joueur, x_clic, y_clic);
+
                                 this.modif_grid(x_pos, y_pos, undefined);
+                                this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
+
                             }
 
                             //si pion est plus puisant que l'adversaire
-                            else if (pion1.puissance >= case_mange.puissance) {
-
+                            else if (pion1.puissance > case_mange.puissance) {
                                 this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
 
                                 this.modif_grid(x_clic, y_clic, pion1);
+                                this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
+
                                 this.modif_grid(x_pos, y_pos, undefined);
+                                this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
+
                             }
 
                             //si pion est moins puisant que l'adversaire
-                            else if (pion1.puissance <= case_mange.puissance) {
-
+                            else if (pion1.puissance < case_mange.puissance) {
                                 this.un_mort(joueur, case_mange.puissance);//mon pion detruit
 
-                                this.modif_grid(x_clic, y_clic, undefined);
+                                this.modif_grid(x_pos, y_pos, undefined);
+                                this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
+
+                                this.io.to(this.token).emit('affichePion', case_mange.type, x_clic, y_clic, (joueur.color) ? this.joueur_bleu : this.joueur_rouge, case_mange.value, case_mange.visible);
+
                             }
+                        } else {
+                            this.modif_grid(x_clic, y_clic, pion1);
+                            this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
+
+                            this.modif_grid(x_pos, y_pos, undefined);
+                            this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
+
                         }
+                        this.tour++;
                         this.io.to(this.token).emit('removeCasesJouables');
+                        this.io.to(this.token).emit('affichePlayer', this.getCurrentPlayer());
+
                         return true;
                     }
                 }
