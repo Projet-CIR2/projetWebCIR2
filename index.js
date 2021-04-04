@@ -100,9 +100,9 @@ app.get('/jeu.html', (req, res) => {
     let sessionData = req.session;
     let token;
 
-    if(waitingQueue.find(element => element === req.session.id) === undefined){
+    if(waitingQueue.find(element => element.id === req.session.id) === undefined){
       
-        waitingQueue.push(req.session.id);
+        waitingQueue.push(req.session);
         // waitingQueue.push(socketBkp.id);
         // console.log('id', socketBkp.id, req.session.id);
         // console.log(waitingQueue);
@@ -178,11 +178,13 @@ app.post('/deconnection', (req,res) =>{
 });
 
 app.post('/exit', (req,res) => {
-    let i = waitingQueue.find(el => el === req.session.id);
+    let i = waitingQueue.find(el => el.id === req.session.id);
     if (i != undefined)waitingQueue.splice(i, 1);
     res.redirect('/');
 
 });
+
+
 
 
 
@@ -231,17 +233,29 @@ io.on('connection', (socket) =>{
     changeRoom(socket);
 });
 
+
+function endGame(token_, winner_, score_){
+    
+    
+    let i = rooms.find(el => el.getToken === token_);
+    rooms.splice(i, 1);
+  
+
+}
+
 function changeRoom(socket) {
     let token, game;
     while(waitingQueue.length >= 2){
         token = randtoken.generate(16);
-
+        console.log(token);
         io.to(playerSockets[playerSockets.length - 1].id).emit('hey', token);
         playerSockets[playerSockets.length - 1].join(token);
         io.to(playerSockets[playerSockets.length - 2].id).emit('hey', token + 'coucou');
         playerSockets[playerSockets.length - 2].join(token);
 
         socket.to(token).emit('hey', 'je suis content');
+
+
 
         game = new Stratego(socket, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1]));
         init.initSocket(playerSockets[playerSockets.length - 1], game);
