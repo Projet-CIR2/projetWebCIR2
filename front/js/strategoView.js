@@ -295,7 +295,9 @@ class StrategoView {
             this.affichePlayer(joueur);
 
             this.initAjout();
-            this.initDebug();
+
+            // dé commenter pour réaliser des tests sur la partie sans avoir à placer les pions
+            // this.initDebug();
         }
     }
 
