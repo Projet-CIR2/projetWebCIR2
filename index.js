@@ -221,6 +221,10 @@ io.on('connection', (socket) =>{
         
     });
 
+    socket.on('endGame', (token, winner, looser, score) => {
+        endGame(token, winner, looser, score);
+    });
+
     socket.on('changeRoom', (idRoom) => {
         socket.join(idRoom);
     });
@@ -247,9 +251,7 @@ io.on('connection', (socket) =>{
 });
 
 
-function endGame(/*token_*/ winner_, looser_, score_){
-    
-    
+function endGame(token_, winner_, looser_, score_){
     let i = rooms.find(el => el.getToken() === token_);
     rooms.splice(i, 1);
 
@@ -261,7 +263,7 @@ function endGame(/*token_*/ winner_, looser_, score_){
 
         row = result.find(el => el.Pseudo === winner_);
         
-        if (row != undefined){
+        if (row !== undefined){
 
             let vict = row.Victoire +1;
             if (row.score < score_) row.score = score_;
@@ -275,7 +277,7 @@ function endGame(/*token_*/ winner_, looser_, score_){
 
         row = result.find(el => el.Pseudo === looser_);
 
-        if (row != undefined){
+        if (row !== undefined){
 
             let defaite = row.Defaite +1;
             console.log(defaite);
@@ -287,25 +289,6 @@ function endGame(/*token_*/ winner_, looser_, score_){
             });
         }
     });
-
-    
-
-    
-
-
-   
-
-
-    
-
-
-
-  
-   
-
-
-  
-
 }
 
 function changeRoom(socket) {
@@ -319,9 +302,6 @@ function changeRoom(socket) {
         playerSockets[playerSockets.length - 2].join(token);
 
         socket.to(token).emit('hey', 'je suis content');
-
-    
-
 
         game = new Stratego(socket, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1]));
         init.initSocket(playerSockets[playerSockets.length - 1], game);

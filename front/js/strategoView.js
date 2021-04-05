@@ -493,4 +493,9 @@ class StrategoView {
         this.varJeu.jeuFini = true;
         this.affichePlayer(joueur, texte);
     }
+
+    // envoi à la fin du jeu les résultats de la partie pour stockage dans la bdd
+    sendWin(token, winner, looser, score) {
+        if (this.joueur_courant.color) socket.emit('endGame', token, winner, looser, score);
+    }
 }

@@ -462,7 +462,7 @@ class Stratego {
         let texte;
         if (this.joueur_rouge.points === this.joueur_bleu.points) texte = 'Il y a une égalité parfaite entre les deux joueurs avec ' + this.joueur_bleu.points + ' points chacun !'
         else texte = 'Avec ' + this.joueur_bleu.points + ' points pour ' + this.joueur_bleu.pseudo + ' et ' + this.joueur_rouge.points + ' points pour ' + this.joueur_rouge.pseudo + '<br> Les deux joueurs ne peuvent plus bouger';
-        this.io.to(this.token).emit('finDuJeu', this.getWinner(), texte);
+        this.io.to(this.token).emit('finDuJeu', texte, this.getWinner(), this.getLooser(), );
 
         return true;
     }
@@ -486,6 +486,18 @@ class Stratego {
     getWinner() {
         // le gagnant est le joueur avec le plus de points
         return this.joueur_rouge.points > this.joueur_bleu.points ? this.joueur_rouge : this.joueur_bleu;
+    }
+
+    // retourne le joueur perdant
+    getLooser() {
+        // le perdant est le joueur avec le moins de points
+        return this.joueur_rouge.points > this.joueur_bleu.points ? this.joueur_bleu : this.joueur_rouge;
+
+    }
+
+    // retourne le token de la partie
+    getToken() {
+        return this.token;
     }
 }
 

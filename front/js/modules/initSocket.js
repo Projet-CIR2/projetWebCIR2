@@ -79,6 +79,12 @@ let socketModule = (function () {
         });
     }
 
+    function sendWin() {
+        socket.on('sendWin', (token, winner, looser, score) => {
+            view.sendWin(token, winner, looser, score);
+        })
+    }
+
     function hey() {
         socket.on('hey', (text) => {
             console.log(text);
@@ -102,6 +108,7 @@ let socketModule = (function () {
             afficheCasesJouables();
             removeCasesJouables();
             finDuJeu();
+            sendWin();
             hey();
         }
     }
