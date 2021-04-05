@@ -452,7 +452,7 @@ class Stratego {
         // lance affichage win
         let texte;
         if (this.joueur_rouge.points === this.joueur_bleu.points) texte = 'Il y a une égalité parfaite entre les deux joueurs avec ' + this.joueur_bleu.points + ' points chacun !'
-        else texte = 'Avec ' + this.joueur_bleu.points + ' points pour ' + this.joueur_bleu.pseudo + ' et ' + this.joueur_rouge.points + ' points pour ' + this.joueur_rouge.pseudo;
+        else texte = 'Avec ' + this.joueur_bleu.points + ' points pour ' + this.joueur_bleu.pseudo + ' et ' + this.joueur_rouge.points + ' points pour ' + this.joueur_rouge.pseudo + '<br> Les deux joueurs ne peuvent plus bouger';
         this.io.to(this.token).emit('finDuJeu', this.getWinner(), texte);
 
         return true;
@@ -465,6 +465,7 @@ class Stratego {
         this.fini = true;
 
         let texte = 'Avec ' + this.joueur_bleu.points + ' points pour ' + this.joueur_bleu.pseudo + ' et ' + this.joueur_rouge.points + ' points pour ' + this.joueur_rouge.pseudo;
+        texte += '<br><br> Le drapeau de ' + (joueur.color ? this.joueur_bleu.pseudo : this.joueur_rouge.pseudo) + ' a été capturé par ' + joueur.pseudo;
         this.io.to(this.token).emit('finDuJeu', this.getWinner(), texte);
     }
 
