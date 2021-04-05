@@ -237,6 +237,7 @@ io.on('connection', (socket) =>{
 
 
 function endGame(token_, player, score_, winOrLoose){
+    console.log('endGame');
     let i = rooms.find(el => el.getToken() === token_);
     rooms.splice(i, 1);
     
@@ -244,21 +245,20 @@ function endGame(token_, player, score_, winOrLoose){
     con.query(sql, (err, result) => {
         if (err) throw err;
 
-        let row = result.find(el => el.Pseudo === player);
-        
+        let row = result.find(el => el.Pseudo.toLowerCase() === player.toLowerCase());
+
         if (row !== undefined){
 
             let vict = row.Victoire;
-            let defeat = row.defaite;
+            let defeat = row.Defaite;
 
             if(winOrLoose === 1) vict +=1;
             else defeat +=1;
             if (row.score < score_) row.score = score_;
         
-            sql = "update session set score = "+ row.score+ ", victoire = " + vict +  ", defaite = "+defeat+" where Pseudo =\'" + player+"\'";
+            sql = "update session set score = "+ row.score+ ", victoire = " + vict +  ", defaite = "+ defeat +" where Pseudo =\'" + player+"\'";
             con.query(sql, (err, res)=>{
                 if (err) throw err;
-                
             });
         }
     });
