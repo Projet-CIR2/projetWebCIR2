@@ -57,11 +57,11 @@ app.get('/', (req,res) => {
     logName = req.session.logName;
     res.sendFile(__dirname + "/front/html/index.html");
 
-    
+
     let i = waitingQueue.find(el => el === req.session.id);
     if (i !== undefined)waitingQueue.splice(i, 1);
 
- 
+
 
 });
 
@@ -89,7 +89,7 @@ app.get('/jeu.html', (req, res) => {
     let token;
 
     if(waitingQueue.find(element => element.id === req.session.id) === undefined){
-      
+
         waitingQueue.push(req.session);
         // waitingQueue.push(socketBkp.id);
         // console.log('id', socketBkp.id, req.session.id);
@@ -102,6 +102,9 @@ app.get('/jeu.html', (req, res) => {
     res.sendFile(__dirname + "/front/html/jeu.html")
 })
 
+app.get('/regle', (req,res) =>{
+    res.sendFile(__dirname + "/front/html/regle.html");
+});
 
 app.post('/login',  (req,res) =>{
 
@@ -202,7 +205,7 @@ io.on('connection', (socket) =>{
         con.query(sql, (req,res) =>{
             socket.emit('Display', res);
         });
-        
+
     });
 
     socket.on('endGame', (token_, player, score_, winOrLoose) => {
@@ -229,7 +232,7 @@ io.on('connection', (socket) =>{
         }
     });
 
-  
+
 
     changeRoom(socket);
 });
@@ -256,14 +259,14 @@ function endGame(token_, player, score_, winOrLoose){
             if(winOrLoose === 1) vict +=1;
             else defeat +=1;
             if (row.score < score_) row.score = score_;
-        
+
             sql = "update session set score = "+ row.score+ ", victoire = " + vict +  ", defaite = "+ defeat +" where Pseudo =\'" + player+"\'";
             con.query(sql, (err, res)=>{
                 if (err) throw err;
             });
         }
     });
-}      
+}
 
 function changeRoom(socket) {
     let token, game;
@@ -287,9 +290,9 @@ function changeRoom(socket) {
 
         for(let i=0; i< 2; i++){
 
-            waitingQueue.shift(); 
+            waitingQueue.shift();
         }
-        
+
         // console.log(rooms);
     }
 }
@@ -314,4 +317,3 @@ con.connect(err=>{
 });
 
 /************* Matchmaking **************/
-

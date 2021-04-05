@@ -79,7 +79,10 @@ html {
 }
 
 #div_table{
-    list-style: none;
-    margin: auto;
-    font-size: 2vw;
+  position: fixed;
+  list-style: none;
+  font-size: 2vw;
+  top: 1vh;
+  left: 2vw;
+  width: 25vw;
 }

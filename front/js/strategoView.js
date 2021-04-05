@@ -285,31 +285,31 @@ class StrategoView {
                         break;
                     case 3:
                         currentDescription.textContent = "Le sergent est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
-                        currentValeur.textContent = "Le démineur a une force de 4.";
+                        currentValeur.textContent = "Le sergent a une force de 4.";
                         break;
                     case 4:
                         currentDescription.textContent = "Le lieutenant est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
-                        currentValeur.textContent = "Le démineur a une force de 5.";
+                        currentValeur.textContent = "Le lieutenant a une force de 5.";
                         break;
                     case 5:
                         currentDescription.textContent = "Le capitaine est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
-                        currentValeur.textContent = "Le démineur a une force de 6.";
+                        currentValeur.textContent = "Le capitaine a une force de 6.";
                         break;
                     case 6:
                         currentDescription.textContent = "Le commandant est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
-                        currentValeur.textContent = "Le démineur a une force de 7.";
+                        currentValeur.textContent = "Le commandant a une force de 7.";
                         break;
                     case 7:
                         currentDescription.textContent = "Le colonel est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
-                        currentValeur.textContent = "Le démineur a une force de 8.";
+                        currentValeur.textContent = "Le colonel a une force de 8.";
                         break;
                     case 8:
                         currentDescription.textContent = "Le general est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
-                        currentValeur.textContent = "Le démineur a une force de 9.";
+                        currentValeur.textContent = "Le general a une force de 9.";
                         break;
                     case 9:
                         currentDescription.textContent = "Le maréchal est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
-                        currentValeur.textContent = "Le démineur a une force de 10.";
+                        currentValeur.textContent = "Le maréchal a une force de 10.";
                         break;
                     case 10:
                         currentDescription.textContent = "Le drapeau est le pion à protéger, il ne peut pas ce déplacer.";
