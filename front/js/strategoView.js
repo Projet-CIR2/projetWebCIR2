@@ -362,7 +362,7 @@ class StrategoView {
         }
         else {
             if (texte.lastIndexOf('égalité') !== -1) currentP.textContent = texte;
-            else currentP.innerHTML = 'Le joueur ' + joueur.pseudo + ' a gagné ! <br>' + texte;
+            else currentP.innerHTML = 'Le joueur ' + joueur.pseudo + ' a gagné ! <br>' + texte + '<br><br> <a href="/">Accueil</a>';
         }
     }
 
@@ -491,11 +491,12 @@ class StrategoView {
     // à a fin du jeu, dis que le jeu est fini puis affiche les informations liés à la fin
     finDuJeu(joueur, texte) {
         this.varJeu.jeuFini = true;
+        this.removeCasesJouables();
         this.affichePlayer(joueur, texte);
     }
 
     // envoi à la fin du jeu les résultats de la partie pour stockage dans la bdd
-    sendWin(token, winner, looser, score) {
-        if (this.joueur_courant.color) socket.emit('endGame', token, winner, looser, score);
+    sendWin(token, player, winOrLoose) {
+        if (this.joueur_courant.color === player.color) socket.emit('endGame', token, player.pseudo, player.points, winOrLoose);
     }
 }
