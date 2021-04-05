@@ -1,0 +1,43 @@
+@import url(https://fonts.googleapis.com/css?family=Courgette&display=swap);
+body {
+    height: 100vh;
+    font-family: 'Courgette', sans-serif;
+    color: white;
+    background-color: #3D3D3D;
+
+}
+
+#corps{
+  width: 50vw;
+  margin-left: 10vw;
+}
+
+img{
+  height: 10vh;
+  width: 4.5vw;
+  margin-left: 0vw;
+}
+
+.preview{
+  height: 12vh;
+  width : 16vw;
+}
+
+.description{
+  margin-left: 5vw;
+  margin-top: -6vh;
+}
+
+.description-preview{
+  margin-left: 17vw;
+  margin-top: -6vh;
+}
+
+li{
+  padding-bottom: 1vh;
+}
+
+#back{
+  position: fixed;
+  margin-left: 1vw;
+}
