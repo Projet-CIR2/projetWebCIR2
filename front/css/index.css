@@ -77,3 +77,9 @@ html {
 	background-color:#777d88;
 	opacity:0.70;
 }
+
+#div_table{
+    list-style: none;
+    margin: auto;
+    font-size: 2vw;
+}

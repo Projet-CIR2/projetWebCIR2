@@ -36,6 +36,8 @@ const matchmaking = require("./back/matchmaking");
 const room = require("./back/models/room")
 const Stratego = require('./back/models/stratego');
 const init = require('./back/modules/initSocket');
+const { captureRejectionSymbol } = require('events');
+const { cpuUsage } = require('process');
 
 /* config */
 const jsonParser = bodyParser.json();
@@ -58,6 +60,7 @@ app.get('/', (req,res) => {
     
     let i = waitingQueue.find(el => el === req.session.id);
     if (i != undefined)waitingQueue.splice(i, 1);
+
  
 
 });
@@ -159,6 +162,7 @@ app.post('/signup', (req,res) =>{
         defaite :0,
         Nom : req.body.fName,
         Prenom : req.body.lName,
+        Score : 0
     }
 
     let sql = "INSERT INTO session SET ?";
@@ -208,6 +212,15 @@ io.on('connection', (socket) =>{
         if (logName !== undefined) socket.emit('Pseudo', logName);
     });
 
+    socket.on('board', ()=>{
+
+        let sql = "select Pseudo, Score, Victoire, Defaite from session";
+        con.query(sql, (req,res) =>{
+            socket.emit('Display', res);
+        });
+        
+    });
+
     socket.on('changeRoom', (idRoom) => {
         socket.join(idRoom);
     });
@@ -215,6 +228,8 @@ io.on('connection', (socket) =>{
     socket.on('deconnexion', () => {
         logName = undefined;
     });
+
+
 
     socket.on('disconnect', () =>{
         console.log("deconnected");
@@ -226,19 +241,69 @@ io.on('connection', (socket) =>{
         }
     });
 
-    socket.on('exit', () =>{
-
-    });
+  
 
     changeRoom(socket);
 });
 
 
-function endGame(token_, winner_, score_){
+function endGame(/*token_*/ winner_, looser_, score_){
     
     
-    let i = rooms.find(el => el.getToken === token_);
+    let i = rooms.find(el => el.getToken() === token_);
     rooms.splice(i, 1);
+
+    let row;
+    
+    let sql = 'select *from session';
+    con.query(sql, (err, result) => {
+        if (err) throw err;
+
+        row = result.find(el => el.Pseudo === winner_);
+        
+        if (row != undefined){
+
+            let vict = row.Victoire +1;
+            if (row.score < score_) row.score = score_;
+        
+            sql = "update session set score = "+ row.score+ ", victoire = " + vict +  " where Pseudo =\'" + winner_+"\'";
+            con.query(sql, (err, res)=>{
+                if (err) throw err;
+                
+            });
+        }
+
+        row = result.find(el => el.Pseudo === looser_);
+
+        if (row != undefined){
+
+            let defaite = row.Defaite +1;
+            console.log(defaite);
+        
+            sql = "update session set defaite = " + defaite +  " where Pseudo =\'" + looser_+"\'";
+            con.query(sql, (err, res)=>{
+                if (err) throw err;
+                
+            });
+        }
+    });
+
+    
+
+    
+
+
+   
+
+
+    
+
+
+
+  
+   
+
+
   
 
 }
@@ -255,6 +320,7 @@ function changeRoom(socket) {
 
         socket.to(token).emit('hey', 'je suis content');
 
+    
 
 
         game = new Stratego(socket, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1]));
@@ -266,6 +332,7 @@ function changeRoom(socket) {
         rooms.push(game);
 
         for(let i=0; i< 2; i++){
+
             waitingQueue.shift(); 
         }
         
