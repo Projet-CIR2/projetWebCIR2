@@ -59,7 +59,7 @@ app.get('/', (req,res) => {
 
     
     let i = waitingQueue.find(el => el === req.session.id);
-    if (i != undefined)waitingQueue.splice(i, 1);
+    if (i !== undefined)waitingQueue.splice(i, 1);
 
  
 
@@ -170,7 +170,6 @@ app.post('/exit', (req,res) => {
     let i = waitingQueue.find(el => el.id === req.session.id);
     if (i != undefined)waitingQueue.splice(i, 1);
     res.redirect('/');
-
 });
 
 
@@ -237,10 +236,12 @@ io.on('connection', (socket) =>{
 
 
 function endGame(token_, player, score_, winOrLoose){
-    console.log('endGame');
     let i = rooms.find(el => el.getToken() === token_);
     rooms.splice(i, 1);
-    
+
+    if (player === 'Invité 1' || player === 'Invité 2') player = 'Invité';
+    console.log(player);
+
     let sql = 'select *from session';
     con.query(sql, (err, result) => {
         if (err) throw err;
