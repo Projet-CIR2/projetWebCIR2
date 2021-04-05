@@ -81,21 +81,6 @@ app.get('/signup.html', (req,res) =>{
 
 
 app.get('/attente.html', (req,res) =>{
-    // let sessionData = req.session;
-    // let token;
-    //
-    // if(req.session.inQueue == undefined){
-    //     req.session.inQueue = true;
-    //     req.session.save();
-    //     waitingQueue.push(req.session.id);
-    //     // waitingQueue.push(socketBkp.id);
-    //     console.log('id', socketBkp.id, req.session.id);
-    //     console.log(waitingQueue);
-    //     // socketBkp.join('attente');
-    //
-    //     // ioBkp.in('attente').emit('coucou');
-    // }
-
     res.sendFile(__dirname + "/front/html/attente.html");
 });
 
@@ -221,8 +206,8 @@ io.on('connection', (socket) =>{
         
     });
 
-    socket.on('endGame', (token, winner, looser, score) => {
-        endGame(token, winner, looser, score);
+    socket.on('endGame', (token_, player, score_, winOrLoose) => {
+        endGame(token_, player, score_, winOrLoose);
     });
 
     socket.on('changeRoom', (idRoom) => {
@@ -251,16 +236,9 @@ io.on('connection', (socket) =>{
 });
 
 
-
-
 function endGame(token_, player, score_, winOrLoose){
-    
-    
-
     let i = rooms.find(el => el.getToken() === token_);
     rooms.splice(i, 1);
-
- 
     
     let sql = 'select *from session';
     con.query(sql, (err, result) => {

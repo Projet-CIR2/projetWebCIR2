@@ -80,9 +80,9 @@ let socketModule = (function () {
     }
 
     function sendWin() {
-        socket.on('sendWin', (token, winner, looser, score) => {
-            view.sendWin(token, winner, looser, score);
-        })
+        socket.on('sendWin', (token, player, winOrLoose) => {
+            view.sendWin(token, player, winOrLoose);
+        });
     }
 
     function hey() {
