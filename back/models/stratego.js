@@ -36,8 +36,8 @@ class Stratego {
 
         this.io.to(token).emit('hey', 'je suis dans le jeu');
 
-        this.socket.emit('initJoueur', this.joueur_bleu);
-        this.io.to(this.token).emit('initJoueur', this.joueur_rouge);
+        this.socket.emit('initJoueur', this.joueur_rouge);
+        this.io.to(this.token).emit('initJoueur', this.joueur_bleu);
 
         this.egalite = false;
         this.init_grid();
@@ -297,6 +297,7 @@ class Stratego {
                     }
                 }
             }
+            // affiche les cases où le pion peut être posé
             this.io.to(this.token).emit('afficheCasesJouables', this.getCurrentPlayer(), list_deplacement);
         }
         return list_deplacement;
@@ -378,6 +379,7 @@ class Stratego {
                             }
 
                         } else {
+                            // si la case d'arrivé est vide, on déplace juste le pion
                             this.modif_grid(x_clic, y_clic, pion1);
                             this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
 
@@ -385,6 +387,7 @@ class Stratego {
                             this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
                         }
 
+                        // on vérifie s'il y a ou pas égalité
                         if (!this.is_egalite()) {
                             this.tour++;
                             this.io.to(this.token).emit('affichePlayer', this.getCurrentPlayer());
@@ -402,7 +405,7 @@ class Stratego {
     }
 
 
-    //vérifie si le joueur donner a encore des pions a déplacer
+    //vérifie si le joueur donné a encore des pions a déplacer
     deplacement_impossible() {
         for (let i = 0; i < 10; ++i) {
             for (let j = 0; j < 10; ++j) {
@@ -446,10 +449,11 @@ class Stratego {
             }
         }
 
+        // calcule les points des joueurs puis précise l'égalité
         this.points_joueur();
         this.egalite = true;
 
-        // lance affichage win
+        // lance affichage win avec les informations dans textes
         let texte;
         if (this.joueur_rouge.points === this.joueur_bleu.points) texte = 'Il y a une égalité parfaite entre les deux joueurs avec ' + this.joueur_bleu.points + ' points chacun !'
         else texte = 'Avec ' + this.joueur_bleu.points + ' points pour ' + this.joueur_bleu.pseudo + ' et ' + this.joueur_rouge.points + ' points pour ' + this.joueur_rouge.pseudo + '<br> Les deux joueurs ne peuvent plus bouger';
@@ -464,6 +468,7 @@ class Stratego {
         joueur.points += 75;
         this.fini = true;
 
+        // texte pour affichage des informations en front
         let texte = 'Avec ' + this.joueur_bleu.points + ' points pour ' + this.joueur_bleu.pseudo + ' et ' + this.joueur_rouge.points + ' points pour ' + this.joueur_rouge.pseudo;
         texte += '<br><br> Le drapeau de ' + (joueur.color ? this.joueur_bleu.pseudo : this.joueur_rouge.pseudo) + ' a été capturé par ' + joueur.pseudo;
         this.io.to(this.token).emit('finDuJeu', this.getWinner(), texte);
@@ -472,7 +477,7 @@ class Stratego {
 
     // retourne le joueur gagnant
     getWinner() {
-        // le gagnant est le dernier joueur à avoir joué
+        // le gagnant est le joueur avec le plus de points
         return this.joueur_rouge.points > this.joueur_bleu.points ? this.joueur_rouge : this.joueur_bleu;
     }
 }

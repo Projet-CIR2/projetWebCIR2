@@ -1,22 +1,65 @@
 class StrategoView {
     constructor() {
+        // stocke le joueur courant
         this.joueur_courant = 0;
-        this.debut = {
-            "enJeu": false,
-            "jeuFini": false,
-            "pret": false,
-            "click": false,
-            "value": -1,
-            "case": [-1, -1]
+        // variables liés au jeu
+        this.varJeu = {
+            "enJeu": false, // stocke si l'on est en jeu
+            "jeuFini": false, // dis si le jeu est terminé
+            "pret": false, // précise si le joueur a finis de placer ses pions
+            "click": false, // précise si un click a déjà eu lieu ou pas
+            "value": -1, // précise la valeur du pion posé
+            "case": [-1, -1]  // stocke la position où a eu lieu le premier click
         };
+        // permet de sauter une fonction en cas de problème
         this.sauter = false;
 
-        this.initTab();
-        this.createListenersTab();
-        this.createListenersAjouts();
+        this.initTab(); // initialise le tableau
+        this.createListenersTab(); // ajoute les listeners sur la grille de jeu
+        this.createListenersAjouts(); // ajoute les listeners sur la grille de placement des pions
+        // ajoute les listeners sur la grille de placement des pions pour afficher leurs caractéristiques
         this.listenersDescription();
     }
 
+    // initialise le joueur à qui appartient le visuel
+    initJoueur(joueur) {
+        if (this.joueur_courant === 0) {
+            this.joueur_courant = joueur;
+            this.affichePlayer(joueur);
+
+            // initialise la grille de placement des pions en fonction de la couleur de joueur_courant
+            this.initAjout();
+
+            // dé commenter pour réaliser des tests sur la partie sans avoir à placer les pions
+            this.initDebug();
+        }
+    }
+
+    // place les pions automatiquement au début de la partie
+    initDebug() {
+        let compteur = 0;
+        let tabPions = this.joueur_courant.pions_vivant;
+        let min, max;
+
+        if (this.joueur_courant.color) {
+            min = 0;
+            max = 4;
+        }
+        else {
+            min = 6;
+            max = 10;
+        }
+
+        for (let j = min; j < max; ++j) {
+            for (let i = 0; i < 10; ++i) {
+                if (tabPions[compteur] === 0) compteur++;
+                socket.emit('placePion', this.joueur_courant, i, j, compteur + 1);
+                tabPions[compteur]--;
+            }
+        }
+    }
+
+    // initialise le tableau
     initTab() {
         let currentDiv = document.getElementById('plateau');
         let tr, td, img;
@@ -26,6 +69,7 @@ class StrategoView {
             for (let i = 0; i < 10; ++i) {
                 td = document.createElement('td');
 
+                // si l'on est sur l'emplacement des lacs, on ajoute des pions lacs
                 if (((2 <= i && i <= 3) || (6 <= i && i <= 7)) && (4 <= j && j <= 5)) {
                     img = document.createElement('img');
                     img.setAttribute('class', 'piece');
@@ -41,6 +85,8 @@ class StrategoView {
         }
     }
 
+    // permet de changer la couleur des pions de la grille de placement
+    // par défaut les pions sont affichés en bleu, on les passe en rouge
     initAjout() {
         let tabImg = document.getElementsByClassName('piece');
         let src;
@@ -56,6 +102,7 @@ class StrategoView {
         }
     }
 
+    // ajoute les listeners sur la grille de jeu
     createListenersTab() {
         let currentDiv = document.getElementById('plateau');
         let currentTab, currentCell;
@@ -63,45 +110,53 @@ class StrategoView {
         for (let j = 0; j < 10; ++j) {
             for (let i = 0; i < 10; ++i) {
                 currentDiv.rows[j].cells[i].addEventListener('click', () => {
-                    if (!this.debut.jeuFini) {
-                        if (this.debut.enJeu) {
+                    // on vérifie que le jeu n'est pas finis
+                    if (!this.varJeu.jeuFini) {
+                        // si l'on est en jeu, sinon c'est qu'on place les pions
+                        if (this.varJeu.enJeu) {
+                            // on supprime les cases affichés en vert ou en rouge
                             this.removeCasesJouables();
-                            if (this.debut.case.every(element => element !== -1)) {
+                            // si un clic a déjà eu lieu sur une case
+                            if (this.varJeu.case.every(element => element !== -1)) {
                                 currentCell = currentDiv.rows[j].cells[i].firstChild;
+                                // si le pion appartient au joueur, son attribut alt est égal à sa force
                                 if (currentCell !== null && 0 < Number(currentCell.getAttribute('alt'))) {
-                                    console.log('affiche mais -1 -1');
-                                    this.debut.case = [i, j];
+                                    // stocke la position du click et affiche les positions de déplacement du pion
+                                    this.varJeu.case = [i, j];
                                     socket.emit('affiche', this.joueur_courant, i, j);
                                 } else {
-                                    socket.emit('deplacement', i, j, this.debut.case[0], this.debut.case[1]);
+                                    // sinon c'est qu'il y a un déplacement
+                                    socket.emit('deplacement', i, j, this.varJeu.case[0], this.varJeu.case[1]);
                                     this.removeCasesJouables();
 
-                                    this.debut.case = [-1, -1];
+                                    this.varJeu.case = [-1, -1];
                                 }
                             } else {
-                                console.log('affiche');
+                                // premier click -> on vérifie que la case cliqué appartient au joueur
                                 currentCell = currentDiv.rows[j].cells[i].firstChild;
+                                // si le pion appartient au joueur, son attribut alt est égal à sa force
                                 if (currentCell !== null && 0 < Number(currentCell.getAttribute('alt'))) {
-
-                                    this.debut.case = [i, j];
+                                    // stocke la position du click et affiche les positions de déplacement du pion
+                                    this.varJeu.case = [i, j];
                                     socket.emit('affiche', this.joueur_courant, i, j);
                                 }
 
                             }
-                        } else if (!this.debut.pret) {
+                        // on place les pions si le joueur n'est pas prêt
+                        } else if (!this.varJeu.pret) {
                             // si un click a déjà été fais
-                            if (this.debut.click) {
+                            if (this.varJeu.click) {
                                 // si le click précédent était sur la tab ajout
-                                if (this.debut.value !== -1) {
-                                    currentCell = document.getElementsByClassName('nom_piece')[this.debut.value];
+                                if (this.varJeu.value !== -1) {
+                                    currentCell = document.getElementsByClassName('nom_piece')[this.varJeu.value];
                                     if (((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) && currentCell.textContent[1] !== '0') {
                                         currentTab = currentDiv.rows[j].cells[i];
 
-                                        socket.emit('placePion', this.joueur_courant, i, j, this.debut.value + 1);
-                                        document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
-                                        this.modifNombrePion(this.joueur_courant, this.debut.value, Number(currentCell.textContent[1]) - 1)
-                                        this.debut.click = false;
-                                        this.debut.value = -1;
+                                        socket.emit('placePion', this.joueur_courant, i, j, this.varJeu.value + 1);
+                                        document.getElementById('tabAjout').rows[Math.trunc(this.varJeu.value / 5)].cells[this.varJeu.value % 5].removeAttribute('style');
+                                        this.modifNombrePion(this.joueur_courant, this.varJeu.value, Number(currentCell.textContent[1]) - 1)
+                                        this.varJeu.click = false;
+                                        this.varJeu.value = -1;
                                     }
                                 }
                                 // sinon c'est qu'on click deux fois de suite sur la grille de jeu
@@ -110,16 +165,16 @@ class StrategoView {
                                     // si on click deux fois sur 2 cases différentes
                                     if (!currentTab.hasAttribute('style')) {
                                         if ((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) {
-                                            document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]].removeAttribute('style');
+                                            document.getElementById('plateau').rows[this.varJeu.case[1]].cells[this.varJeu.case[0]].removeAttribute('style');
                                             currentTab.setAttribute('style', 'background:green');
-                                            this.debut.case = [i, j];
+                                            this.varJeu.case = [i, j];
                                         }
                                     }
                                     // si on click deux fois sur la même case
                                     else {
                                         currentTab.removeAttribute('style');
-                                        this.debut.click = false;
-                                        this.debut.case = [-1, -1];
+                                        this.varJeu.click = false;
+                                        this.varJeu.case = [-1, -1];
                                         this.sauter = true;
 
                                         // on supprime le pion sur cette case
@@ -127,14 +182,14 @@ class StrategoView {
                                     }
                                 }
                             }
-                            // on affiche la case clické en vert
+                            // on affiche la case cliqué en vert
                             else {
                                 currentTab = currentDiv.rows[j].cells[i];
                                 // if (!(currentTab.firstChild != null && currentTab.firstChild.getAttribute('src') === '../assets/volcan.png')) {
                                 if ((this.joueur_courant.color && j < 4) || (j > 5 && !this.joueur_courant.color)) {
                                     currentTab.setAttribute('style', 'background:green');
-                                    this.debut.click = true;
-                                    this.debut.case = [i, j];
+                                    this.varJeu.click = true;
+                                    this.varJeu.case = [i, j];
                                 }
 
                             }
@@ -145,25 +200,26 @@ class StrategoView {
         }
     }
 
+    // ajoute les listeners sur la grille de placement des pions
     createListenersAjouts() {
         let currentDiv = document.getElementById('tabAjout');
         let currentTab, currentCell;
 
         for (let i = 0; i < 12; ++i) {
             currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].addEventListener('click', () => {
-                // si on a déjà clické sur une case (grille jeu ou tab ajout)
-                if (this.debut.click) {
+                // si on a déjà cliqué sur une case (grille jeu ou tab ajout)
+                if (this.varJeu.click) {
                     // si on a cliqué avant sur la grille du jeu
-                    if (this.debut.case.every(element => element !== -1)) {
+                    if (this.varJeu.case.every(element => element !== -1)) {
                         currentCell = document.getElementsByClassName('nom_piece')[i];
                         if (currentCell.textContent[1] !== '0') {
 
-                            currentTab = document.getElementById('plateau').rows[this.debut.case[1]].cells[this.debut.case[0]];
+                            currentTab = document.getElementById('plateau').rows[this.varJeu.case[1]].cells[this.varJeu.case[0]];
 
-                            socket.emit('placePion', this.joueur_courant, this.debut.case[0], this.debut.case[1], i + 1);
+                            socket.emit('placePion', this.joueur_courant, this.varJeu.case[0], this.varJeu.case[1], i + 1);
                             currentTab.removeAttribute('style');
-                            this.debut.click = false;
-                            this.debut.case = [-1, -1];
+                            this.varJeu.click = false;
+                            this.varJeu.case = [-1, -1];
                             this.modifNombrePion(this.joueur_courant, i, Number(currentCell.textContent[1]) - 1)
                         }
                     } else {
@@ -171,15 +227,15 @@ class StrategoView {
 
                         // cas où on click deux fois de suite sur deux cases de tab ajout différentes
                         if (!currentTab.hasAttribute('style')) {
-                            document.getElementById('tabAjout').rows[Math.trunc(this.debut.value / 5)].cells[this.debut.value % 5].removeAttribute('style');
+                            document.getElementById('tabAjout').rows[Math.trunc(this.varJeu.value / 5)].cells[this.varJeu.value % 5].removeAttribute('style');
                             currentTab.setAttribute('style', 'background: green');
-                            this.debut.value = i;
+                            this.varJeu.value = i;
                         }
                         // cas où on click deux fois de suite sur la même case
                         else {
                             currentTab.removeAttribute('style');
-                            this.debut.click = false;
-                            this.debut.value = -1;
+                            this.varJeu.click = false;
+                            this.varJeu.value = -1;
                         }
                     }
                 }
@@ -188,8 +244,8 @@ class StrategoView {
                     currentCell = document.getElementsByClassName('nom_piece')[i];
                     if (currentCell.textContent[1] !== '0') {
                         currentDiv.rows[Math.trunc(i / 5)].cells[i % 5].setAttribute('style', 'background: green');
-                        this.debut.click = true;
-                        this.debut.value = i;
+                        this.varJeu.click = true;
+                        this.varJeu.value = i;
                     }
                 }
             });
@@ -201,32 +257,13 @@ class StrategoView {
 
             if (currentLabel.textContent === '40') {
                 socket.emit('lancerPartie');
-                this.debut.pret = true;
+                this.varJeu.pret = true;
                 this.affichePlayer(this.joueur_courant);
             } else console.log('pas pret');
         });
     }
 
-    modifNombrePion(joueur, numPion, value) {
-        if (joueur.color === this.joueur_courant.color) {
-            let currentP = document.getElementsByClassName('nom_piece')[numPion];
-            currentP.innerText = currentP.innerText.replace(currentP.innerText[1], value);
-        }
-    }
-
-    modifNbPret(joueur, value) {
-        if (joueur.color === this.joueur_courant.color) {
-            let currentLabel = document.getElementById('compteur');
-            currentLabel.textContent = value;
-
-            if (value === 40) {
-                let currentButton = document.getElementById('bouton_placement');
-                currentButton.removeAttribute('disabled');
-                currentButton.setAttribute('enabled', '');
-            }
-        }
-    }
-
+    // ajoute les listeners sur la grille de placement des pions pour afficher leurs caractéristiques
     listenersDescription() {
         let currentDiv = document.getElementById('tabAjout');
         let currentDescription = document.getElementById('description');
@@ -271,7 +308,7 @@ class StrategoView {
                         currentValeur.textContent = "Le démineur a une force de 9.";
                         break;
                     case 9:
-                        currentDescription.textContent = "Le marechal est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
+                        currentDescription.textContent = "Le maréchal est une unité qui peut se déplacer d'une case dans n'importe quelle direction.";
                         currentValeur.textContent = "Le démineur a une force de 10.";
                         break;
                     case 10:
@@ -287,50 +324,40 @@ class StrategoView {
         }
     }
 
-    // initialise le joueur à qui appartient le visuel
-    initJoueur(joueur) {
-        if (this.joueur_courant === 0) {
-            console.log('j initialise le joueur');
-            this.joueur_courant = joueur;
-            this.affichePlayer(joueur);
-
-            this.initAjout();
-
-            // dé commenter pour réaliser des tests sur la partie sans avoir à placer les pions
-            // this.initDebug();
+    // modifie le nombre sur le pion de la grille de placement lors du placement des pions
+    modifNombrePion(joueur, numPion, value) {
+        if (joueur.color === this.joueur_courant.color) {
+            let currentP = document.getElementsByClassName('nom_piece')[numPion];
+            // on remplace le nombre présent à la deuxième position par le nombre choisi
+            currentP.innerText = currentP.innerText.replace(currentP.innerText[1], value);
         }
     }
 
-    initDebug() {
-        let compteur = 0;
-        let tabPions = this.joueur_courant.pions_vivant;
-        let min, max;
+    // modifie le nombre sur le total de pions posés
+    modifNbPret(joueur, value) {
+        if (joueur.color === this.joueur_courant.color) {
+            let currentLabel = document.getElementById('compteur');
+            currentLabel.textContent = value;
 
-        if (this.joueur_courant.color) {
-            min = 0;
-            max = 4;
-        }
-        else {
-            min = 6;
-            max = 10;
-        }
-
-        for (let j = min; j < max; ++j) {
-            for (let i = 0; i < 10; ++i) {
-                if (tabPions[compteur] === 0) compteur++;
-                socket.emit('placePion', this.joueur_courant, i, j, compteur + 1);
-                tabPions[compteur]--;
+            // si l'on est égal à 40 on active le bouton prêt
+            if (value === 40) {
+                let currentButton = document.getElementById('bouton_placement');
+                currentButton.removeAttribute('disabled');
+                currentButton.setAttribute('enabled', '');
             }
         }
     }
 
-    // affiche à qui est le tour dans le cas où on est en partie, sinon qu'on peut jouer ou que tout est bon
-    // en attendant l'autre joueur
+    // affiche à qui est le tour dans le cas où on est en partie,
+    // sinon qu'on peut jouer ou que tout est bon en attendant l'autre joueur
+    // si la partie est finis, affiche les informations liés à la fin du jeu
     affichePlayer(joueur, texte) {
         let currentP = document.getElementById('joueurQuiJoue');
+        // si texte différent de undefined, c'est que l'on est à la fin de la partie
+        // et que texte contient les informations de fin de la partie
         if (texte === undefined) {
-            if (this.debut.enJeu) currentP.textContent = 'Au tour du joueur ' + joueur.pseudo;
-            else if (this.debut.pret) currentP.textContent = 'En attente du joueur adverse';
+            if (this.varJeu.enJeu) currentP.textContent = 'Au tour du joueur ' + joueur.pseudo;
+            else if (this.varJeu.pret) currentP.textContent = 'En attente du joueur adverse';
             else currentP.textContent = 'Vous pouvez placer vos pions';
         }
         else {
@@ -350,10 +377,14 @@ class StrategoView {
             let img = document.createElement('img');
             currentCell.appendChild(img);
             img.setAttribute('class', 'piece');
+
+            // si le pion posé appartient au joueur qui joue
             if (joueur.color === this.joueur_courant.color) {
                 img.setAttribute('alt', value);
                 img.setAttribute('src', '../assets/' + (this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
             } else {
+                // sinon si le pion est visible on affiche le pion
+                // sinon on affiche un dos
                 if (visible) {
                     img.setAttribute('alt', type + (!this.joueur_courant.color ? ' rouge' : ' bleu'));
                     img.setAttribute('src', '../assets/' + (!this.joueur_courant.color ? 'rouge' : 'bleu') + '/' + type.toLowerCase() + '.png');
@@ -365,11 +396,13 @@ class StrategoView {
         }
     }
 
+    // permet de supprimer un pion
     removePion(joueur, x, y) {
         let tab = document.getElementById('plateau');
         let cell = tab.rows[y].cells[x];
         if (cell.firstChild !== null) {
-            if (!this.sauter && !this.debut.enJeu) {
+            // si l'on place les pions, il faut supprimer le pion dans la grid
+            if (!this.sauter && !this.varJeu.enJeu) {
                 if (joueur.color === this.joueur_courant.color) {
                     socket.emit('enlevePion', this.joueur_courant, Number(cell.firstChild.getAttribute('alt')));
                 }
@@ -394,6 +427,7 @@ class StrategoView {
         }
     }
 
+    // supprime la table de placement des pions au début de la partie
     removeTabAjout() {
         let currentDiv = document.getElementById('cadre');
         if (currentDiv != null) currentDiv.remove();
@@ -405,16 +439,18 @@ class StrategoView {
         if (currentDiv != null) currentDiv.remove();
     }
 
+    // supprime la page d'attente lorsque deux joueurs sont mis en lien
     removeAttente() {
         let currentDiv = document.getElementById('attente');
         currentDiv.remove();
     }
 
+    // lorsque les deux joueurs ont finis de placer leurs pions
     joueursPrets() {
         this.removeTabAjout();
         this.removeCasesJouables();
 
-        this.debut = {
+        this.varJeu = {
             "enJeu": true,
             "pret": false,
             "click": false,
@@ -424,6 +460,7 @@ class StrategoView {
         this.sauter = false;
     }
 
+    // affiche les cases sur lesquelles le pion peut se placer
     afficheCasesJouables(joueur, listDeplacement) {
         if (joueur.color === this.joueur_courant.color) {
             let currentTab = document.getElementById('plateau');
@@ -432,12 +469,15 @@ class StrategoView {
             for ([x, y] of listDeplacement) {
                 currentCell = currentTab.rows[y].cells[x];
 
+                // si il y a un pion sur la case, on met la case en rouge
+                // pour indiquer que le pion peut manger cette case
                 if (currentCell.firstChild !== null) currentCell.setAttribute('style', 'background: red');
                 else currentCell.setAttribute('style', 'background: green');
             }
         }
     }
 
+    // supprime les cases affichées
     removeCasesJouables() {
         let currentTab = document.getElementById('plateau');
 
@@ -448,8 +488,9 @@ class StrategoView {
         }
     }
 
+    // à a fin du jeu, dis que le jeu est fini puis affiche les informations liés à la fin
     finDuJeu(joueur, texte) {
-        this.debut.jeuFini = true;
+        this.varJeu.jeuFini = true;
         this.affichePlayer(joueur, texte);
     }
 }
