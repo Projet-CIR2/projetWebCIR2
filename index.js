@@ -251,45 +251,40 @@ io.on('connection', (socket) =>{
 });
 
 
-function endGame(token_, winner_, looser_, score_){
+
+
+function endGame(token_, player, score_, winOrLoose){
+    
+    
+
     let i = rooms.find(el => el.getToken() === token_);
     rooms.splice(i, 1);
 
-    let row;
+ 
     
     let sql = 'select *from session';
     con.query(sql, (err, result) => {
         if (err) throw err;
 
-        row = result.find(el => el.Pseudo === winner_);
+        let row = result.find(el => el.Pseudo === player);
         
         if (row !== undefined){
 
-            let vict = row.Victoire +1;
+            let vict = row.Victoire;
+            let defeat = row.defaite;
+
+            if(winOrLoose === 1) vict +=1;
+            else defeat +=1;
             if (row.score < score_) row.score = score_;
         
-            sql = "update session set score = "+ row.score+ ", victoire = " + vict +  " where Pseudo =\'" + winner_+"\'";
-            con.query(sql, (err, res)=>{
-                if (err) throw err;
-                
-            });
-        }
-
-        row = result.find(el => el.Pseudo === looser_);
-
-        if (row !== undefined){
-
-            let defaite = row.Defaite +1;
-            console.log(defaite);
-        
-            sql = "update session set defaite = " + defaite +  " where Pseudo =\'" + looser_+"\'";
+            sql = "update session set score = "+ row.score+ ", victoire = " + vict +  ", defaite = "+defeat+" where Pseudo =\'" + player+"\'";
             con.query(sql, (err, res)=>{
                 if (err) throw err;
                 
             });
         }
     });
-}
+}      
 
 function changeRoom(socket) {
     let token, game;
