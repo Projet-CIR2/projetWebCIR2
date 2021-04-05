@@ -16,6 +16,8 @@ class Stratego {
     constructor(socket_, io_, token, player1, player2) {
         this.player1 = player1;
         this.player2 = player2;
+        if (this.player1 === undefined) this.player1 = 'Invité';
+        if (this.player2 === undefined) this.player2 = 'Invité';
         if (this.player1 === this.player2) {
             this.player1 += ' 1';
             this.player2 += ' 2';

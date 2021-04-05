@@ -31,7 +31,7 @@ class StrategoView {
             this.initAjout();
 
             // dé commenter pour réaliser des tests sur la partie sans avoir à placer les pions
-            this.initDebug();
+            // this.initDebug();
         }
     }
 
