@@ -40,4 +40,7 @@ li{
 #back{
   position: fixed;
   margin-left: 1vw;
+  height: 10vh;
+  width: 5vw;
+  z-index: 2;
 }

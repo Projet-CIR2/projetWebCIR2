@@ -106,6 +106,10 @@ app.get('/regle', (req,res) =>{
     res.sendFile(__dirname + "/front/html/regle.html");
 });
 
+app.get('/credit', (req,res) =>{
+    res.sendFile(__dirname + "/front/html/credit.html");
+});
+
 app.post('/login',  (req,res) =>{
 
     const logName = req.body.login;
