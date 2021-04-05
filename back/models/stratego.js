@@ -29,8 +29,9 @@ class Stratego {
         this.grid_default = [];
         this.tour = 0; // nombre pair : joueur 0, nombre impair : joueur 1
         this.fini = false;
-        this.date = Date.now();
+        this.date = Date.now();//recupere la date de debut de partie
 
+        //creation des joueurs
         this.joueur_bleu = new Joueur(0, this.player1);
         this.joueur_rouge = new Joueur(1, this.player2);
 
@@ -85,11 +86,12 @@ class Stratego {
         this.io.to(this.token).emit('removePions');
     }
 
+    //verifier si le joueur peut placer son pion (regarde s'il n'est pas en dehors de son terrain
     peut_placer_ses_pions(joueur, x, y) {
         if (joueur.color === this.joueur_rouge.color) {
-            if (y >= 4 || this.grid_default[y][x] === -1) return false;
+            if (y >= 4) return false;
         } else {
-            if (y <= 5 || this.grid_default[y][x] === -1) return false;
+            if (y <= 5) return false;
         }
         return true;
     }
@@ -172,11 +174,12 @@ class Stratego {
 
     //placer les pions en debut de partie
     placer(joueur, x, y, value) {
-        if (this.peut_placer_ses_pions(joueur, x, y)) {
-            this.modif_grid_placer(joueur, x, y, value);
+        if (this.peut_placer_ses_pions(joueur, x, y)) {//regarde si on a le droit de le placer
+            this.modif_grid_placer(joueur, x, y, value);//placer le pion
 
             this.io.to(this.token).emit('affichePion', this.getCaseState(x, y).type, x, y, joueur, value, this.getCaseState(x, y).visible);
 
+            //implemente la case du tableau correspondant au pion
             let somme = 0;
             if (joueur.color === this.joueur_rouge.color) {
                 this.joueur_rouge.pions_en_jeu[value - 1] += 1;
@@ -200,6 +203,7 @@ class Stratego {
         this.io.to(this.token).emit('removePion', joueur, x, y);
     }
 
+    //enleve le pion du tableau pions_en_jeu
     enlevePion(joueur, value) {
         let somme = 0;
         let joueurCourant = joueur.color ? this.joueur_rouge : this.joueur_bleu;
@@ -213,7 +217,7 @@ class Stratego {
         }
     }
 
-    //regarde si la partie peut etre lancer
+    //verifier que le joueur est pret
     pret(joueur) {
         for (let i = 0; i < joueur.pions_vivant.length; i++) {
             if (joueur.pions_vivant[i] !== joueur.pions_en_jeu[i]) {
@@ -224,6 +228,7 @@ class Stratego {
         joueur.pret = 1;
     }
 
+    //regarde si l'on peut lancer la partie
     lancerPartie() {
         this.pret(this.joueur_bleu);
         this.pret(this.joueur_rouge);
@@ -239,7 +244,7 @@ class Stratego {
 
     //va enlever la piece du tableau en vie et la rajouter dans le tableau mort
     un_mort(joueur, value) {
-        if (joueur === this.joueur_rouge) {
+        if (joueur === this.joueur_rouge) {//si jueur rouge alors pions joueur rouge meurt
             this.joueur_rouge.pions_vivant[value - 1] -= 1;
             this.joueur_rouge.pions_mort[value - 1] += 1;
         } else {
@@ -248,9 +253,9 @@ class Stratego {
         }
     }
 
-    //fonction un_mort mais inversé
+    //meme fonction que un mort mais tue le pion adverse
     un_mort_inverse(joueur, value) {
-        if (joueur === this.joueur_rouge) {
+        if (joueur === this.joueur_rouge) {//si jueur rouge alors pions joueur bleu meurt
             this.joueur_bleu.pions_vivant[value - 1] -= 1;
             this.joueur_bleu.pions_mort[value - 1] += 1;
         } else {
@@ -259,8 +264,6 @@ class Stratego {
         }
     }
 
-
-    //problème éventuel du 2
 
     // affiche lors du clic sur une case les cases possibles et les pions qui peuvent être pris
     affiche(joueur, x_pos, y_pos) {
@@ -340,17 +343,17 @@ class Stratego {
                                 return;
                             }
 
-                                //puis si le général est mangé par l'espion ou
-                                //puis si une bombe a été détruite ou
-                            //si pion est plus puisant que l'adversaire
+                                //si le général est mangé par l'espion
+                                //si une bombe a été détruite
+                                //si pion est plus puisant que l'adversaire
                             else if ((pion1.puissance === 1 && case_mange.puissance === 10) || (pion1.puissance === 3 && case_mange.puissance === 12) || (pion1.puissance > case_mange.puissance)) {
 
                                 this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
 
-                                this.modif_grid(x_clic, y_clic, pion1);
+                                this.modif_grid(x_clic, y_clic, pion1);//notre pion ce deplace
                                 this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
 
-                                this.modif_grid(x_pos, y_pos, undefined);
+                                this.modif_grid(x_pos, y_pos, undefined);//la case de mon pion devient undefined
                                 this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
                             }
 
@@ -359,7 +362,7 @@ class Stratego {
 
                                 this.un_mort(joueur, case_mange.puissance);//mon pion detruit
 
-                                this.modif_grid(x_pos, y_pos, undefined);
+                                this.modif_grid(x_pos, y_pos, undefined);//la case de mon pion devient undefined
                                 this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
 
                                 this.io.to(this.token).emit('affichePion', case_mange.type, x_clic, y_clic, (joueur.color) ? this.joueur_bleu : this.joueur_rouge, case_mange.value, case_mange.visible);
@@ -371,28 +374,28 @@ class Stratego {
                                 this.un_mort_inverse(joueur, case_mange.puissance);//pion adverse detruit
                                 this.un_mort(joueur, case_mange.puissance);//mon pion detruit
 
-                                this.modif_grid(x_clic, y_clic, undefined);
+                                this.modif_grid(x_clic, y_clic, undefined);//la case du pion adverse devient undefined
                                 this.io.to(this.token).emit('removePion', joueur, x_clic, y_clic);
 
-                                this.modif_grid(x_pos, y_pos, undefined);
+                                this.modif_grid(x_pos, y_pos, undefined);//la case de mon pion devient undefined
                                 this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
                             }
 
                         } else {
                             // si la case d'arrivé est vide, on déplace juste le pion
-                            this.modif_grid(x_clic, y_clic, pion1);
+                            this.modif_grid(x_clic, y_clic, pion1);//notre pion ce deplace
                             this.io.to(this.token).emit('affichePion', pion1.type, x_clic, y_clic, joueur, pion1.value, pion1.visible);
 
-                            this.modif_grid(x_pos, y_pos, undefined);
+                            this.modif_grid(x_pos, y_pos, undefined);//la case de mon pion devient undefined
                             this.io.to(this.token).emit('removePion', joueur, x_pos, y_pos);
                         }
 
                         // on vérifie s'il y a ou pas égalité
                         if (!this.is_egalite()) {
-                            this.tour++;
+                            this.tour++;//tour suivant
                             this.io.to(this.token).emit('affichePlayer', this.getCurrentPlayer());
 
-                            this.deplacement_impossible();
+                            this.deplacement_impossible();//on verifie que le nouveau joueur peut encore deplacer des pions (sinon tour suivant)
                         }
                         this.io.to(this.token).emit('removeCasesJouables');
 
@@ -416,7 +419,7 @@ class Stratego {
                 }
             }
         }
-        this.tour += 1;
+        this.tour += 1;//tour suivant
         return this.is_egalite();
     }
 
@@ -426,12 +429,14 @@ class Stratego {
         this.joueur_bleu.points = 0;
         this.joueur_rouge.points = 0;
 
-        let temps_ecoule = (Date.now() - this.date) / 60000;
+        let temps_ecoule = (Date.now() - this.date) / 60000;//calcule le temps écouler
 
+        //ajoute des points en fonction des pions ennemies eliminer
         for (let i = 0; i < 12; i++) {
             this.joueur_bleu.points += this.joueur_rouge.pions_mort[i] * (i + 1);
             this.joueur_rouge.points += this.joueur_bleu.pions_mort[i] * (i + 1);
         }
+        //rajoute des points en fonction du temps de jeu
         this.joueur_bleu.points += (temps_ecoule / Math.pow(temps_ecoule, 2)) * 1000;
         this.joueur_rouge.points += (temps_ecoule / Math.pow(temps_ecoule, 2)) * 1000;
 
@@ -463,7 +468,9 @@ class Stratego {
     }
 
 
+    //fonction pour la fin de jeu avec un gagnant
     win(joueur) {
+        //calcule les points et rajoute 75 point au vainqueur
         this.points_joueur();
         joueur.points += 75;
         this.fini = true;
