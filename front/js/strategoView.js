@@ -258,7 +258,7 @@ class StrategoView {
                 socket.emit('lancerPartie');
                 this.varJeu.pret = true;
                 this.affichePlayer(this.joueur_courant);
-            } else console.log('pas pret');
+            }
         });
     }
 

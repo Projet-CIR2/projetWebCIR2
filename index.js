@@ -33,15 +33,12 @@ const session = require('express-session')({
 
 /* Import libs */
 const matchmaking = require("./back/matchmaking");
-const room = require("./back/models/room")
 const Stratego = require('./back/models/stratego');
 const init = require('./back/modules/initSocket');
-const { captureRejectionSymbol } = require('events');
-const { cpuUsage } = require('process');
 
 /* config */
-const jsonParser = bodyParser.json();
 const urlencodedParser = bodyParser.urlencoded({ extended: false});
+
 /* init express */
 app.use(express.static(__dirname + '/front/'));
 app.use(urlencodedParser);
@@ -116,17 +113,14 @@ app.post('/login',  (req,res) =>{
         let sql = 'SELECT *FROM session WHERE Pseudo = \'' + logName + '\' AND Mdp = \'' + logPassword + '\'';
         con.query(sql, (err, result) => {
 
-            console.log(result);
             //pas connecté
             if (result[0] === undefined) {
-                console.log(result[0], "azerty");
                 req.session.connect = false;
                 req.session.errIdentifiants = true;
                 req.session.save();
             }
             //connecté
             else{
-                console.log(result[0]);
                 req.session.logName = logName;
                 req.session.logPassword = logPassword;
                 req.session.connect = true;
@@ -173,6 +167,7 @@ app.post('/exit', (req,res) => {
     res.redirect('/');
 });
 
+
 io.on('connection', (socket) =>{
     console.log("New connection");
     socketBkp = socket;
@@ -181,7 +176,7 @@ io.on('connection', (socket) =>{
     playerSockets.push(socket);
 
     socket.on('login', () =>{
-        console.log(socket.handshake.session.username);
+        // console.log(socket.handshake.session.username);
     });
 
     socket.on('pseudo', () => {
@@ -217,8 +212,6 @@ io.on('connection', (socket) =>{
         }
     });
 
-
-
     changeRoom(socket);
 });
 
@@ -228,7 +221,6 @@ function endGame(token_, player, score_, winOrLoose){
     rooms.splice(i, 1);
 
     if (player === 'Invité 1' || player === 'Invité 2') player = 'Invité';
-    console.log(player);
 
     let sql = 'select *from session';
     con.query(sql, (err, result) => {
@@ -257,34 +249,28 @@ function changeRoom(socket) {
     let token, game;
     while(waitingQueue.length >= 2){
         token = randtoken.generate(16);
-        console.log(token);
-        io.to(playerSockets[playerSockets.length - 1].id).emit('hey', token);
-        playerSockets[playerSockets.length - 1].join(token);
-        io.to(playerSockets[playerSockets.length - 2].id).emit('hey', token + 'coucou');
-        playerSockets[playerSockets.length - 2].join(token);
 
-        socket.to(token).emit('hey', 'je suis content');
+        playerSockets[playerSockets.length - 1].join(token);
+        playerSockets[playerSockets.length - 2].join(token);
 
         game = new Stratego(socket, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1]));
         init.initSocket(playerSockets[playerSockets.length - 1], game);
         playerSockets.pop();
         init.initSocket(playerSockets[playerSockets.length - 1], game);
         playerSockets.pop();
-        // rooms.push(new room(socketBkp, io, token, matchmaking.getPlayerName(waitingQueue[0]), matchmaking.getPlayerName(waitingQueue[1])));
         rooms.push(game);
 
         for(let i=0; i< 2; i++){
-
             waitingQueue.shift();
         }
 
-        // console.log(rooms);
     }
 }
 
 http.listen(port, () => {
     console.log("Bijour vous m'entendii ?")
 });
+
 
 // Initialisation de la connexion à la bdd
 const con = mysql.createConnection({
@@ -295,10 +281,7 @@ const con = mysql.createConnection({
 });
 
 // Block d'accès à la BDD
-
 con.connect(err=>{
     if (err) throw err;
-    else console.log('Connexion reussie !');
+    else console.log('Connexion bdd réussie !');
 });
-
-/************* Matchmaking **************/
