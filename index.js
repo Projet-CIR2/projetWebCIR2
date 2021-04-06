@@ -5,7 +5,7 @@ const io = require('socket.io')(http);
 const mysql = require('mysql');
 const fs = require('fs');
 const randtoken = require('rand-token');
-
+const port = 4200;
 
 let logName = undefined;
 let socketBkp;
@@ -47,23 +47,22 @@ app.use(express.static(__dirname + '/front/'));
 app.use(urlencodedParser);
 app.use(session);
 
+app.enable('trust proxy');
 
 io.use(sharedsession(session, {
     autoSave: true
 }));
+
 
 //*** CODE ***//
 app.get('/', (req,res) => {
     logName = req.session.logName;
     res.sendFile(__dirname + "/front/html/index.html");
 
-
     let i = waitingQueue.find(el => el === req.session.id);
     if (i !== undefined)waitingQueue.splice(i, 1);
-
-
-
 });
+
 
 app.get('/login.html', (req,res) =>{
     let sessionData = req.session;
@@ -71,9 +70,9 @@ app.get('/login.html', (req,res) =>{
     res.sendFile(__dirname + "/front/html/login.html");
     if (sessionData.errIdentifiants){
         req.session.errIdentifiants = false;
-        //alert("Username ou Mot de passe incorrect");
     }
 });
+
 
 app.get('/signup.html', (req,res) =>{
     res.sendFile(__dirname + "/front/html/signup.html");
@@ -84,34 +83,27 @@ app.get('/attente.html', (req,res) =>{
     res.sendFile(__dirname + "/front/html/attente.html");
 });
 
+
 app.get('/jeu.html', (req, res) => {
-    let sessionData = req.session;
-    let token;
-
     if(waitingQueue.find(element => element.id === req.session.id) === undefined){
-
         waitingQueue.push(req.session);
-        // waitingQueue.push(socketBkp.id);
-        // console.log('id', socketBkp.id, req.session.id);
-        // console.log(waitingQueue);
-        // socketBkp.join('attente');
-
-        // ioBkp.in('attente').emit('coucou');
     }
 
     res.sendFile(__dirname + "/front/html/jeu.html")
 })
 
+
 app.get('/regle', (req,res) =>{
     res.sendFile(__dirname + "/front/html/regle.html");
 });
+
 
 app.get('/credit', (req,res) =>{
     res.sendFile(__dirname + "/front/html/credit.html");
 });
 
-app.post('/login',  (req,res) =>{
 
+app.post('/login',  (req,res) =>{
     const logName = req.body.login;
     const logPassword = req.body.passwrd;
 
@@ -126,7 +118,7 @@ app.post('/login',  (req,res) =>{
 
             console.log(result);
             //pas connecté
-            if (result[0] == undefined) {
+            if (result[0] === undefined) {
                 console.log(result[0], "azerty");
                 req.session.connect = false;
                 req.session.errIdentifiants = true;
@@ -144,6 +136,7 @@ app.post('/login',  (req,res) =>{
         });
     }
 });
+
 
 app.post('/signup', (req,res) =>{
 
@@ -173,24 +166,16 @@ app.post('/deconnection', (req,res) =>{
     res.redirect('/');
 });
 
+
 app.post('/exit', (req,res) => {
     let i = waitingQueue.find(el => el.id === req.session.id);
-    if (i != undefined)waitingQueue.splice(i, 1);
+    if (i !== undefined)waitingQueue.splice(i, 1);
     res.redirect('/');
 });
-
-
-
-
 
 io.on('connection', (socket) =>{
     console.log("New connection");
     socketBkp = socket;
-    // socket.join('attente');
-    // socket.emit()
-    io.to(socket.id).emit("hey", "I just met you");
-    // io.in('attente').emit('coucou');
-    // const game = new Stratego(socket, "j1", "j2");
 
     countPlayer ++;
     playerSockets.push(socket);
@@ -204,12 +189,10 @@ io.on('connection', (socket) =>{
     });
 
     socket.on('board', ()=>{
-
         let sql = "select Pseudo, Score, Victoire, Defaite from session";
         con.query(sql, (req,res) =>{
             socket.emit('Display', res);
         });
-
     });
 
     socket.on('endGame', (token_, player, score_, winOrLoose) => {
@@ -223,8 +206,6 @@ io.on('connection', (socket) =>{
     socket.on('deconnexion', () => {
         logName = undefined;
     });
-
-
 
     socket.on('disconnect', () =>{
         console.log("deconnected");
@@ -301,7 +282,7 @@ function changeRoom(socket) {
     }
 }
 
-http.listen(4200, () => {
+http.listen(port, () => {
     console.log("Bijour vous m'entendii ?")
 });
 

@@ -1,14 +1,14 @@
 const Joueur = require('./Joueur');
 const Espion = require('./types/1_Espion');
 const Eclaireur = require('./types/2_Eclaireur');
-const Demineur = require('./types/3_Démineur');
+const Demineur = require('./types/3_Demineur');
 const Sergent = require('./types/4_Sergent');
 const Lieutenant = require('./types/5_Lieutenant');
 const Capitaine = require('./types/6_Capitaine');
 const Commandant = require('./types/7_Commandant');
 const Colonel = require('./types/8_Colonel');
-const General = require('./types/9_Général');
-const Marechal = require('./types/10_Maréchal');
+const General = require('./types/9_General');
+const Marechal = require('./types/10_Marechal');
 const Drapeau = require('./types/11_Drapeau');
 const Bombes = require('./types/12_Bombes');
 
