@@ -1,0 +1,43 @@
+@import url(https://fonts.googleapis.com/css?family=Courgette&display=swap);
+body {
+    height: 100vh;
+    font-family: 'Courgette', sans-serif;
+    color: white;
+    background-color: #3D3D3D;
+    font-size: 2.5vmin;
+}
+
+ul{
+  text-align: center;
+  list-style-type:none;
+  animation: slide 25s cubic-bezier(.20, 0, .80, 1) 3s both;
+}
+
+
+@keyframes slide {
+  0% {
+    margin-top: 0vh;
+  }
+
+  100% {
+    margin-top: -93vh;
+  }
+}
+
+#back{
+  position: fixed;
+  left : 1vw;
+  top : 2vh;
+  height: 10vh;
+  width: 5vw;
+  z-index: 2;
+}
+
+a{
+  text-decoration: none;
+  color: white;
+}
+
+h3{
+  color:#808080;
+}

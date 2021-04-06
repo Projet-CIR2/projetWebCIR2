@@ -9,17 +9,16 @@
     <script type="text/javascript" src="../js/deconnection.js"></script>
     <script type="text/javascript" src="../js/modules/moduleLogin.js"></script>
     <script type="text/javascript" src="../js/modules/deconnectionner.js"></script>
+    <script type="text/javascript" src="../js/modules/leaderBoardDisplay.js"></script>
     <title>Stratego</title>
 </head>
 
 <body>
-<div id="box"></div>
 <p>Stratego</p>
 <ul id="navigation"> <!--Menu to navigate on the website -->
-    <li><a href="./attente.html" title="commencer à jouer">Jouer</a></li>
-    <li><a href="./tuto.html" title="apprendre à jouer">Tutoriel</a></li>
-    <li><a href="./leaderboard.html" title="regarde le score des joueurs">Leaderboard</a></li>
-    <li><a href="./credit.html" title="regarder les crédits">Crédits</a></li>
+    <li><a href="./jeu.html" title="commencer à jouer">Jouer</a></li>
+    <li><a href="/regle" title="apprendre à jouer">Règle</a></li>
+    <li><a href="/credit" title="regarder les crédits">Crédits</a></li>
 </ul>
 
 <div class="log">
@@ -29,9 +28,32 @@
         <a href="signup.html" title="">s'inscrire</a>
     </p>
 </div>
+
+<div id = "div_table">
+    <table>
+        <thead>
+          <tr>
+            <th colspan="4"><h3> Leaderboard :</h3></th>
+          </tr>
+            <tr>
+                <th>Pseudo</th>
+                <th>Score</th>
+                <th>Victoire</th>
+                <th>Defaite</th>
+            </tr>
+        </thead>
+
+        <tbody id = "leaderBoard">
+
+
+        </tbody>
+    </table>
+
+</div>
 </body>
 <script>
     let socket = io();
     log.initSocket(socket);
+    disp.initSocket(socket);
 </script>
 </html>

@@ -8,14 +8,14 @@ let socketModule = (function () {
     }
 
     function modifNombrePion() {
-        socket.on('modifNombrePion', (numPion, value) => {
-            view.modifNombrePion(numPion, value);
+        socket.on('modifNombrePion', (joueur, numPion, value) => {
+            view.modifNombrePion(joueur, numPion, value);
         })
     }
 
     function modifNbPret() {
-        socket.on('modifNbPret', (value) => {
-            view.modifNbPret(value);
+        socket.on('modifNbPret', (joueur, value) => {
+            view.modifNbPret(joueur, value);
         })
     }
 
@@ -26,14 +26,14 @@ let socketModule = (function () {
     }
 
     function affichePion() {
-        socket.on('affichePion', (type, x, y, joueur, value) => {
-            view.affichePion(type, x, y, joueur, value);
+        socket.on('affichePion', (type, x, y, joueur, value, visible) => {
+            view.affichePion(type, x, y, joueur, value, visible);
         });
     }
 
     function removePion() {
-        socket.on('removePion', (x, y) => {
-            view.removePion(x, y);
+        socket.on('removePion', (joueur, x, y) => {
+            view.removePion(joueur, x, y);
         });
     }
 
@@ -49,6 +49,48 @@ let socketModule = (function () {
         });
     }
 
+    function removeAttente() {
+        socket.on('removeAttente', () => {
+            view.removeAttente();
+        });
+    }
+
+    function joueursPrets() {
+        socket.on('joueursPrets', () => {
+            view.joueursPrets();
+        });
+    }
+
+    function afficheCasesJouables() {
+        socket.on('afficheCasesJouables', (joueur, listDeplacement) => {
+            view.afficheCasesJouables(joueur, listDeplacement);
+        });
+    }
+
+    function removeCasesJouables() {
+        socket.on('removeCasesJouables', () => {
+            view.removeCasesJouables();
+        });
+    }
+
+    function finDuJeu() {
+        socket.on('finDuJeu', (joueur, texte) => {
+            view.finDuJeu(joueur, texte);
+        });
+    }
+
+    function sendWin() {
+        socket.on('sendWin', (token, player, winOrLoose) => {
+            view.sendWin(token, player, winOrLoose);
+        });
+    }
+
+    function hey() {
+        socket.on('hey', (text) => {
+            console.log(text);
+        });
+    }
+
     return {
         initSocket(socket_, view_) {
             socket = socket_;
@@ -61,6 +103,13 @@ let socketModule = (function () {
             removePion();
             removePions();
             removeTabAjout();
+            removeAttente();
+            joueursPrets();
+            afficheCasesJouables();
+            removeCasesJouables();
+            finDuJeu();
+            sendWin();
+            hey();
         }
     }
 }) ();

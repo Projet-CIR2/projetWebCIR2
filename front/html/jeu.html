@@ -5,16 +5,34 @@
     <script src="/socket.io/socket.io.js"></script>
     <link rel="stylesheet" href="../css/jeu.css">
     <link id="icon" rel="icon" type="image/x-ico" href="../assets/icon.png">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script type="text/javascript" src="../js/strategoView.js"></script>
     <script type="text/javascript" src="../js/modules/initSocket.js"></script>
     <script type="text/javascript" src="../js/main.js"></script>
     <title>Stratego</title>
 </head>
 <body>
+<div id="attente">
+    <a id="exit" href="/"><img src="../assets/retour.png" id="back" alt="retour au menu"></a>
+    <div id="divGif">
+        <h2> Prêt pour le combat ?</h2>
+        <img id="gif" src="../assets/gif_attente.gif" alt="gif d'attente">
+    </div>
+    <div id="att">
+        <h1>En attente d'un autre joueur ...</h1>
+        <br>
+    </div>
+    <!--<div id = "exit_div">
+        <button id="exit">Quitter</button>
+    </div>-->
+    <script type="text/javascript" src="../js/leaveWaitingRoom.js"></script>
+</div>
+
 <div id="corps">
     <table id="plateau">
     </table>
 </div>
+
 <div id="placement_piece">
     <br>
     <div id="cadre">

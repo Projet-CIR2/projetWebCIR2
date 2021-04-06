@@ -1,6 +1,47 @@
+@import url(https://fonts.googleapis.com/css?family=Courgette&display=swap);
+
 body {
     background-size: cover;
     background-color: #333;
+}
+
+#attente {
+    position: absolute;
+    background-color: #3D3D3D;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+}
+
+div#divGif {
+    position: absolute;
+    width: 50vw;
+    text-align: center;
+    margin-top: 10vh;
+    z-index: 11;
+    color: white;
+    font-family: 'Courgette', sans-serif;
+}
+
+#gif {
+    width: 40vw;
+    height: 60vh;
+}
+
+div#att {
+    padding-top: 20vh;
+    margin-left: 55vw;
+    margin-right: 5vw;
+    color: white;
+    font-family: 'Courgette', sans-serif;
+}
+
+div#exit_div {
+    padding-top: 20vh;
+    margin-left: 55vw;
+    margin-right: 5vw;
+    color: white;
+    font-family: 'Courgette', sans-serif;
 }
 
 p {
@@ -112,7 +153,6 @@ td {
 
 #dc {
     margin-left: 65vw;
-
 }
 
 .img_languette {
@@ -120,5 +160,17 @@ td {
     height: 3vmin;
     margin-left: 0.5vmin;
     margin-top: 3vmin;
+}
 
+a {
+    color: #D3D3D3;
+    text-decoration: underline;
+}
+
+#back{
+  position: fixed;
+  margin-left: 1vw;
+  height: 10vh;
+  width: 5vw;
+  z-index: 2;
 }
