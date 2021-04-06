@@ -18,7 +18,7 @@ Aucune base de donnée nécessaire au lancement, celle-ci est en ligne
 
 ### Liens utiles
 
-[Vidéo de présentation](http://nicob.space:7080/index.php/s/oH8qkWazPgyWB24) du jeu avec une partie
+[Vidéo de présentation](http://nicob.space:7080/index.php/s/oH8qkWazPgyWB24) du jeu avec une partie -> quelques modifications tels que l'ajout d'un bouton pour abandonner ont eu lieu depuis
 
 [Lien Trello](https://trello.com/b/Or0DMhcB/projet-web-cir2)
 
