@@ -16,6 +16,8 @@ Exécuter la commande ```npm install``` avant toute mofication / exécution pour
 
 Aucune base de donnée nécessaire au lancement, celle-ci est en ligne
 
+La branche à évaluer est la branche main
+
 ### Liens utiles
 
 [Vidéo de présentation](http://nicob.space:7080/index.php/s/oH8qkWazPgyWB24) du jeu avec une partie -> quelques modifications tels que l'ajout d'un bouton pour abandonner ont eu lieu depuis
