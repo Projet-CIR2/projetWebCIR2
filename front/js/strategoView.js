@@ -44,8 +44,7 @@ class StrategoView {
         if (this.joueur_courant.color) {
             min = 0;
             max = 4;
-        }
-        else {
+        } else {
             min = 6;
             max = 10;
         }
@@ -142,7 +141,7 @@ class StrategoView {
                                 }
 
                             }
-                        // on place les pions si le joueur n'est pas prêt
+                            // on place les pions si le joueur n'est pas prêt
                         } else if (!this.varJeu.pret) {
                             // si un click a déjà été fais
                             if (this.varJeu.click) {
@@ -353,14 +352,19 @@ class StrategoView {
     // si la partie est finis, affiche les informations liés à la fin du jeu
     affichePlayer(joueur, texte) {
         let currentP = document.getElementById('joueurQuiJoue');
+        let currentA;
         // si texte différent de undefined, c'est que l'on est à la fin de la partie
         // et que texte contient les informations de fin de la partie
         if (texte === undefined) {
-            if (this.varJeu.enJeu) currentP.textContent = 'Au tour du joueur ' + joueur.pseudo;
-            else if (this.varJeu.pret) currentP.textContent = 'En attente du joueur adverse';
-            else currentP.textContent = 'Vous pouvez placer vos pions';
-        }
-        else {
+            if (this.varJeu.enJeu) currentP.innerHTML = 'Au tour du joueur ' + joueur.pseudo;
+            else if (this.varJeu.pret) currentP.innerHTML = 'En attente du joueur adverse';
+            else currentP.innerHTML = 'Vous pouvez placer vos pions';
+            currentP.innerHTML += '<br><br> <a id="abandon">Abandonner</a>';
+            currentA = document.getElementById('abandon');
+            currentA.addEventListener('click', () => {
+                socket.emit('abandon', this.joueur_courant);
+            });
+        } else {
             if (texte.lastIndexOf('égalité') !== -1) currentP.textContent = texte;
             else currentP.innerHTML = 'Le joueur ' + joueur.pseudo + ' a gagné ! <br>' + texte + '<br><br> <a href="/">Accueil</a>';
         }

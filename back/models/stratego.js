@@ -37,8 +37,6 @@ class Stratego {
         this.joueur_bleu = new Joueur(0, this.player1);
         this.joueur_rouge = new Joueur(1, this.player2);
 
-        this.io.to(token).emit('hey', 'je suis dans le jeu');
-
         this.socket.emit('initJoueur', this.joueur_rouge);
         this.io.to(this.token).emit('initJoueur', this.joueur_bleu);
 
@@ -473,6 +471,26 @@ class Stratego {
         this.io.to(this.token).emit('finDuJeu', this.getWinner(), texte);
 
         return true;
+    }
+
+    abandon(joueur) {
+        let winner, looser;
+
+        if (joueur.color) {
+            winner = this.joueur_bleu;
+            looser = this.joueur_rouge;
+        }
+        else {
+            winner = this.joueur_rouge;
+            looser = this.joueur_bleu;
+        }
+
+        this.points_joueur();
+
+        let texte = 'Le joueur ' + looser.pseudo + 'a abandonné';
+        this.io.to(this.token).emit('finDuJeu', winner, texte);
+        this.io.to(this.token).emit('sendWin', this.token, winner, +1);
+        this.io.to(this.token).emit('sendWin', this.token, looser, -1);
     }
 
 

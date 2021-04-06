@@ -49,6 +49,12 @@ let socketModule = (function () {
         });
     }
 
+    function abandon() {
+        socket.on('abandon', (joueur) => {
+            game.abandon(joueur);
+        });
+    }
+
     return {
         initSocket(socket_, game_) {
             socket = socket_;
@@ -62,6 +68,7 @@ let socketModule = (function () {
             enlevePion();
             deplacement();
             affiche();
+            abandon();
         }
     }
 }) ();
