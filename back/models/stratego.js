@@ -397,7 +397,7 @@ class Stratego {
                             this.tour++;//tour suivant
                             this.io.to(this.token).emit('affichePlayer', this.getCurrentPlayer());
 
-                            this.deplacement_impossible();//on verifie que le nouveau joueur peut encore deplacer des pions (sinon tour suivant)
+                            this.deplacement_impossible(); //on verifie que le nouveau joueur peut encore deplacer des pions (sinon tour suivant)
                         }
                         this.io.to(this.token).emit('removeCasesJouables');
 
@@ -421,8 +421,8 @@ class Stratego {
                 }
             }
         }
-        this.tour += 1;//tour suivant
-        return this.is_egalite();
+        this.tour++;
+        return this.win(this.getCurrentPlayer());
     }
 
 
