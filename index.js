@@ -215,7 +215,7 @@ io.on('connection', (socket) =>{
     changeRoom(socket);
 });
 
-
+// enregistre les données de la partie
 function endGame(token_, player, score_, winOrLoose){
     let i = rooms.find(el => el.getToken() === token_);
     rooms.splice(i, 1);
@@ -245,6 +245,7 @@ function endGame(token_, player, score_, winOrLoose){
     });
 }
 
+// permet de passer deux joueurs dans une room
 function changeRoom(socket) {
     let token, game;
     while(waitingQueue.length >= 2){
@@ -263,7 +264,6 @@ function changeRoom(socket) {
         for(let i=0; i< 2; i++){
             waitingQueue.shift();
         }
-
     }
 }
 
