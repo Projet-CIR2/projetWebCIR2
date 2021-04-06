@@ -487,7 +487,7 @@ class Stratego {
 
         this.points_joueur();
 
-        let texte = 'Le joueur ' + looser.pseudo + 'a abandonné';
+        let texte = 'Le joueur ' + looser.pseudo + ' a abandonné';
         this.io.to(this.token).emit('finDuJeu', winner, texte);
         this.io.to(this.token).emit('sendWin', this.token, winner, +1);
         this.io.to(this.token).emit('sendWin', this.token, looser, -1);
