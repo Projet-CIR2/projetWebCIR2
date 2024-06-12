@@ -20,7 +20,7 @@ La branche à évaluer est la branche main
 
 ### Liens utiles
 
-[Vidéo de présentation](http://nicob.space:7080/index.php/s/oH8qkWazPgyWB24) du jeu avec une partie -> quelques modifications tels que l'ajout d'un bouton pour abandonner ont eu lieu depuis
+[Vidéo de présentation](https://nextcloud.nicob.ovh/index.php/s/oH8qkWazPgyWB24) du jeu avec une partie -> quelques modifications tels que l'ajout d'un bouton pour abandonner ont eu lieu depuis
 
 [Lien Trello](https://trello.com/b/Or0DMhcB/projet-web-cir2)
 
